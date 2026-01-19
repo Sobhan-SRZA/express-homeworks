@@ -28,6 +28,7 @@ fs.readdirSync("./pages")
         fileCode(app, db)
     })
 
+// Redirect all invalid url to /404
 app.get("*", (req, res) => {
     res.redirect("/404")
 })
