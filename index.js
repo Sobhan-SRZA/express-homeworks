@@ -1,20 +1,19 @@
-const { QuickDB, JSONDriver } = require("quick.db")
-const express = require("express")
+const {
+    QuickDB,
+    JSONDriver
+} = require("quick.db");
+const express = require("express");
 const port = 8888;
 
 const db = new QuickDB({ driver: new JSONDriver() })
 
 const app = express();
 
-// app.set("view engine", "html");
-// app.set('views', './views');
-
-// app.use(express.static('./views'));
-// app.use(app.router);
-
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
+
 app.use(express.json());
+
 app.use(express.static(__dirname + "/public"));
 
 const fs = require("fs")
