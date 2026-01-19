@@ -1,0 +1,35 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: aqua;
+    text-align: center;
+}
+
+.koni {
+    background: #000;
+    color: red;
+    width: max-content;
+    place-self: center;
+    margin-top: 3rem;
+    animation: infinite zoom-in-zoom-out 0.8s;
+}
+
+@keyframes zoom-in-zoom-out {
+    0% {
+        transform: scale(1);
+    }
+    
+    50% {
+        transform: scale(3.1);
+    }
+    
+    100% {
+        transform: scale(1);
+    }
+}
