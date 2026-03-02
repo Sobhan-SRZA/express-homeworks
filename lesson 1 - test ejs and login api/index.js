@@ -3,20 +3,24 @@ const {
     JSONDriver
 } = require("quick.db");
 const express = require("express");
-const port = 8888;
+const fs = require("fs")
+const db = new QuickDB({
+    driver: new JSONDriver()
+})
 
-const db = new QuickDB({ driver: new JSONDriver() })
+const port = 8888;
 
 const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 
+// Use json in express get and post
 app.use(express.json());
 
+// Load static files path
 app.use(express.static(__dirname + "/public"));
 
-const fs = require("fs")
 
 // Load all pages from ./pages
 fs.readdirSync("./pages")
