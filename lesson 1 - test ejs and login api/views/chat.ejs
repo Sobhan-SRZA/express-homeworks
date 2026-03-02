@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="chat/style.css">
+    <title>Chat room</title>
+</head>
+
+<body>
+    <h1 class="title">Chat Room</h1>
+
+    <section class="room">
+        <% if(messages.length>0) { %>
+            <ul class="chat-list">
+                <% messages.forEach((msg)=>{ %>
+                    <li>
+                        <p class="chat-message">
+                            <%= msg.message %>
+                        </p>
+                    </li>
+                    <% %>
+                        <% }) %>
+            </ul>
+            <% } else { %>
+                <p>There is no chats to show</p>
+                <% } %>
+
+                    <input class="send-input" type="text" name="Send Message" id="send-input"
+                        placeholder="Please send a message...">
+                    <input type="button" value="Send" id="send-btn" onclick="handleClick()">
+    </section>
+</body>
+
+<script>
+    const handleClick = () => {
+        const input = document.getElementById("send-input");
+        document.location = `${document.location}?message=${input.value}`
+    }
+</script>
+
+</html>
