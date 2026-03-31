@@ -9,7 +9,7 @@ module.exports = async (db, username) => {
     if (!accounts)
         return false;
 
-    const usernames = Object.keys(accounts).map(a => a.toLowerCase());
+    const usernames = Object.values(accounts).map(a => a.username.toLowerCase());
 
     if (usernames.includes(username.toLowerCase()))
         return true;
