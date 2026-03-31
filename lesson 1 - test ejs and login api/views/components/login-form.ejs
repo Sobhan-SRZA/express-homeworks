@@ -1,4 +1,4 @@
-<form class="login-form" id="form">
+<form class="login-form" id="form" onsubmit="handleLoginSubmit(event)" action="/login" method="post">
     <section class="user-sec">
         <label for="username">User Name:</label>
         <input type="text" name="username" id="username" required>
@@ -10,33 +10,38 @@
     </section>
 
     <section class="login-sec">
-        <input type="button" value="Login" onclick="handleLogin()">
+        <input type="submit" value="Login">
     </section>
 </form>
 
 <script>
-    const handleLogin = async () => {
+    const handleLoginSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const form = e.currentTarget;
         const [username, password] = [
-            document.querySelector(".login-form .user-sec input#username"),
-            document.querySelector(".login-form .pass-sec input#password")
+            formData.get("username"),
+            formData.get("password")
         ];
-
+ 
         try {
-            const res = await fetch("/login", {
+            const res = await fetch(form.action, {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    username: username.value,
-                    password: password.value
+                    username,
+                    password
                 })
             });
 
             const response = await res.json();
 
             localStorage.setItem("token", response.token)
-            
+
+            location.reload()
+
             return;
         }
 
