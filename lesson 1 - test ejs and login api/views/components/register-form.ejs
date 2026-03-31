@@ -1,0 +1,47 @@
+<form class="register-form" id="form-register" style="display: none;">
+    <section class="user-sec">
+        <label for="username">User Name:</label>
+        <input type="text" name="username" id="username" required>
+    </section>
+
+    <section class="pass-sec">
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required>
+    </section>
+
+    <section class="register-sec">
+        <input type="button" value="Register" onclick="handleRegister()">
+    </section>
+</form>
+
+<script async>
+    const handleRegister = async () => {
+        const [username, password] = [
+            document.querySelector(".register-form .user-sec input#username"),
+            document.querySelector(".register-form .pass-sec input#password")
+        ];
+
+        try {
+            const res = await fetch("/register", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: username.value,
+                    password: password.value
+                })
+            });
+
+            const response = await res.json();
+
+            localStorage.setItem("token", response.token)
+
+            return;
+        }
+
+        catch (e) {
+            console.log(e)
+        }
+    }
+</script>
