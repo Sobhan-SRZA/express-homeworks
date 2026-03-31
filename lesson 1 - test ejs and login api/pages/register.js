@@ -1,6 +1,7 @@
 const {
     encodePassword,
-    encodeAuthentication
+    encodeAuthentication,
+    encodeUsername
 } = require("../utils/tokenise");
 const checkUsername = require("../utils/checkUsername");
 
@@ -27,7 +28,7 @@ module.exports = async (app, db) => {
                 return;
             }
 
-            await db.set(`accounts.${username}`, {
+            await db.set(`accounts.${encodeUsername(username)}`, {
                 username,
                 password: encodePassword(password)
             })
