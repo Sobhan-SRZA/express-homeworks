@@ -11,7 +11,6 @@ const {
 module.exports = async (app, db) => {
     app.post("/login", async (req, res, next) => {
         if (req.body.password && req.body.username) {
-            console.log("🚀 ~ req.body:", req.body)
             const { username, password } = req.body
 
             const account = await db.get(`accounts.${username}`);
