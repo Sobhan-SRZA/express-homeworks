@@ -15,7 +15,9 @@ module.exports = async (app, db) => {
         if (req.body.password && req.body.username) {
             const { username, password } = req.body
 
-            if (await checkUsername(db, username)) {
+            const isUsernameUsed = await checkUsername(db, username);
+
+            if (isUsernameUsed) {
                 res
                     .status(401)
                     .type("application/problem+json")
@@ -29,17 +31,21 @@ module.exports = async (app, db) => {
             }
 
             await db.set(`accounts.${encodeUsername(username)}`, {
+                created_at: Date.now(),
                 username,
                 password: encodePassword(password)
             })
 
             res
                 .status(200)
+                .type("application/json")
                 .send({
                     message: "Your are registed now!",
                     token: encodeAuthentication(username, password),
                     code: 200
                 })
+
+            return;
         }
 
         else {
@@ -51,6 +57,8 @@ module.exports = async (app, db) => {
                     message: "Wrong usage!",
                     code: 400
                 })
+
+            return;
         }
     })
 }
