@@ -32,6 +32,23 @@ const encodeAuthentication = (username, password) => {
 
 /**
  * 
+ * @param {string} token
+ * @returns {string}
+ */
+const decodeAuthentication = (token) => {
+    const [encodedUsername, nextToken] = token.split(".");
+    const username = decodeToken(encodedUsername);
+    const [password, timestamp] = decodeToken(nextToken).split("-");
+
+    return {
+        username,
+        password,
+        timestamp
+    };
+}
+
+/**
+ * 
  * @param {string} content 
  * @param {number | undefined} length
  * @param {number | undefined} byteOffset
@@ -44,20 +61,24 @@ const encodeToken = (content, length = undefined, byteOffset = undefined) => {
         .replaceAll("=", "");
 }
 
+
+/**
+ * 
+ * @param {string} content 
+ * @returns {string}
+ */
+const decodeToken = (content) => {
+    return Buffer(content, "base64")
+        .toString();
+}
+
 module.exports = {
     encodeUsername,
     encodePassword,
+
     encodeAuthentication,
+    decodeAuthentication,
 
     encodeToken,
-
-    /**
-     * 
-     * @param {string} content 
-     * @returns {string}
-     */
-    decodeToken: (content) => {
-        return Buffer(content, "base64")
-            .toString();
-    }
+    decodeToken
 }
