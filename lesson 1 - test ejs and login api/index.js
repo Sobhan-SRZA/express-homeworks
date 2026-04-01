@@ -23,13 +23,18 @@ app.use(express.static(__dirname + "/public"));
 
 
 // Load all pages from ./pages
-fs.readdirSync("./pages")
-    .filter((file) => file.endsWith(".js"))
-    .forEach((file) => {
-        const fileCode = require(`./pages/${file}`)
+[
+    "./pages",
+    "./api"
+].forEach((dir) => {
+    fs.readdirSync(dir)
+        .filter((file) => file.endsWith(".js"))
+        .forEach((file) => {
+            const fileCode = require(`./${dir}/${file}`)
 
-        fileCode(app, db)
-    })
+            fileCode(app, db)
+        })
+})
 
 // Redirect all invalid url to /404
 app.get("*", (req, res) => {

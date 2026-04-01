@@ -1,5 +1,4 @@
 const {
-    encodePassword,
     encodeUsername,
     decodeAuthentication
 } = require("../utils/tokenise");
