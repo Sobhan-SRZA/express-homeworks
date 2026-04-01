@@ -5,12 +5,6 @@
  */
 module.exports = async (app, db) => {
     app.get("/", (req, res) => {
-
-        const token = req
-
-        res.render("index", {
-            req: req,
-            is_login: false
-        })
+        res.render("index")
     })
 }
