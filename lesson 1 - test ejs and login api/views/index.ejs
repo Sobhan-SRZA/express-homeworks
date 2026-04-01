@@ -11,68 +11,93 @@
 
 <body>
     <%- include("components/header") %>
+        <%- include("components/dialogError") %>
 
-    <!-- hello section -->
-    <section>
-        <h1>Hello</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur accusamus inventore mollitia! Earum
-            tenetur
-            delectus aut recusandae, blanditiis quod vel cupiditate reprehenderit nostrum officiis praesentium ea
-            accusamus
-            non harum possimus.</p>
-    </section>
+            <!-- hello section -->
+            <section>
+                <h1>Hello</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur accusamus inventore mollitia!
+                    Earum
+                    tenetur
+                    delectus aut recusandae, blanditiis quod vel cupiditate reprehenderit nostrum officiis praesentium
+                    ea
+                    accusamus
+                    non harum possimus.</p>
+            </section>
 
-    <!-- login section -->
-    <section>
-        <h2>لاگین کردی ها؟</h2>
-        <br>
-        <% if(is_login) { %>
-            <input type="button" class="btn logout">خروج</input>
-        <% } else { %>
-            <div class="form-div">
-                <%- include("components/login-form") %>
+            <!-- login section -->
+            <section>
+                <h2>سرویس تست ساخت پروفایل</h2>
+                <div class="is-login" style="display: none;">
+                    <div class="profile">
+                        <h2 class="username"></h2>
+                        <p class="created-at"></p>
+                    </div>
 
-                <%- include("components/register-form") %>
-            </div>
+                    <button class="btn logout" onclick="logoutProfile()">خروج</button>
+                </div>
 
-            <div class="forms-toggle" onclick="handleFormchanger()">
-                <span class="form-toggle" id="register-toggle">Register</span>
-                <span class="form-toggle" id="login-toggle" style="display: none;">Login</span>   
-            </div>
-        <% } %>
-    </section>
+                <div class="not-login">
+                    <%- include("components/profile-form") %>
+                </div>
+            </section>
 
-    <!-- other section like contact -->
-    <section>
-        <a class="contact" href="/contact">Contact with us</a>
-    </section>
+            <!-- other section like contact -->
+            <section>
+                <a class="contact" href="/contact">Contact with us</a>
+            </section>
 </body>
 
 <script>
-    const login_form = document.querySelector(".login-form");
-    const register_form = document.querySelector(".register-form");
-    
-    const form_div = document.querySelector(".form-div");
-    const form = document.getElementById("form");
-    const login = document.getElementById("login-toggle");
-    const register = document.getElementById("register-toggle");
+    document.addEventListener("DOMContentLoaded", async () => {
+        const is_login = document.querySelector(".is-login");
+        const not_login = document.querySelector(".not-login");
+        
+        const token = localStorage.getItem("token");
 
-    const handleFormchanger = async () => {
-        if (login.style.display !== "none") {
-            login.style.display = "none";
-            login_form.style.display = "block";
+        if(token){
+            try {
+                const res = await fetch("/authentication", {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        token
+                    })
+                });
 
-            register.style.display = "block";
-            register_form.style.display = "none";
+                const response = await res.json();
+
+
+                if (response.code == 200) {
+                    is_login.style.display = "block";
+                    not_login.style.display = "none";
+
+                    is_login.querySelector(".profile .username").innerText = response.username;
+
+                    const account_created_at = new Date(response.created_at);
+                    is_login.querySelector(".profile .created-at").innerText = `${account_created_at.getFullYear()}/${account_created_at.getMonth()}/${account_created_at.getDay()}`;
+                }
+
+                else {
+                    is_login.style.display = "none";
+                    not_login.style.display = "block";
+                }
+            }
+
+            catch (error) {
+                console.log(error)
+                is_login.style.display = "none";
+                not_login.style.display = "block";
+            }
         }
+    })
 
-        else {
-            login.style.display = "block";
-            login_form.style.display = "none";
+    const logoutProfile = () => {
+        localStorage.clear()
 
-            register.style.display = "none";
-            register_form.style.display = "block";
-        }
+        location.reload()
     }
 </script>
 
