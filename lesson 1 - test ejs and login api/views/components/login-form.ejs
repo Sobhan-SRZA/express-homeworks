@@ -23,7 +23,7 @@
             formData.get("username"),
             formData.get("password")
         ];
- 
+
         try {
             const res = await fetch(form.action, {
                 method: "post",
@@ -37,10 +37,19 @@
             });
 
             const response = await res.json();
+            
+            if (response.code == 200) {
+                localStorage.setItem("token", response.token)
 
-            localStorage.setItem("token", response.token)
+                location.reload()
+            }
 
-            location.reload()
+            else if (response.code == 401) {
+                openDialogError(response.title, response.message)
+            }
+
+            else
+                console.error(response)
 
             return;
         }
