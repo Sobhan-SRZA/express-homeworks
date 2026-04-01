@@ -1,4 +1,5 @@
-<form class="register-form" id="form-register" style="display: none;" onsubmit="handleRegisterSubmit(event)" action="/register" method="post">
+<form class="register-form" id="form-register" style="display: none;" onsubmit="handleRegisterSubmit(event)"
+    action="/register" method="post">
     <section class="user-sec">
         <label for="username">User Name:</label>
         <input type="text" name="username" id="username" required>
@@ -13,7 +14,6 @@
         <input type="submit" value="Register">
     </section>
 </form>
-
 <script>
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
@@ -38,15 +38,24 @@
 
             const response = await res.json();
 
-            localStorage.setItem("token", response.token)
+            if (response.code == 200) {
+                localStorage.setItem("token", response.token)
 
-            location.reload()
+                location.reload()
+            }
+
+            else if (response.code == 401) {
+                openDialogError("Ferequency Username", "This username is used before! Please use other username.")
+            }
+
+            else
+                console.error(response)
 
             return;
         }
 
         catch (e) {
-            console.log(e)
+            console.error(e)
         }
     }
 </script>
