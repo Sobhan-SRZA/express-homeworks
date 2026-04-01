@@ -1,0 +1,107 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    text-align: center;
+}
+
+.btn {
+    background: #393030;
+    color: red;
+    place-self: center;
+    margin-top: .5rem;
+    cursor: pointer;
+}
+
+.logout{
+    font-size: larger;
+    padding: 5px;
+    width: 3rem;
+    border: 2px white;
+    border-radius: 5px;
+
+}
+
+section {
+    margin-bottom: 1rem;
+}
+
+a {
+    text-decoration: none;
+    color: aliceblue;
+    transition: color ease-in-out .5s;
+}
+
+a:hover {
+    color: rgb(110, 187, 255);
+}
+
+.header {
+    background: #101010;
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: .5rem;
+}
+
+.nav-ul li {
+    list-style: none;
+}
+
+.nav-ul li.active a {
+    color: aqua;
+    cursor: not-allowed;
+}
+
+.nav-ul {
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.forms-toggle {
+    cursor: pointer;
+}
+
+dialog.errorDialog {
+    position: absolute;
+    align-self: center;
+    justify-self: center;
+    border: 2px;
+    border-radius: 15px;
+    inset: 0px;
+    padding: 1rem;
+    width: 20rem;
+    backdrop-filter: blur(40px);
+    background-color: bisque;
+}
+
+dialog.errorDialog .close {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    place-self: end;
+    background-color: transparent;
+    border: none;
+    font-size: large;
+}
+
+.dialogErrorBack {
+    position: fixed;
+    backdrop-filter: blur(5px);
+    width: 100%;
+    height: 100%;
+}

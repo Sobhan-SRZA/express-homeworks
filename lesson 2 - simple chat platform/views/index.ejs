@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <%- include("components/header") %>
+        <%- include("components/dialogError") %>
+
+            <!-- hello section -->
+            <section>
+                <h1>Hello</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur accusamus inventore mollitia!
+                    Earum
+                    tenetur
+                    delectus aut recusandae, blanditiis quod vel cupiditate reprehenderit nostrum officiis praesentium
+                    ea
+                    accusamus
+                    non harum possimus.</p>
+            </section>
+
+            <!-- login section -->
+            <section>
+                <h2>سرویس تست ساخت پروفایل</h2>
+                <div class="is-login" style="display: none;">
+                    <div class="profile">
+                        <h2 class="username"></h2>
+                        <p class="created-at"></p>
+                    </div>
+
+                    <button class="btn logout" onclick="logoutProfile()">خروج</button>
+                </div>
+
+                <div class="not-login">
+                    <%- include("components/profile-form") %>
+                </div>
+            </section>
+
+            <!-- other section like contact -->
+            <section>
+                <a class="contact" href="/contact">Contact with us</a>
+            </section>
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const is_login = document.querySelector(".is-login");
+        const not_login = document.querySelector(".not-login");
+        
+        const token = localStorage.getItem("token");
+
+        if(token){
+            try {
+                const res = await fetch("/authentication", {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        token
+                    })
+                });
+
+                const response = await res.json();
+
+
+                if (response.code == 200) {
+                    is_login.style.display = "block";
+                    not_login.style.display = "none";
+
+                    is_login.querySelector(".profile .username").innerText = response.username;
+
+                    const account_created_at = new Date(response.created_at);
+                    is_login.querySelector(".profile .created-at").innerText = `${account_created_at.getFullYear()}/${account_created_at.getMonth()}/${account_created_at.getDay()}`;
+                }
+
+                else {
+                    is_login.style.display = "none";
+                    not_login.style.display = "block";
+                }
+            }
+
+            catch (error) {
+                console.log(error)
+                is_login.style.display = "none";
+                not_login.style.display = "block";
+            }
+        }
+    })
+
+    const logoutProfile = () => {
+        localStorage.clear()
+
+        location.reload()
+    }
+</script>
+
+</html>
