@@ -12,7 +12,7 @@
     const address = location.pathname;
     nav_list.forEach(list => {
         const list_link = list.querySelector("a");
-        if(list_link.pathname === address){
+        if (list_link.pathname === address) {
             list.classList.toggle("active")
         }
     })
