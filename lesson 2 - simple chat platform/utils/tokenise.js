@@ -25,7 +25,7 @@ const encodePassword = (password) => {
 const encodeAuthentication = (username, password) => {
     const generatedPassword = encodePassword(password);
     const generatedUsername = encodeUsername(username);
-    const generateToken = `${generatedUsername}.${encodeToken(`${generatedPassword}-${Date.now() + 900_000_000}`, 24)}`;
+    const generateToken = `${generatedUsername}.${encodeToken(`${generatedPassword}-${Date.now() + 900_000}`, 24)}`;
 
     return generateToken;
 }
