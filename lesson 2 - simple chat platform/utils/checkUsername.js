@@ -4,12 +4,12 @@
  * @param {string} username 
  */
 module.exports = async (db, username) => {
-    const accounts = await db.get("accounts");
+    const accounts = await db.table("accounts").all();
 
     if (!accounts)
         return false;
 
-    const usernames = Object.values(accounts).map(a => a.username.toLowerCase());
+    const usernames = accounts.map(a => a.value.username.toLowerCase());
 
     if (usernames.includes(username.toLowerCase()))
         return true;

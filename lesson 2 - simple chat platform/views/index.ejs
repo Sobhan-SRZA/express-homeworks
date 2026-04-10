@@ -11,94 +11,45 @@
 
 <body>
     <%- include("components/header") %>
-        <%- include("components/dialogError") %>
+    <%- include("components/dialogError") %>
 
-            <!-- hello section -->
-            <section>
-                <h1>Hello</h1>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur accusamus inventore mollitia!
-                    Earum
-                    tenetur
-                    delectus aut recusandae, blanditiis quod vel cupiditate reprehenderit nostrum officiis praesentium
-                    ea
-                    accusamus
-                    non harum possimus.</p>
-            </section>
+    <!-- hello section -->
+    <section class="container">
+        <h1>Hello</h1>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur accusamus inventore mollitia!
+            Earum
+            tenetur
+            delectus aut recusandae, blanditiis quod vel cupiditate reprehenderit nostrum officiis praesentium
+            ea
+            accusamus
+            non harum possimus.</p>
+    </section>
 
-            <!-- login section -->
-            <section>
-                <h2>سرویس چت ساده</h2>
-                <div class="is-login" style="display: none;">
-                    <div class="profile">
-                        <h2 class="username"></h2>
-                        <p class="created-at"></p>
-                    </div>
+    <!-- login section -->
+    <section class="container">
+        <h2>سرویس چت ساده</h2>
+        <div class="is-login" style="display: none;">
+            <div id="userInfo" style="display: none;">
+                <h3>اطلاعات کاربر:</h3>
+                <p><strong>شناسه کاربر:</strong> <span id="userId"></span></p>
+                <p><strong>نام کاربری:</strong> <span id="usernameDisplay"></span></p>
+                <p><strong>تاریخ ساخت حساب:</strong> <span id="createdAt"></span></p>
+            </div>
 
-                    <button class="btn logout" onclick="logoutProfile()">خروج</button>
-                </div>
+            <button class="btn logout" onclick="logoutProfile()">خروج</button>
+        </div>
 
-                <div class="not-login">
-                    <%- include("components/profile-form") %>
-                </div>
-            </section>
+        <div class="not-login">
+            <%- include("components/profile-form") %>
+        </div>
+    </section>
 
-            <!-- other section like contact -->
-            <section>
-                <a class="contact" href="/contact">Contact with us</a>
-            </section>
+    <!-- other section like contact -->
+    <section class="container"> 
+        <a class="contact" href="/contact">Contact with us</a>
+    </section>
 </body>
 
-<script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        const is_login = document.querySelector(".is-login");
-        const not_login = document.querySelector(".not-login");
-        
-        const token = localStorage.getItem("token");
-
-        if(token){
-            try {
-                const res = await fetch("/authentication", {
-                    method: "post",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        token
-                    })
-                });
-
-                const response = await res.json();
-
-
-                if (response.code == 200) {
-                    is_login.style.display = "block";
-                    not_login.style.display = "none";
-
-                    is_login.querySelector(".profile .username").innerText = response.username;
-
-                    const account_created_at = new Date(response.created_at);
-                    is_login.querySelector(".profile .created-at").innerText = `${account_created_at.getFullYear()}/${account_created_at.getMonth()}/${account_created_at.getDay()}`;
-                }
-
-                else {
-                    is_login.style.display = "none";
-                    not_login.style.display = "block";
-                }
-            }
-
-            catch (error) {
-                console.log(error)
-                is_login.style.display = "none";
-                not_login.style.display = "block";
-            }
-        }
-    })
-
-    const logoutProfile = () => {
-        localStorage.clear()
-
-        location.reload()
-    }
-</script>
+<script src="/client.js"></script>
 
 </html>

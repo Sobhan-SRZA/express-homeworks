@@ -1,12 +1,5 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
 const express = require("express");
 const fs = require("fs")
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
 
 const port = 8888;
 
@@ -21,20 +14,23 @@ app.use(express.json());
 // Load static files path
 app.use(express.static(__dirname + "/public"));
 
+fs.readdirSync("./api")
+    .filter((file) => file.endsWith(".js"))
+    .forEach((file) => {
+        const fileCode = require(`./api/${file}`)
+        const fileName = file.split(".")[0];
+
+        app.use(`/api/${fileName}`, fileCode)
+    })
 
 // Load all pages from ./pages
-[
-    "./pages",
-    "./api"
-].forEach((dir) => {
-    fs.readdirSync(dir)
-        .filter((file) => file.endsWith(".js"))
-        .forEach((file) => {
-            const fileCode = require(`./${dir}/${file}`)
+fs.readdirSync("./pages")
+    .filter((file) => file.endsWith(".js"))
+    .forEach((file) => {
+        const fileCode = require(`./pages/${file}`)
 
-            fileCode(app, db)
-        })
-})
+        fileCode(app)
+    })
 
 // Redirect all invalid url to /404
 app.get("*", (req, res) => {

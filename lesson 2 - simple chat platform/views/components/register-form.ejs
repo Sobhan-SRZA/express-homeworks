@@ -1,5 +1,5 @@
 <form class="register-form" id="form-register" style="display: none;" onsubmit="handleRegisterSubmit(event)"
-    action="/register" method="post">
+    action="/api/register" method="post">
     <section class="user-sec">
         <label for="username">User Name:</label>
         <input type="text" name="username" id="username" required>
@@ -11,52 +11,8 @@
     </section>
 
     <section class="register-sec">
-        <input type="submit" value="Register">
+        <input class="btn" type="submit" value="Register">
     </section>
 </form>
 
-<script>
-    const handleRegisterSubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const form = e.currentTarget;
-        const [username, password] = [
-            formData.get("username"),
-            formData.get("password")
-        ];
-
-        try {
-            const res = await fetch(form.action, {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username,
-                    password
-                })
-            });
-
-            const response = await res.json();
-
-            if (response.code == 200) {
-                localStorage.setItem("token", response.token)
-
-                location.reload()
-            }
-
-            else if (response.code == 401) {
-                openDialogError("Ferequency Username", "This username is used before! Please use other username.")
-            }
-
-            else
-                console.error(response)
-
-            return;
-        }
-
-        catch (e) {
-            console.error(e)
-        }
-    }
-</script>
+<script src="/form/register.js"></script>
