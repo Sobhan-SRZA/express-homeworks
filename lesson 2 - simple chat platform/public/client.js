@@ -19,6 +19,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
             if (res.status === 200) {
+                location.replace("/app")
+                return;
+
                 const user = response.user;
 
                 is_login.style.display = "block";

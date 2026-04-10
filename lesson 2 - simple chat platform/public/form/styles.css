@@ -1,0 +1,91 @@
+.forms-toggle {
+    cursor: pointer;
+    transition: color ease-in-out .5s;
+}
+
+.forms-toggle:hover {
+    color: #0056b3;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #a4bfe1;
+}
+
+input {
+    outline: none;
+    box-shadow: none;
+}
+
+.form-input {
+    outline: none;
+    box-shadow: none;
+    width: calc(100% - 22px);
+    /* Adjust for padding and border */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    /* Include padding and border in the element's total width and height */
+
+    transition: all .2s ease-in-out;
+}
+
+.form-input:focus-within {
+    box-shadow: 0 1px 5px 0 rgb(255, 0, 0);
+    outline: 2px #ff0000 solid;
+}
+
+
+/* Error popup */
+dialog.errorDialog {
+    position: absolute;
+    align-self: center;
+    justify-self: center;
+    border: 2px;
+    border-radius: 15px;
+    inset: 0px;
+    padding: 1rem;
+    width: 20rem;
+    backdrop-filter: blur(40px);
+    background-color: bisque;
+}
+
+dialog.errorDialog .close {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    place-self: end;
+    background-color: transparent;
+    border: none;
+    font-size: large;
+}
+
+.dialogErrorBack {
+    position: fixed;
+    backdrop-filter: blur(5px);
+    width: 100%;
+    height: 100%;
+}
+
+dialog.errorDialog #message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+dialog.errorDialog .success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+dialog.errorDialog .error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}

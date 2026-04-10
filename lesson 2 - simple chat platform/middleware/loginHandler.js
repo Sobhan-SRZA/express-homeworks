@@ -46,7 +46,6 @@ module.exports = async (req, res, next) => {
             created_at: account.created_at,
             username: account.username,
         };
-        console.log("🚀 ~ user:", user)
         
         const token = generateToken(user);
 

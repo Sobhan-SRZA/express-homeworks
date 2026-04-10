@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چت اپلیکیشن</title>
+    <link rel="stylesheet" href="app.css"> <!-- لینک به فایل CSS -->
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- سایدبار (Sidebar) -->
+        <div class="sidebar">
+            <div class="user-profile-header">
+                <img src="/default-profile.png" alt="پروفایل شما" class="avatar large-avatar" id="main-user-avatar">
+                <h3 id="main-user-name">سبحان</h3>
+            </div>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="جستجوی کاربر...">
+            </div>
+            <ul class="chat-list" id="chat-list">
+                <!-- لیست چت‌ها یا نتایج جستجو اینجا قرار می‌گیرد -->
+                <!-- مثال:
+                <li class="chat-item active" data-user-id="user123">
+                    <img src="/path/to/avatar1.jpg" alt="آواتار" class="avatar small-avatar">
+                    <div class="chat-info">
+                        <h4>علی رضایی</h4>
+                        <p>سلام، وقت بخیر!</p>
+                    </div>
+                    <span class="timestamp">10:30</span>
+                </li>
+                 -->
+            </ul>
+            <button id="view-profile-btn" class="btn btn-secondary">مشاهده پروفایل</button>
+        </div>
+
+        <!-- پنجره چت (Chat Window) -->
+        <div class="chat-window">
+            <div class="chat-header">
+                <img src="/default-avatar.png" alt="آواتار کاربر" class="avatar small-avatar" id="recipient-avatar">
+                <div class="user-info">
+                    <h3 id="recipient-name">نام کاربر</h3>
+                    <p id="recipient-status">آنلاین</p>
+                </div>
+                <div class="chat-header-actions">
+                    <!-- دکمه‌ها یا آیکون‌های اضافی -->
+                </div>
+            </div>
+            <div class="message-container" id="message-container">
+                <!-- پیام‌ها اینجا نمایش داده می‌شوند -->
+                <!-- مثال:
+                 <div class="message other-message">
+                     <p>سلام! چطوری؟</p>
+                     <span>10:32</span>
+                 </div>
+                 <div class="message my-message">
+                     <p>خوبم، ممنون. تو چطوری؟</p>
+                     <span>10:33</span>
+                 </div>
+                 -->
+            </div>
+            <div class="message-input-area">
+                <input type="text" id="message-input" placeholder="پیام خود را بنویسید...">
+                <button id="send-btn" class="btn btn-primary">ارسال</button>
+                <!-- دکمه پیوست فایل یا ایموجی (اختیاری) -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal برای نمایش پروفایل کاربر -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <img src="/default-avatar.png" alt="آواتار" class="avatar large-modal-avatar" id="modal-profile-avatar">
+            <h2 id="modal-profile-name">نام کامل کاربر</h2>
+            <p><strong>نام کاربری:</strong> <span id="modal-profile-username"></span></p>
+            <p><strong>وضعیت:</strong> <span id="modal-profile-status"></span></p>
+            <p><strong>بیوگرافی:</strong> <span id="modal-profile-bio"></span></p>
+        </div>
+    </div>
+
+    <script src="app.js"></script> <!-- لینک به فایل جاوا اسکریپت -->
+</body>
+
+</html>
