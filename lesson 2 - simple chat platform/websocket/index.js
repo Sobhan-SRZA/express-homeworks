@@ -1,34 +1,30 @@
-const http = require('http');
-const WebSocket = require('ws')
-const ws_port = 3000;
-const url = require('url');
 const { verifyToken } = require('../utils/security');
-const searchAccounts = require('../db/account/searchAccounts');
-const getAccount = require('../db/account/getAccount');
-const addMessage = require('../db/messages/addMessage');
-const getHistory = require('../db/messages/getHistory');
+const updateMessageStatus = require('../db/messages/updateMessageStatus');
+const setOffline = require('../db/users/setOffline');
 const setOnline = require('../db/users/setOnline');
 const broadcast = require('../utils/broadcast');
-const setOffline = require('../db/users/setOffline');
+const WebSocket = require('ws')
+const http = require('http');
+const url = require('url');
+const fs = require('fs');
+
+const ws_port = 3000;
 
 /**
  * 
  * @param {import("express").Express} app 
+ * @returns {void}
  */
 module.exports = (app) => {
     const server = http.createServer(app);
-    const wss = new WebSocket.Server({ server, path: '/ws' }); // مسیر WebSocket
+    const wss = new WebSocket.Server({ server, path: '/ws' });
 
-
-    // map از کاربران آنلاین
-    // key = userId , value = wsClient
-    const onlineUsers = new Map();
-
+    const onlineUsers = new Map(); // { userId: wsClient }
+    const userMessageMap = new Map(); // { userId: Set<messageId> } 
 
     wss.on('connection', async (ws, req) => {
         console.log('the WebSocket client is connected');
 
-        // ------ احراز هویت با توکن ------
         const query = url.parse(req.url, true).query;
         const token = query.token;
 
@@ -56,115 +52,66 @@ module.exports = (app) => {
 
             console.log(`user "${currentUser.username}" is connected.`);
             ws.user = currentUser;
+            const senderId = currentUser.id;
 
-            // هنگامی که کاربر وصل شد:
-            await setOnline(currentUser.id);
+            await setOnline(senderId);
 
-            onlineUsers.set(currentUser.id, ws);
+            onlineUsers.set(senderId, ws);
+            userMessageMap.set(senderId, new Set());
 
             broadcast({
                 type: "user_online",
-                payload: { userId: currentUser.id }
-            });
+                payload: { userId: senderId }
+            }, onlineUsers);
 
-            // ------ مدیریت جستجو ------
             ws.on('message', async (message) => {
                 const parsedMessage = JSON.parse(message);
 
-                if (parsedMessage.type === "get_user_status") {
-                    const { userId } = parsedMessage.payload;
-                    const status = await getUserStatus(userId);
+                fs
+                    .readdirSync("events")
+                    .filter(file => file.endsWith(".js"))
+                    .forEach(async (file) => {
+                        console.log("🚀 ~ file:", file)
+                        const fileEvent = file.replace(".js", "");
 
-                    ws.send(JSON.stringify({
-                        type: "user_status",
-                        payload: status
-                    }));
-                }
-
-                else if (parsedMessage.type === 'search_user') {
-                    const { query } = parsedMessage.payload;
-                    console.log(`جستجو برای: ${query} از کاربر: ${currentUser.username}`);
-
-                    // اینجا کوئری دیتابیس رو اجرا کن
-                    const foundUsers = await searchAccounts(query);
-
-                    ws.send(JSON.stringify({
-                        type: 'search_results', payload: foundUsers
-                    }));
-                }
-
-                else if (parsedMessage.type === 'open_chat') {
-                    const { userId } = parsedMessage.payload;
-                    console.log(`کاربر ${currentUser.username} صفحه چت با ${userId} را باز کرد.`);
-                    const targetUser = await getAccount(userId);
-                    ws.send(JSON.stringify({ type: 'chat_opened', payload: targetUser }));
-                }
-
-                // ------ ارسال پیام (پیاده‌سازی در مرحله بعد) ------
-                else if (parsedMessage.type === 'send_message') {
-                    const { to, text } = parsedMessage.payload;
-                    console.log(`message from ${currentUser.username} to ${to}: ${text}`);
-
-                    const savedMessage = await addMessage(currentUser.id, to, text);
-                    const targetClient = onlineUsers.get(to);
-
-                    if (targetClient) {
-                        targetClient.send(JSON.stringify({
-                            type: 'new_message',
-                            payload: savedMessage
-                        }));
-                    }
-
-                    ws.send(JSON.stringify({
-                        type: 'message_sent_ack',
-                        payload: savedMessage
-                    }));
-                }
-
-                // ------ وضعیت تایپ (پیاده‌سازی در مرحله بعد) ------
-                else if (parsedMessage.type === 'typing') {
-                    // ...
-                }
-
-                else if (parsedMessage.type === 'get_history') {
-                    const { with: otherUser } = parsedMessage.payload;
-
-                    const history = await getHistory(currentUser.id, otherUser);
-
-                    ws.send(JSON.stringify({
-                        type: "chat_history",
-                        payload: {
-                            with: otherUser,
-                            messages: history
+                        if (parsedMessage.type === fileEvent) {
+                            const eventHandle = require(`./events/${file}`);
+                            await eventHandle(ws, parsedMessage, senderId, currentUser, onlineUsers)
                         }
-                    }));
-                }
+                    })
 
             });
 
             ws.on("close", async () => {
-                onlineUsers.delete(currentUser.id);
+                onlineUsers.delete(senderId);
 
-                console.log('WebSocket client was disconnected! : ', currentUser.id);
+                console.log('WebSocket client was disconnected! : ', senderId);
 
-                // 1) ثبت آفلاین شدن + لست سین
-                await setOffline(currentUser.id);
+                await setOffline(senderId);
+                const pendingMessageIds = userMessageMap.get(currentUser.id);
 
-                // 2) ارسال رویداد آفلاین شدن
+                if (pendingMessageIds && pendingMessageIds.size > 0) {
+                    console.log(`User ${currentUser.id} went offline with pending messages:`, pendingMessageIds);
+                    pendingMessageIds.forEach(async (messageId) => {
+                        await updateMessageStatus(currentUser.id, senderId, messageId, 'delivered');
+                    });
+
+                    userMessageMap.delete(currentUser.id);
+                }
+
                 broadcast({
                     type: "user_offline",
                     payload: {
-                        userId: currentUser.id,
+                        userId: senderId,
                         lastSeen: new Date().toISOString()
                     }
-                });
+                }, onlineUsers);
             });
 
             ws.on('error', (error) => {
                 console.error('خطای WebSocket:', error);
             });
 
-            // ارسال پیام تایید اتصال به کلاینت
             ws.send(JSON.stringify({ type: 'connected', payload: currentUser }));
         }
 
@@ -175,14 +122,7 @@ module.exports = (app) => {
         }
     });
 
-    function broadcast(data) {
-        const json = JSON.stringify(data);
-        for (const client of onlineUsers.values()) {
-            client.send(json);
-        }
-    }
-
     server.listen(ws_port, () => {
-        console.log(`سرور HTTP و WebSocket روی پورت ${ws_port} در حال اجراست.`);
+        console.log(`the server HTTP and WebSocket is run on port ${ws_port}: http://localhost:${ws_port}`);
     });
 }

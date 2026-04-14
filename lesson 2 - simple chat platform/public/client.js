@@ -20,23 +20,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (res.status === 200) {
                 location.replace("/app")
+                
                 return;
-
-                const user = response.user;
-
-                is_login.style.display = "block";
-                not_login.style.display = "none";
-
-                userInfo.style.display = "block";
-
-                userInfo.querySelector("#usernameDisplay").innerText = user.username;
-                userInfo.querySelector("#userId").innerText = user.id;
-
-                const account_created_at = new Date(user.created_at);
-                const formattedDate = `${account_created_at.getFullYear()}/${(account_created_at.getMonth() + 1)}/${account_created_at.getDate()}`;
-
-                userInfo.querySelector("#createdAt").innerText = formattedDate;
-
             }
 
             else {

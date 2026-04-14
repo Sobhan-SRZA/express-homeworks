@@ -1,3 +1,5 @@
+const generateRandomNumber = require("./generateRandomNumber");
+
 /**
  * 
  * @param {string} username 
@@ -5,24 +7,6 @@
  * @returns {string}
  */
 module.exports = (username, accoutTimestamp) => {
-    /**
-     * یک عدد صحیح تصادفی با تعداد ارقام مشخص تولید می‌کند.
-     * @param {number | undefined} length - تعداد ارقام مورد نظر برای عدد تصادفی.
-     * @returns {number} - عدد تصادفی تولید شده.
-     */
-    function generateRandomNumber(length = 1) {
-        if (length <= 0) {
-            return 0;
-        }
-
-        const min = Math.pow(10, length - 1);
-        const max = Math.pow(10, length) - 1;
-
-        const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-
-        return randomNumber;
-    }
-
     username = username.toLowerCase();
     accoutTimestamp = accoutTimestamp.toString();
 

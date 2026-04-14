@@ -1,25 +1,23 @@
 const crypto = require('crypto');
-
-// یک کلید مخفی برای تولید salt و امضای توکن (بهتره این رو از متغیرهای محیطی بخونی)
 const SECRET_KEY = 'thisIs-SecretKeyof*cryptiNgTh(**is ShIt%#12';
 
 /**
- * تابع برای هش کردن رمز عبور با استفاده از crypto و salt
- * @param {string} password - رمز عبوری که کاربر وارد کرده
- * @returns {string} - هش شده رمز عبور
+ * 
+ * @param {string} password 
+ * @returns {string} 
  */
 function hashPassword(password) {
-    const salt = crypto.randomBytes(16).toString('hex'); // تولید یک salt تصادفی
-    const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex'); // هش کردن با PBKDF2
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
 
-    return `${salt}:${hashedPassword}`; // ذخیره salt و هش در کنار هم
+    return `${salt}:${hashedPassword}`;
 }
 
 /**
- * تابع برای مقایسه رمز عبور وارد شده با هش ذخیره شده
- * @param {string} storedHash - هش رمز عبوری که از قبل در دیتابیس ذخیره شده (شکل salt:hashedPassword)
- * @param {string} providedPassword - رمز عبوری که کاربر در فرم ورود وارد کرده
- * @returns {boolean} - true اگر رمز عبور مطابقت داشت، false در غیر این صورت
+ * 
+ * @param {string} storedHash 
+ * @param {string} providedPassword 
+ * @returns {boolean}
  */
 function verifyPassword(storedHash, providedPassword) {
     const [salt, hashedPassword] = storedHash.split(':');
@@ -31,9 +29,9 @@ function verifyPassword(storedHash, providedPassword) {
 const base64UrlEncode = (str) => Buffer.from(str).toString('base64url');
 
 /**
- * تابع برای ساخت توکن JWT-like
- * @param {object} payload - اطلاعاتی که می‌خواهیم در توکن قرار دهیم (مثلاً { userId: '123', username: 'testuser' })
- * @returns {string} - توکن امضا شده
+ * 
+ * @param {object} payload 
+ * @returns {string} 
  */
 function generateToken(payload) {
     payload.expire = Date.now() + 900_000;
@@ -53,9 +51,9 @@ function generateToken(payload) {
 }
 
 /**
- * تابع برای وریفای کردن توکن
- * @param {string} token - توکن دریافتی از کلاینت
- * @returns {{username: string; id: string; created_at: number; expire: number;} | null} - payload توکن اگر معتبر بود، null در غیر این صورت
+ * 
+ * @param {string} token 
+ * @returns {{username: string; id: string; created_at: number; expire: number;} | null} 
  */
 function verifyToken(token) {
     const parts = token.split('.');
@@ -82,7 +80,7 @@ function verifyToken(token) {
         }
 
     }
-    
+
     catch (e) {
         console.error("Error parsing token payload:", e);
 

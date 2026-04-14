@@ -5,38 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>چت اپلیکیشن</title>
-    <link rel="stylesheet" href="app.css">
+    <!-- لینک به فایل CSS عمومی -->
+    <link rel="stylesheet" href="/app/style.css">
 </head>
 
 <body>
     <div class="app-container">
+        <!-- سایدبار (Sidebar) -->
         <div class="sidebar">
             <div class="user-profile-header">
+                <!-- نام کاربر اصلی لاگین شده -->
                 <h3 id="main-user-name"></h3>
             </div>
             <div class="search-box">
                 <input type="text" id="search-input" placeholder="جستجوی کاربر...">
             </div>
+            <!-- لیست چت‌ها -->
             <ul class="chat-list" id="chat-list">
+                <!-- لیست چت‌ها اینجا با جاوااسکریپت اضافه می‌شود -->
             </ul>
-
+            <!-- دکمه مشاهده پروفایل -->
             <button id="view-profile-btn" class="btn btn-secondary">مشاهده پروفایل</button>
         </div>
 
         <!-- پنجره چت (Chat Window) -->
         <div class="chat-window">
-            <div id="chat-isoppend" style="display: none;">
+            <!-- این قسمت فقط زمانی نمایش داده می‌شود که چتی انتخاب شده باشد -->
+            <div id="chat-window-content" style="display: none;">
                 <div class="chat-header">
                     <div class="user-info">
+                        <!-- نام و وضعیت کاربر مقابل -->
                         <h3 id="recipient-name"></h3>
                         <p id="recipient-status"></p>
                     </div>
                     <div class="chat-header-actions">
+                        <!-- دکمه‌های اضافی در هدر چت (مثلا تماس، حذف چت و ...) -->
                     </div>
                 </div>
 
                 <div class="message-container" id="message-container">
-                    <!-- messages -->
+                    <!-- پیام‌های چت اینجا بارگذاری می‌شوند -->
                 </div>
 
                 <div class="message-input-area">
@@ -45,23 +53,26 @@
                 </div>
             </div>
 
-            <div id="chat-notoppend">
-                <p>چتی انتخاب نشده است!</p>
+            <!-- این قسمت زمانی نمایش داده می‌شود که هیچ چتی انتخاب نشده باشد -->
+            <div id="no-chat-selected-message">
+                <p>لطفاً یک چت را انتخاب کنید یا یک کاربر جدید را جستجو کنید.</p>
             </div>
         </div>
     </div>
 
-    <!-- Modal برای نمایش پروفایل کاربر -->
-    <modal id="profile-modal" class="modal">
+    <!-- Modal برای نمایش پروفایل کاربر (Modal for User Profile) -->
+    <div id="profile-modal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2 id="modal-profile-name">نام کامل کاربر</h2>
             <p><strong>نام کاربری:</strong> <span id="modal-profile-username"></span></p>
             <p><strong>وضعیت:</strong> <span id="modal-profile-status"></span></p>
+            <!-- اطلاعات بیشتر پروفایل اینجا اضافه می‌شود -->
         </div>
-    </modal>
+    </div>
 
-    <script src="app.js"></script>
+    <!-- فایل جاوااسکریپت اصلی -->
+    <script src="/app/index.js"></script>
 </body>
 
 </html>
