@@ -37,7 +37,9 @@ body {
 .chat-window {
     flex-grow: 1;
     display: flex;
+    align-items: center;
     flex-direction: column;
+    justify-content: center;
     background-color: #eef2f7;
     /* رنگ پس‌زمینه ناحیه چت */
 }

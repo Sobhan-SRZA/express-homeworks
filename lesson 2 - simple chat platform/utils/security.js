@@ -55,7 +55,7 @@ function generateToken(payload) {
 /**
  * تابع برای وریفای کردن توکن
  * @param {string} token - توکن دریافتی از کلاینت
- * @returns {object | null} - payload توکن اگر معتبر بود، null در غیر این صورت
+ * @returns {{username: string; id: string; created_at: number; expire: number;} | null} - payload توکن اگر معتبر بود، null در غیر این صورت
  */
 function verifyToken(token) {
     const parts = token.split('.');

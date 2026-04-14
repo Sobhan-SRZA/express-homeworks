@@ -10,20 +10,20 @@ const db = new QuickDB({
 /**
  * 
  * @param {string} userId 
- * @returns {{username: string; id: string; created_at: number; password: string;}} 
+ * @returns {Promise<{username: string; id: string; created_at: number; password: string;} | null>} 
  */
 module.exports = async (userId) => {
     try {
-        await db
+        const account = await db
             .table("accounts")
             .get(`${userId}`)
 
-        return true;
+        return account;
     }
 
     catch (error) {
         console.log("Error getting account from database:", error)
 
-        return false;
+        return null;
     }
 }

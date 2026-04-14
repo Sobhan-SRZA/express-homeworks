@@ -38,6 +38,6 @@ module.exports = async (username, hashedPassword) => {
     catch (error) {
         console.log("Error creating account from database:", error)
 
-        return false;
+        return null;
     }
 }
