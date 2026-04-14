@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
 
                 case 'chat_history': // دریافت تاریخچه پیام‌ها
-                    message.payload.forEach(msg => displayMessage(msg, msg.from === currentUserData.id));
+                    message.payload.messages.forEach(msg => displayMessage(msg, msg.from === currentUserData.id));
                     break;
 
                 case 'new_message':
@@ -86,7 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (isCurrentUserMessage || message.payload.to === currentUserData.id) { // اگر پیام برای ما بود
                         if (message.payload.from === currentChattingWith || isCurrentUserMessage) {
                             displayMessage(message.payload, isCurrentUserMessage);
-                        } else {
+                        } 
+                        
+                        else {
                             // نمایش اعلان برای چت‌های دیگر
                             showNotification(message.payload.senderName || 'کاربر', message.payload.text);
                             // آپدیت لیست چت‌ها (اگر لازم بود)
@@ -187,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // ارسال درخواست به سرور برای باز کردن چت
         if (socket && socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({ type: 'open_chat', payload: { userId: user.id } }));
-            socket.send(JSON.stringify({ type: 'get_chat_history', payload: { userId: user.id } })); // درخواست تاریخچه
+            socket.send(JSON.stringify({ type: 'get_history', payload: { with: user.id } })); // درخواست تاریخچه
         }
 
         // آپدیت هدر چت
