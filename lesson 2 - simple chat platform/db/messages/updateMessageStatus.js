@@ -14,7 +14,7 @@ const chatId = require("../../utils/chatId");
  * @param {string} userId 
  * @param {string} targetUserId 
  * @param {string} messageId 
- * @param {string} statusType 
+ * @param {'sent' | 'delivered' | 'seen'} statusType 
  * @returns {Promise<{ messageId: number from: string to: string text: string timestamp: string status: { sentToUser: boolean deliveredToUser: boolean seenByuser: boolean } deliveredAt: string | null seenAt: string | null }>}
  */
 module.exports = async function (userId, targetUserId, messageId, statusType) {
@@ -46,8 +46,8 @@ module.exports = async function (userId, targetUserId, messageId, statusType) {
         message.seenAt = currentTime;
     }
 
-    messages[messageIndex] = message; 
-    await messages.set(`${cid}`, messages); 
+    messages[messageIndex] = message;
+    await messages.set(`${cid}`, messages);
 
-    return message; 
+    return message;
 }

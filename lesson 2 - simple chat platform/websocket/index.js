@@ -50,7 +50,6 @@ module.exports = (app) => {
                 return;
             }
 
-            console.log(`user "${currentUser.username}" is connected.`);
             ws.user = currentUser;
             const senderId = currentUser.id;
 
@@ -61,22 +60,24 @@ module.exports = (app) => {
 
             broadcast({
                 type: "user_online",
-                payload: { userId: senderId }
+                payload: {
+                    id: senderId,
+                    username: currentUser.username
+                }
             }, onlineUsers);
 
             ws.on('message', async (message) => {
                 const parsedMessage = JSON.parse(message);
 
                 fs
-                    .readdirSync("events")
+                    .readdirSync("websocket/events")
                     .filter(file => file.endsWith(".js"))
                     .forEach(async (file) => {
-                        console.log("🚀 ~ file:", file)
                         const fileEvent = file.replace(".js", "");
 
                         if (parsedMessage.type === fileEvent) {
                             const eventHandle = require(`./events/${file}`);
-                            await eventHandle(ws, parsedMessage, senderId, currentUser, onlineUsers)
+                            await eventHandle(ws, parsedMessage, senderId, currentUser, onlineUsers, userMessageMap)
                         }
                     })
 
@@ -88,16 +89,6 @@ module.exports = (app) => {
                 console.log('WebSocket client was disconnected! : ', senderId);
 
                 await setOffline(senderId);
-                const pendingMessageIds = userMessageMap.get(currentUser.id);
-
-                if (pendingMessageIds && pendingMessageIds.size > 0) {
-                    console.log(`User ${currentUser.id} went offline with pending messages:`, pendingMessageIds);
-                    pendingMessageIds.forEach(async (messageId) => {
-                        await updateMessageStatus(currentUser.id, senderId, messageId, 'delivered');
-                    });
-
-                    userMessageMap.delete(currentUser.id);
-                }
 
                 broadcast({
                     type: "user_offline",

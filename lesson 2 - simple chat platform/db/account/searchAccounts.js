@@ -64,14 +64,19 @@ module.exports = async (search, limit = 10) => {
 
         results.sort((a, b) => b.score - a.score);
 
-        return results
+        return Promise.all(results
             .slice(0, limit)
-            .map(r => (
-                {
+            .map(async r => {
+                const online = await db.table("users").get(`${r.id}.online`) || false;
+                const lastSeen = await db.table("users").get(`${r.id}.lastSeen`) || null;
+
+                return {
                     username: r.username,
-                    id: r.id
+                    id: r.id,
+                    status: online ? "آنلاین" : "آفلاین",
+                    lastSeen
                 }
-            ));
+            }));
     }
 
     catch (error) {
@@ -103,7 +108,7 @@ function levenshtein(a, b) {
             if (b.charAt(i - 1) === a.charAt(j - 1)) {
                 matrix[i][j] = matrix[i - 1][j - 1];
             }
-            
+
             else {
                 matrix[i][j] =
                     Math.min(matrix[i - 1][j - 1] + 1,

@@ -32,7 +32,7 @@ module.exports = async (ws, parsedMessage, senderId, currentUser, onlineUsers) =
             payload: savedMessage
         }));
 
-        await updateMessageStatus(to, senderId, savedMessage.messageId, 'delivered');
+        // await updateMessageStatus(to, senderId, savedMessage.messageId, 'delivered');
 
         targetClient.send(JSON.stringify({
             type: 'message_delivered_notification',

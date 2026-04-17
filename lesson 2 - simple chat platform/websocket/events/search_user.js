@@ -9,13 +9,13 @@ const searchAccounts = require("../../db/account/searchAccounts");
  * @returns {void}
  */
 module.exports = async (ws, parsedMessage, senderId, currentUser) => {
-    const { query } = parsedMessage.payload;
+    const { query, size } = parsedMessage.payload;
     console.log(`searching: ${query} from: ${currentUser.username}`);
 
     const foundUsers = await searchAccounts(query);
 
     ws.send(JSON.stringify({
-        type: 'search_results', payload: foundUsers
+        type: 'search_results', payload: foundUsers, size
     }));
 
     return;

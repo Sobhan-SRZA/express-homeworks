@@ -9,6 +9,6 @@ module.exports = async (app, db) => {
     })
 
     app.get("/chat/:username", (req, res) => {
-        res.render("chats/index")
+        res.render("app")
     })
 }
