@@ -1,11 +1,7 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
-
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
+const checkUsername = require("./checkUsername");
+const getData = require("../../database/commands/getData");
+const setData = require("../../database/commands/setData");
+const getAccount = require("./getAccount");
 
 /**
  * 
@@ -14,18 +10,28 @@ const db = new QuickDB({
  * @param {string | undefined} hashedPassword 
  * @returns 
  */
-module.exports = async (userId, username, hashedPassword) => {
+module.exports = (userId, username, hashedPassword) => {
     try {
-        const table = db.table("accounts")
+        const accounts = getData("accounts");
+
+        const account = getAccount(userId);
 
         if (username) {
-            await table.set(`${userId}.username`, username);
+            if (checkUsername(username)) {
+                throw Error("username was used before!")
+            }
+
+            account.value.username = username;
+
+            setData("accounts", accounts);
 
             return true;
         }
 
         if (hashedPassword) {
-            await table.set(`${userId}.password`, hashedPassword);
+            account.value.password = hashedPassword;
+
+            setData("accounts", accounts);
 
             return true;
         }

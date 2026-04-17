@@ -1,27 +1,21 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
-
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
+const getUserStatus = require("../users/getUserStatus");
+const getData = require("../../database/commands/getData");
 
 /**
- * جستجوی حرفه‌ای با چند نتیجه مشابه
- * @param {string} search متن جستجو
- * @param {number} limit حداکثر تعداد نتایج
- * @returns {Promise<Array<{username: string; id: string;}>>}
+ * 
+ * @param {string} search 
+ * @param {number} limit
+ * @returns {Array<{username: string; id: string;}>}
  */
-module.exports = async (search, limit = 10) => {
+module.exports = (search, limit = 10) => {
     try {
         if (!search || typeof search !== "string")
             return [];
 
         const q = search.toLowerCase().trim();
 
-        const accounts = await db.table("accounts").all();
-        if (!accounts || accounts.length === 0)
+        const accounts = getData("accounts");
+        if (!accounts || accounts.length < 1)
             return [];
 
         let results = [];
@@ -32,24 +26,23 @@ module.exports = async (search, limit = 10) => {
 
             let score = 0;
 
-            // قانون اول: exact match = امتیاز بالا
+            // 1: exact match
             if (username === q)
                 score += 100;
 
-            // قانون دوم: ID match
+            // 2: ID match
             if (a.id === search)
                 score += 95;
 
-            // قانون سوم: شروع با
+            // 3: startswith
             if (username.startsWith(q))
                 score += 50;
 
-            // قانون چهارم: شامل
+            // 4: includes
             if (username.includes(q))
                 score += 30;
 
-            // قانون پنجم: fuzzy-light  
-            // تشخیص شباهت با اختلاف 1-2 حرف
+            // 5: fuzzy-light  
             if (levenshtein(username, q) <= 2)
                 score += 15;
 
@@ -64,19 +57,18 @@ module.exports = async (search, limit = 10) => {
 
         results.sort((a, b) => b.score - a.score);
 
-        return Promise.all(results
+        return results
             .slice(0, limit)
-            .map(async r => {
-                const online = await db.table("users").get(`${r.id}.online`) || false;
-                const lastSeen = await db.table("users").get(`${r.id}.lastSeen`) || null;
+            .map(r => {
+                const { online, lastSeen } = getUserStatus(r.id);
 
                 return {
                     username: r.username,
                     id: r.id,
-                    status: online ? "آنلاین" : "آفلاین",
+                    status: online,
                     lastSeen
                 }
-            }));
+            });
     }
 
     catch (error) {
@@ -87,8 +79,10 @@ module.exports = async (search, limit = 10) => {
 }
 
 /**
- * فاصله Levenshtein – برای fuzzy matching
- * فاصله بین دو string را اندازه‌گیری می‌کند.
+ * 
+ * @param {string} a 
+ * @param {string} b 
+ * @returns {number}
  */
 function levenshtein(a, b) {
     const matrix = [];

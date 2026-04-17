@@ -1,3 +1,5 @@
+const getUserStatus = require("../../db/users/getUserStatus");
+
 /**
  * 
  * @param {WebSocket} ws 
@@ -8,6 +10,14 @@
  * @returns {void}
  */
 module.exports = async (ws, parsedMessage, senderId, currentUser, onlineUsers) => {
+    const { userId } = parsedMessage.payload;
+    const status = getUserStatus(userId);
+    status.typing = true;
+    
+    ws.send(JSON.stringify({
+        type: "typing_indicator",
+        payload: status
+    }));
 
     return;
 }

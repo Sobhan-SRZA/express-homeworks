@@ -1,12 +1,13 @@
+const getData = require("../../database/commands/getData");
+
 /**
  * 
- * @param {import("quick.db").QuickDB} db
  * @param {string} username 
  */
-module.exports = async (db, username) => {
-    const accounts = await db.table("accounts").all();
+module.exports = (username) => {
+    const accounts = getData("accounts");
 
-    if (!accounts)
+    if (!accounts || accounts.length < 1)
         return false;
 
     const usernames = accounts.map(a => a.value.username.toLowerCase());

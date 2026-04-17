@@ -1,25 +1,19 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
-
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
+const getAccount = require("./getAccount");
+const getData = require("../../database/commands/getData");
+const setData = require("../../database/commands/setData");
 
 /**
  * 
  * @param {string} userId 
- * @param {string} username 
- * @param {number} timestamp 
- * @param {string} hashedPassword 
- * @returns 
+ * @returns {boolean}
  */
-module.exports = async (userId, username, timestamp, hashedPassword) => {
+module.exports = (userId) => {
     try {
-        await db
-            .table("accounts")
-            .delete(`${userId}`)
+        const accounts = getData("accounts");
+
+        const account = getAccount(userId);
+
+        setData("accounts", accounts.filter(a => a.id !== account.id));
 
         return true;
     }

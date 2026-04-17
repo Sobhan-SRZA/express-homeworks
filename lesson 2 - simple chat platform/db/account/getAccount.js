@@ -1,24 +1,18 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
-
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
+const getData = require("../../database/commands/getData");
 
 /**
  * 
  * @param {string} userId 
- * @returns {Promise<{username: string; id: string; created_at: number; password: string;} | null>} 
+ * @returns {{username: string; id: string; created_at: number; password: string;} | null} 
  */
-module.exports = async (userId) => {
+module.exports = (userId) => {
     try {
-        const account = await db
-            .table("accounts")
-            .get(`${userId}`)
+        const account = getData("accounts", userId);
 
-        return account;
+        if (!account)
+            throw Error("Account with " + userId + " ID didn't founded!");
+
+        return account.value;
     }
 
     catch (error) {

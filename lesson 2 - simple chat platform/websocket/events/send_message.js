@@ -14,7 +14,7 @@ module.exports = async (ws, parsedMessage, senderId, currentUser, onlineUsers) =
     const { to, text } = parsedMessage.payload;
     console.log(`message from ${currentUser.username} to ${to}: ${text}`);
 
-    const savedMessage = await addMessage(senderId, to, text);
+    const savedMessage = addMessage(senderId, to, text);
 
     ws.send(JSON.stringify({
         type: 'message_sent_ack',
@@ -32,22 +32,18 @@ module.exports = async (ws, parsedMessage, senderId, currentUser, onlineUsers) =
             payload: savedMessage
         }));
 
-        // await updateMessageStatus(to, senderId, savedMessage.messageId, 'delivered');
+        updateMessageStatus(to, senderId, savedMessage.messageId, 'delivered');
 
         targetClient.send(JSON.stringify({
             type: 'message_delivered_notification',
             payload: {
                 messageId: savedMessage.messageId,
-                deliveredAt: savedMessage.deliveredAt
+                deliveredAt: savedMessage.deliveredAt || new Date().toISOString()
             }
         }));
 
         return;
     }
 
-    else {
-
-        return;
-    }
-
+    return;
 }

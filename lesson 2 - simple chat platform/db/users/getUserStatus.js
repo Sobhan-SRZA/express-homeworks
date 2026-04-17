@@ -1,17 +1,19 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
+const getData = require("../../database/commands/getData");
+const getAccount = require("../account/getAccount");
 
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
+/**
+ * 
+ * @param {string} userId 
+ * @returns {{userId:string online:boolean lastSeen:string|null}}
+ */
+module.exports = function (userId) {
+    const account = getAccount(userId);
 
-module.exports = async function (userId) {
-    const users = db.table("users");
+    const users = getData("users");
+    const userStatusData = users.find(a => a.id === `${account.id}`);
 
-    const online = await users.get(`${userId}.online`) || false;
-    const lastSeen = await users.get(`${userId}.lastSeen`) || null;
+    const online = userStatusData.value.online || false;
+    const lastSeen = userStatusData.value.lastSeen || null;
 
     return { userId, online, lastSeen };
 }

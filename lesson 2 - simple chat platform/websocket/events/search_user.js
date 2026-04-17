@@ -12,7 +12,7 @@ module.exports = async (ws, parsedMessage, senderId, currentUser) => {
     const { query, size } = parsedMessage.payload;
     console.log(`searching: ${query} from: ${currentUser.username}`);
 
-    const foundUsers = await searchAccounts(query);
+    const foundUsers = searchAccounts(query);
 
     ws.send(JSON.stringify({
         type: 'search_results', payload: foundUsers, size

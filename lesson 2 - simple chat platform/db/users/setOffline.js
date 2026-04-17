@@ -1,18 +1,36 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
+const getAccount = require("../account/getAccount");
+const getData = require("../../database/commands/getData");
+const setData = require("../../database/commands/setData");
 
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
+/**
+ * 
+ * @param {string} userId 
+ * @returns {{userId:string online:false lastSeen:string}}
+ */
+module.exports = function (userId) {
+    const account = getAccount(userId);
 
-module.exports = async function (userId) {
-    const users = db.table("users");
+    const users = getData("users");
+    let userStatusData = users.find(a => a.id === `${account.id}`);
 
-    await users.set(`${userId}.online`, false);
+    if (userStatusData) {
+        userStatusData.value.online = false;
+        userStatusData.value.lastSeen = new Date().toISOString();
+    }
 
-    await users.set(`${userId}.lastSeen`, new Date().toISOString());
+    else {
+        userStatusData = {
+            id: `${account.id}`,
+            value: {
+                online: false,
+                lastSeen: new Date().toISOString()
+            }
+        };
 
-    return true;
+        users.push(userStatusData);
+    }
+
+    setData("users", users);
+
+    return userStatusData.value;
 }

@@ -1,27 +1,20 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
-
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
+const getData = require("../../database/commands/getData");
 
 /**
  * 
  * @param {string} search 
- * @returns {Promise<{username: string; id: string; created_at: number; password: string;} | null>} 
+ * @returns {{username: string; id: string; created_at: number; password: string;} | null} 
  */
-module.exports = async (search) => {
+module.exports = (search) => {
     try {
         if (!search || typeof search !== "string")
             return null;
 
         const q = search.toLowerCase().trim();
 
-        const accounts = await db.table("accounts").all();
+        const accounts = getData("accounts");
 
-        if (!accounts || accounts.length === 0)
+        if (!accounts || accounts.length < 1)
             return null;
 
         // 1. ID exact
@@ -43,7 +36,7 @@ module.exports = async (search) => {
             return startsWith.value;
 
 
-        // 4. username fuzzy (شامل)
+        // 4. username fuzzy
         let contains = accounts.find(a =>
             a.value.username.toLowerCase().includes(q)
         );

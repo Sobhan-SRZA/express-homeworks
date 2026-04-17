@@ -2,11 +2,11 @@ const { verifyToken } = require('../utils/security');
 const updateMessageStatus = require('../db/messages/updateMessageStatus');
 const setOffline = require('../db/users/setOffline');
 const setOnline = require('../db/users/setOnline');
-const broadcast = require('../utils/broadcast');
 const WebSocket = require('ws')
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
+const getUserStatus = require('../db/users/getUserStatus');
 
 const ws_port = 3000;
 
@@ -53,18 +53,12 @@ module.exports = (app) => {
             ws.user = currentUser;
             const senderId = currentUser.id;
 
-            await setOnline(senderId);
+            setOnline(senderId);
 
             onlineUsers.set(senderId, ws);
             userMessageMap.set(senderId, new Set());
 
-            broadcast({
-                type: "user_online",
-                payload: {
-                    id: senderId,
-                    username: currentUser.username
-                }
-            }, onlineUsers);
+            broadcast(getUserStatus(senderId));
 
             ws.on('message', async (message) => {
                 const parsedMessage = JSON.parse(message);
@@ -88,15 +82,9 @@ module.exports = (app) => {
 
                 console.log('WebSocket client was disconnected! : ', senderId);
 
-                await setOffline(senderId);
+                setOffline(senderId);
 
-                broadcast({
-                    type: "user_offline",
-                    payload: {
-                        userId: senderId,
-                        lastSeen: new Date().toISOString()
-                    }
-                }, onlineUsers);
+                broadcast(getUserStatus(senderId));
             });
 
             ws.on('error', (error) => {
@@ -104,10 +92,24 @@ module.exports = (app) => {
             });
 
             ws.send(JSON.stringify({ type: 'connected', payload: currentUser }));
+
+            /**
+             * 
+             * @param {object} data 
+             * @returns {void}
+             */
+            async function broadcast(data) {
+                const json = JSON.stringify(data);
+                for (const client of onlineUsers.values()) {
+                    client.send(json);
+                }
+
+                return;
+            }
         }
 
         catch (err) {
-            console.error("Authentication failed:", err.message);
+            console.error("Authentication failed:", err);
             ws.send(JSON.stringify({ type: 'auth_error', message: 'Invalid token' }));
             ws.close();
         }

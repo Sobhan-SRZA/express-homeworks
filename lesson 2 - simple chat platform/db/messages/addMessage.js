@@ -1,12 +1,5 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
-
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
-
+const getData = require("../../database/commands/getData");
+const setData = require("../../database/commands/setData");
 const chatId = require("../../utils/chatId");
 
 /**
@@ -14,11 +7,11 @@ const chatId = require("../../utils/chatId");
  * @param {string} from 
  * @param {string} to 
  * @param {string} text 
- * @returns {Promise<{ messageId: number from: string to: string text: string timestamp: string status: { sentToUser: boolean deliveredToUser: boolean seenByuser: boolean } deliveredAt: string | null seenAt: string | null }>}
+ * @returns {{ messageId: number from: string to: string text: string timestamp: string status: { sentToUser: boolean deliveredToUser: boolean seenByuser: boolean } deliveredAt: string | null seenAt: string | null }}
  */
-module.exports = async function (from, to, text) {
+module.exports = function (from, to, text) {
     const cid = chatId(from, to);
-    const table = db.table("messages");
+    let messages = getData("messages", cid);
 
     const message = {
         messageId: Date.now(),
@@ -27,7 +20,7 @@ module.exports = async function (from, to, text) {
         text,
         timestamp: new Date().toISOString(),
         status: {
-            sentToUser: false, // اولش false هست، چون هنوز ACK نرفته
+            sentToUser: false,
             deliveredToUser: false,
             seenByuser: false
         },
@@ -35,8 +28,16 @@ module.exports = async function (from, to, text) {
         seenAt: null
     };
 
-    // push کردن پیام
-    await table.push(`${cid}`, message);
+    if (!messages || messages.length < 1) {
+        messages = {
+            id: cid,
+            value: []
+        }
+    }
+
+    messages.value.push(message);
+
+    setData("messages", messages, cid);
 
     return message;
 }

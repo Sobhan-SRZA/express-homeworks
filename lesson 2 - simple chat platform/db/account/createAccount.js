@@ -1,12 +1,6 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
 const generateUserId = require("../../utils/generateUserId");
-
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
+const getData = require("../../database/commands/getData");
+const setData = require("../../database/commands/setData");
 
 /**
  * 
@@ -14,19 +8,23 @@ const db = new QuickDB({
  * @param {string} hashedPassword 
  * @returns 
  */
-module.exports = async (username, hashedPassword) => {
+module.exports = (username, hashedPassword) => {
     try {
         const timestamp = Date.now();
         const userId = generateUserId(username, timestamp);
 
-        await db
-            .table("accounts")
-            .set(`${userId}`, {
+        const accounts = getData("accounts");
+        accounts.push({
+            id: `${userId}`,
+            value: {
                 created_at: timestamp,
                 username,
                 id: userId,
                 password: hashedPassword
-            })
+            }
+        });
+
+        setData("accounts", accounts);
 
         return {
             created_at: timestamp,

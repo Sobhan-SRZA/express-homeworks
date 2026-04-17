@@ -1,12 +1,5 @@
-const {
-    QuickDB,
-    JSONDriver
-} = require("quick.db");
-
-const db = new QuickDB({
-    driver: new JSONDriver()
-})
-
+const getData = require("../../database/commands/getData");
+const setData = require("../../database/commands/setData");
 const chatId = require("../../utils/chatId");
 
 /**
@@ -15,21 +8,20 @@ const chatId = require("../../utils/chatId");
  * @param {string} targetUserId 
  * @param {string} messageId 
  * @param {'sent' | 'delivered' | 'seen'} statusType 
- * @returns {Promise<{ messageId: number from: string to: string text: string timestamp: string status: { sentToUser: boolean deliveredToUser: boolean seenByuser: boolean } deliveredAt: string | null seenAt: string | null }>}
+ * @returns {{ messageId: number from: string to: string text: string timestamp: string status: { sentToUser: boolean deliveredToUser: boolean seenByuser: boolean } deliveredAt: string | null seenAt: string | null }}
  */
 module.exports = async function (userId, targetUserId, messageId, statusType) {
-    const cid = chatId(userId, targetUserId);
-    const table = db.table("messages");
-    const messages = await table.get(`${cid}`);
-    if (!messages)
+    const cid = chatId(userId, targetUserId);;
+    const messages = getData("messages", `${cid}`);
+    if (!messages || !messages.value || messages.value.length < 1)
         return false;
 
-    const messageIndex = messages.findIndex(msg => msg.messageId === messageId);
+    const messageIndex = messages.value.findIndex(msg => `${msg.messageId}` === `${messageId}`);
 
     if (messageIndex === -1)
         return false;
 
-    const message = messages[messageIndex];
+    const message = messages.value[messageIndex];
     const currentTime = new Date().toISOString();
 
     if (statusType === 'sent') {
@@ -46,8 +38,8 @@ module.exports = async function (userId, targetUserId, messageId, statusType) {
         message.seenAt = currentTime;
     }
 
-    messages[messageIndex] = message;
-    await messages.set(`${cid}`, messages);
+    messages.value[messageIndex] = message;
+    setData("messages", messages, `${cid}`);
 
     return message;
 }

@@ -1,5 +1,4 @@
-// در middleware/authMiddleware.js
-const { verifyToken } = require('../utils/security'); // تابع اعتبارسنجی توکن
+const { verifyToken } = require('../utils/security'); 
 
 async function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];

@@ -17,6 +17,7 @@ const recipientName = document.getElementById('recipient-name');
 const recipientStatus = document.getElementById('recipient-status');
 const messageContainer = document.getElementById('message-container');
 const messageInput = document.getElementById('message-input');
+const messageStatus = document.getElementById('message-status');
 const sendBtn = document.getElementById('send-btn');
 const profileModal = document.getElementById('profile-modal');
 const closeModalBtn = profileModal.querySelector('.close-button');
@@ -136,17 +137,39 @@ function connectWebSocket() {
             case 'user_profile':
                 break;
 
-            case 'user_status':
+            case 'user_status': {
                 const { userId, online, lastSeen } = message.payload;
-                
-                console.log("🚀 ~ connectWebSocket ~ message.payload:", message.payload)
-                console.log("🚀 ~ connectWebSocket ~ currentChat && userId === currentChat.id:", currentChat && userId === currentChat.id)
-                if (currentChat && userId === currentChat.id) {
+
+                if (currentChat && userId === `${currentChat.id}`) {
                     currentChat.status = online ? "آنلاین" : "آفلاین";
-                    currentChat.lastSeen = new Date(lastSeen);
+                    if (lastSeen)
+                        currentChat.lastSeen = new Date(lastSeen);
                 }
+                break
+            }
+
+            case 'message_delivered_notification':
+            case 'message_sent_notification':
+            case 'message_seen_notification': {
+                const { userId, messageId, deliveredAt, seenAt } = message.payload;
+                messageContainer.childNodes.forEach(msg => {
+                    if (msg.dataset.id === messageId) {
+
+                        if (deliveredAt) {
+                            msg.getElementById("message-status").innerText = "✓✓"
+                            console.log(`🚀 ~ connectWebSocket ~ msg.getElementById("message-status"):`, msg.getElementById("message-status"))
+                            msg.classList.add("received")
+                        }
+
+                        else {
+                            msg.classList.add("seened")
+                        }
+
+                    }
+                })
 
                 break;
+            }
         }
     };
 
@@ -174,7 +197,7 @@ function displaySearchResults(users) {
             <div class="chat-avatar"></div>
             <div class="chat-info">
                 <h4 class="chat-name">${user.username}</h4>
-                <p class="chat-status${user.status === "آفلاین" ? " status-offline" : " status-online"}">${user.status || '...'}</p>
+                <p class="chat-status${user.status ? " status-online" : " status-offline"}">${user.status ? "آنلاین" : "آفلاین" || '...'}</p>
             </div>
         `;
 
@@ -193,11 +216,12 @@ function openChat(user) {
     if (socket && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({ type: 'open_chat', payload: { userId: user.id } }));
         socket.send(JSON.stringify({ type: 'get_chat_history', payload: { with: user.id } }));
+        socket.send(JSON.stringify({ type: 'get_user_status', payload: { userId: user.id } }));
     }
 
     recipientName.innerText = user.username;
-    recipientStatus.classList.add(user.status === "آفلاین" ? "status-offline" : "status-online");
-    recipientStatus.innerText = user.status;
+    recipientStatus.classList.add(user.status ? "status-online" : "status-offline");
+    recipientStatus.innerText = user.status ? "آنلاین" : "آفلاین";
 
     const chatUrl = `/chat/${user.username}`;
     if (window.location.pathname !== chatUrl) {
@@ -216,6 +240,7 @@ function openChat(user) {
 function displayMessage(message, isMyMessage) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message');
+    messageElement.dataset.messageId = message.id;
     if (isMyMessage) {
         messageElement.classList.add('sent');
     }
@@ -228,7 +253,7 @@ function displayMessage(message, isMyMessage) {
     messageElement.innerHTML = `
             <div class="message-content">${message.text}</div>
             <div class="message-timestamp">${timestamp}</div>
-            ${isMyMessage ? '<span class="message-status">✓</span>' : ''}
+            ${isMyMessage ? '<span class="message-status" id="message-status">✓</span>' : ''}
     `;
 
     messageContainer.appendChild(messageElement);
@@ -261,7 +286,6 @@ function sendMessage() {
     };
 
     const messageElement = document.createElement('div');
-    messageElement.classList.add('message', 'sent');
     const timestamp = new Date(messagePayload.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     messageElement.innerHTML = `
         <div class="message-content">${messagePayload.text}</div>
@@ -272,8 +296,7 @@ function sendMessage() {
 
     if (socket) {
         socket.send(JSON.stringify({ type: 'send_message', payload: messagePayload }));
-
-        console.log("Message sent:", messagePayload);
+        messageElement.classList.add('message', 'sent');
     }
 
     else {

@@ -8,7 +8,7 @@ const getUserStatus = require("../../db/users/getUserStatus");
  */
 module.exports = async (ws, parsedMessage) => {
     const { userId } = parsedMessage.payload;
-    const status = await getUserStatus(userId);
+    const status = getUserStatus(userId);
 
     ws.send(JSON.stringify({
         type: "user_status",

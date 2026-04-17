@@ -10,25 +10,22 @@ const updateMessageStatus = require("../../db/messages/updateMessageStatus");
  * @returns {void}
  */
 module.exports = async (ws, parsedMessage, senderId, currentUser, onlineUsers) => {
-    // const { messageId, targetUserId, statusType } = parsedMessage.payload;
+    const { messageId, targetUserId, statusType } = parsedMessage.payload;
 
-    // const updatedMessage = await updateMessageStatus(senderId, targetUserId, messageId, statusType);
+    const updatedMessage = updateMessageStatus(senderId, targetUserId, messageId, statusType);
 
-    // if (updatedMessage) {
-    //     const senderClient = onlineUsers.get(senderId);
-    //     if (senderClient) {
-    //         senderClient.send(JSON.stringify({
-    //             type: `message_${statusType}_notification`,
-    //             payload: {
-    //                 messageId: updatedMessage.messageId,
-    //                 userId: senderId,
-    //                 [statusType === 'delivered' ? 'deliveredAt' : 'seenAt']: updatedMessage[statusType === 'delivered' ? 'deliveredAt' : 'seenAt']
-    //             }
-    //         }));
-    //     }
-
-    //     if (statusType === 'seen') {
-    //     }
-    // }
+    if (updatedMessage) {
+        const senderClient = onlineUsers.get(senderId);
+        if (senderClient) {
+            senderClient.send(JSON.stringify({
+                type: `message_${statusType}_notification`,
+                payload: {
+                    messageId: updatedMessage.messageId,
+                    userId: senderId,
+                    [statusType === 'delivered' ? 'deliveredAt' : 'seenAt']: updatedMessage[statusType === 'delivered' ? 'deliveredAt' : 'seenAt']
+                }
+            }));
+        }
+    }
 
 }
