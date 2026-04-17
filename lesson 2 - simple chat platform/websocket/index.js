@@ -58,7 +58,7 @@ module.exports = (app) => {
             onlineUsers.set(senderId, ws);
             userMessageMap.set(senderId, new Set());
 
-            broadcast(getUserStatus(senderId));
+            broadcast(JSON.stringify({ type: 'user_status', payload: getUserStatus(senderId) }));
 
             ws.on('message', async (message) => {
                 const parsedMessage = JSON.parse(message);
@@ -84,7 +84,7 @@ module.exports = (app) => {
 
                 setOffline(senderId);
 
-                broadcast(getUserStatus(senderId));
+                broadcast(JSON.stringify({ type: 'user_status', payload: getUserStatus(senderId) }));
             });
 
             ws.on('error', (error) => {
@@ -98,7 +98,7 @@ module.exports = (app) => {
              * @param {object} data 
              * @returns {void}
              */
-            async function broadcast(data) {
+            function broadcast(data) {
                 const json = JSON.stringify(data);
                 for (const client of onlineUsers.values()) {
                     client.send(json);

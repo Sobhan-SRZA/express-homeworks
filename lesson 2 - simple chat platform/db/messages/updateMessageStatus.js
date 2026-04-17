@@ -29,11 +29,15 @@ module.exports = async function (userId, targetUserId, messageId, statusType) {
     }
 
     else if (statusType === 'delivered') {
+        message.status.sentToUser = true;
         message.status.deliveredToUser = true;
         message.deliveredAt = currentTime;
     }
 
     else if (statusType === 'seen') {
+        message.status.sentToUser = true;
+        message.status.deliveredToUser = true;
+        message.deliveredAt = currentTime;
         message.status.seenByuser = true;
         message.seenAt = currentTime;
     }

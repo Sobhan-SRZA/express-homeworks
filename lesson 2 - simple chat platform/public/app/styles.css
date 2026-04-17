@@ -394,7 +394,7 @@ body {
     border-bottom-right-radius: 0;
 }
 
-.message.seened .message-content {
+.message.seen .message-content {
     background-color: var(--color-message-seened-bg);
     color: var(--color-text-seened);
     border-bottom-right-radius: 0;
