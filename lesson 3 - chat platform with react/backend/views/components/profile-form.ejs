@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="/form/styles.css">
+
+<div class="form-div">
+    <%- include("login-form") %>
+
+    <%- include("register-form") %>
+</div>
+
+<div class="forms-toggle" onclick="handleFormchanger()">
+    <span class="form-toggle" id="register-toggle">Register</span>
+    <span class="form-toggle" id="login-toggle" style="display: none;">Login</span>
+</div>
+
+<script>
+    const login_form = document.querySelector(".login-form");
+    const register_form = document.querySelector(".register-form");
+
+    const form_div = document.querySelector(".form-div");
+    const form = document.getElementById("form");
+    const login = document.getElementById("login-toggle");
+    const register = document.getElementById("register-toggle");
+
+    const handleFormchanger = async () => {
+        if (login.style.display !== "none") {
+            login.style.display = "none";
+            login_form.style.display = "block";
+
+            register.style.display = "block";
+            register_form.style.display = "none";
+        }
+
+        else {
+            login.style.display = "block";
+            login_form.style.display = "none";
+
+            register.style.display = "none";
+            register_form.style.display = "block";
+        }
+    }
+</script>

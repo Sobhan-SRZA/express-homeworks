@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چت اپلیکیشن</title>
+    <!-- لینک به فایل CSS عمومی -->
+    <link rel="stylesheet" href="/app/styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="user-profile-header" id="view-profile-btn">
+                <div class="chat-avatar"></div>
+                <div class="chat-info">
+                    <h3 class="chat-name"></h3>
+                </div>
+            </div>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="جستجوی کاربر...">
+            </div>
+
+            <ul class="chat-list" id="chat-list">
+            </ul>
+        </div>
+
+        <div class="chat-window">
+            <div id="chat-window-content" style="display: none;">
+                <div class="chat-header" id="view-profile-btn">
+                    <div class="user-info">
+                        <h3 id="recipient-name"></h3>
+                        <p id="recipient-status"></p>
+                    </div>
+                    <div class="chat-header-actions">
+                    </div>
+                </div>
+
+                <div class="message-container" id="message-container">
+                </div>
+
+                <div class="message-input-area">
+                    <input type="text" id="message-input" placeholder="پیام خود را بنویسید...">
+
+                    <label for="message-attachment" class="attachment-button">
+                        <i class="fas fa-paperclip"></i> <!-- Icon -->
+                    </label>
+                    <input type="file" id="message-attachment" multiple style="display: none;">
+
+                    <button id="send-btn" class="btn btn-primary">ارسال</button>
+                </div>
+
+                <div id="upload-progress-container" class="upload-progress-container">
+                </div>
+            </div>
+
+            <div id="no-chat-selected-message">
+                <p>لطفاً یک چت را انتخاب کنید یا یک کاربر جدید را جستجو کنید.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-profile-name">نام کامل کاربر</h2>
+            <p><strong>نام کاربری:</strong> <span id="modal-profile-username"></span></p>
+            <p><strong>ساخته شده در:</strong> <span id="modal-profile-craetedat"></span></p>
+        </div>
+    </div>
+
+    <script src="/app/index.js"></script>
+</body>
+
+</html>

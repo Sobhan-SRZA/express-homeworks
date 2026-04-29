@@ -1,0 +1,193 @@
+/* index.css: Global stylesheet for the application, defining themes, fonts, and utility classes. */
+
+/* Import Tailwind CSS to leverage its utility classes for styling the application. */
+@import "tailwindcss";
+
+/* set dark mode in class */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* Light Theme: Define CSS custom properties (variables) for the light theme, used for consistent styling across the app. */
+:root {
+  /* Custom font variable for reusability */
+  --font-iransans: 'IRANSans', sans-serif;
+
+  /* Default timing function for transitions */
+  --default-transition-timing-function: ease-in-out;
+
+  /* Default duration for transitions */
+  --default-transition-duration: 0.5s;
+
+  /* Background color for the light theme */
+  --background: #f9fafb;
+
+  /* Text color for the light theme */
+  --text: #111827;
+
+  /* Primary color for buttons, links, etc. */
+  --primary: #1d4ed8;
+
+  /* Hover state for primary color */
+  --primary-hover: #1e40af;
+
+  /* General hover color for interactive elements */
+  --hover: #2563eb;
+  --nav-hover: #1A4CCB;
+  --nav-text-hover: #ffffff;
+
+  /* Background color for cards or panels */
+  --card-bg: #ffffff;
+
+  /* Border color for elements */
+  --border: #9ea4ac;
+
+  /* Background for specific UI components (e.g., light gray sections) */
+  --lgs-bg: #e5e7eb;
+
+  /* Secondary background color for subtle contrasts */
+  --sec-bg: #f3f4f6f4;
+
+  /* Accent color for highlights or emphasis */
+  --accent: #5291ea;
+
+  /* Hover state for accent color */
+  --accent-hover: #0c489c;
+
+  /* Home page skills free space color */
+  --bar: #cbd5e1;
+
+  /* Error message from projects */
+  --error-message: #A80000;
+
+  /* Skeleton items from projects */
+  --loding-item: #94a9c1;
+}
+
+/* Dark Theme: Define CSS custom properties for the dark theme, applied when [data-theme="dark"] is set on an element. */
+[data-theme="dark"] {
+  /* Background color for the dark theme */
+  --background: #0f172a;
+
+  /* Hover color for interactive elements in dark theme */
+  --hover: #3b82f6;
+  --nav-hover: #bacfff;
+  --nav-text-hover: #000000;
+
+  /* Text color for the dark theme */
+  --text: #f8fafc;
+
+  /* Primary color for buttons, links, etc. in dark theme */
+  --primary: #60a5fa;
+
+  /* Hover state for primary color in dark theme */
+  --primary-hover: #a8c9ff;
+
+  /* Background color for cards or panels in dark theme */
+  --card-bg: #1e293b;
+
+  /* Border color for elements in dark theme */
+  --border: #606d7e;
+
+  /* Background for specific UI components in dark theme */
+  --lgs-bg: #1e293b;
+
+  /* Secondary background with slight transparency in dark theme */
+  --sec-bg: #182233f1;
+
+  /* Accent color for highlights in dark theme */
+  --accent: #3c9ffb;
+
+  /* Hover state for accent color in dark theme */
+  --accent-hover: #74bbfd;
+
+  /* Home page skills free space color */
+  --bar: #485a74;
+
+  /* Error message from projects */
+  --error-message: #FF8A8A;
+
+  /* Skeleton items from projects */
+  --loding-item: #6c8fb7;
+}
+
+/* Set smooth scrolling behavior for the entire HTML document. */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Style the body element with a custom font stack, theme-based colors, and smooth transitions for theme changes. */
+body {
+  font-family: 'IRANSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--background);
+  /* Use theme-defined background color */
+  color: var(--text);
+  /* Use theme-defined text color */
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+  /* Smooth transitions for theme switches */
+}
+
+/* Define the custom IRANSans font, loaded from a local TTF file for Persian text support. */
+@font-face {
+  font-family: 'IRANSans';
+  src: url('/fonts/IRANSansWeb.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Tailwind utilities layer: Define custom utility classes for text direction and transitions. */
+@layer utilities {
+  .rtl {
+    direction: rtl;
+    /* Right-to-left text direction for languages like Persian */
+  }
+
+  .ltr {
+    direction: ltr;
+    /* Left-to-right text direction for languages like English */
+  }
+
+  .custom-container {
+    width: 100%;
+
+    @media (width >=1536px) {
+      max-width: 1536px;
+    }
+  }
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeout {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
+  }
+
+  .animate-fadein {
+    animation: fadein 300ms ease forwards;
+  }
+
+  .animate-fadeout {
+    animation: fadeout 300ms ease forwards;
+  }
+
+}
+
+/**
+ * @copyright
+ * Code by Sobhan-SRZA (mr.sinre) | https://github.com/Sobhan-SRZA
+ * Developed for Persian Caesar | https://github.com/Persian-Caesar | https://dsc.gg/persian-caesar
+ *
+ * If you encounter any issues or need assistance with this code,
+ * please make sure to credit "Persian Caesar" in your documentation or communications.
+ */

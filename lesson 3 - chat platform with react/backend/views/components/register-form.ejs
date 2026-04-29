@@ -1,0 +1,18 @@
+<form class="register-form" id="form-register" style="display: none;" onsubmit="handleRegisterSubmit(event)"
+    action="/api/register" method="post">
+    <section class="user-sec">
+        <label class="form-label" for="username">User Name:</label>
+        <input class="form-input" type="text" name="username" id="username" required>
+    </section>
+
+    <section class="pass-sec">
+        <label for="password">Password:</label>
+        <input class="form-input" type="password" name="password" id="password" required>
+    </section>
+
+    <section class="register-sec">
+        <input class="btn" type="submit" value="Register">
+    </section>
+</form>
+
+<script src="/form/register.js"></script>
