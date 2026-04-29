@@ -12,8 +12,8 @@ module.exports = function (userId) {
     const users = getData("users");
     const userStatusData = users.find(a => a.id === `${account.id}`);
 
-    const online = userStatusData.value.online || false;
-    const lastSeen = userStatusData.value.lastSeen || null;
+    const online = userStatusData?.value?.online || false;
+    const lastSeen = userStatusData?.value?.lastSeen || null;
 
     return { userId, online, lastSeen };
 }

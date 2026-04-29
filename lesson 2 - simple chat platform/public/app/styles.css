@@ -328,6 +328,103 @@ body {
     content: '';
 }
 
+.attachment-button {
+    cursor: pointer;
+    padding: 8px 12px;
+    margin-right: 8px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.attachment-button:hover {
+    background-color: #e0e0e0;
+}
+
+.attachment-button i {
+    font-size: 18px;
+    color: #555;
+}
+
+.upload-progress-container {
+    padding: 10px;
+    border-top: 1px solid #eee;
+    background-color: #f9f9f9;
+    max-height: 150px;
+    /* حداکثر ارتفاع برای نمایش */
+    overflow-y: auto;
+    /* فعال کردن اسکرول در صورت زیاد شدن تعداد فایل‌ها */
+    display: none;
+    /* در ابتدا مخفی است */
+}
+
+.upload-progress-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.upload-progress-item .file-icon {
+    /* آیکون برای نوع فایل */
+    margin-right: 10px;
+    font-size: 20px;
+    color: #666;
+}
+
+.upload-progress-item .file-info {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.upload-progress-item .file-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #333;
+}
+
+.upload-progress-item .file-details {
+    font-size: 12px;
+    color: #888;
+}
+
+.upload-progress-item .progress-bar-wrapper {
+    width: 100px;
+    /* عرض ثابت برای نوار پیشرفت */
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-left: auto;
+    /* قرار گرفتن در سمت راست */
+}
+
+.upload-progress-item .progress-bar {
+    height: 100%;
+    width: 0%;
+    /* در ابتدا صفر است */
+    background-color: #4CAF50;
+    /* رنگ سبز */
+    transition: width 0.3s ease-out;
+    /* انیمیشن نرم برای تغییر عرض */
+}
+
+.upload-progress-item .progress-text {
+    font-size: 12px;
+    color: #4CAF50;
+    margin-left: 8px;
+    min-width: 40px;
+    /* حداقل عرض برای نمایش درصد */
+    text-align: right;
+}
 
 .message-container {
     height: fit-content;

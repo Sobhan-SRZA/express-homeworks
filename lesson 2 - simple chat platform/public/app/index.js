@@ -1,5 +1,7 @@
 const socketUrl = `http://localhost:3000/ws`;
 
+let filesToUpload = [];
+
 let currentUser = null;
 let currentChat = null;
 let socket = null;
@@ -16,8 +18,10 @@ const viewProfileBtn = document.getElementById('view-profile-btn');
 const recipientName = document.getElementById('recipient-name');
 const recipientStatus = document.getElementById('recipient-status');
 const messageContainer = document.getElementById('message-container');
-const messageInput = document.getElementById('message-input');
+const uploadProgressContainer = document.getElementById('upload-progress-container');
 const sendBtn = document.getElementById('send-btn');
+const messageInput = document.getElementById('message-input');
+const messageAttachment = document.getElementById('message-attachment');
 const profileModal = document.getElementById('profile-modal');
 const closeModalBtn = profileModal.querySelector('.close-button');
 const modalProfileName = document.getElementById('modal-profile-name');
@@ -304,40 +308,245 @@ function loadChatHistory(messages) {
     return;
 }
 
-function sendMessage() {
-    const messageText = messageInput.value.trim();
-    if (!messageText || !currentChat) {
+messageAttachment.addEventListener('change', (event) => {
+    const files = Array.from(event.target.files); // تبدیل FileList به آرایه
+
+    files.forEach(file => {
+        const fileId = `upload-${Date.now()}-${Math.random().toString(36).substring(7)}`; // یک ID منحصر به فرد برای هر فایل در صف آپلود
+        filesToUpload.push({
+            id: fileId,
+            file: file,
+            progress: 0, // درصد آپلود
+            status: 'pending' // وضعیت: pending, uploading, completed, failed
+        });
+        renderUploadProgressItem(fileId, file.name, 0, 'pending');
+    });
+
+    event.target.value = ''; // پاک کردن فیلد فایل برای امکان انتخاب دوباره همان فایل‌ها
+    uploadProgressContainer.style.display = 'block'; // نمایش ناحیه پیشرفت
+});
+
+// تابع برای رندر کردن یک آیتم پیشرفت آپلود
+function renderUploadProgressItem(id, fileName, progress, status) {
+    const existingItem = document.querySelector(`.upload-progress-item[data-id="${id}"]`);
+    if (existingItem) {
+        // اگر آیتم از قبل وجود دارد، فقط آن را آپدیت کن
+        const progressBar = existingItem.querySelector('.progress-bar');
+        const progressText = existingItem.querySelector('.progress-text');
+        const fileDetails = existingItem.querySelector('.file-details');
+
+        progressBar.style.width = `${progress}%`;
+        progressText.textContent = `${Math.round(progress)}%`;
+        fileDetails.textContent = `${status === 'completed' ? 'تکمیل شده' : status === 'failed' ? 'خطا' : ''}`;
+        // تغییر رنگ نوار پیشرفت بر اساس وضعیت
+        if (status === 'failed') {
+            progressBar.style.backgroundColor = '#f44336'; // قرمز
+            progressText.style.color = '#f44336';
+        } else if (status === 'completed') {
+            progressBar.style.backgroundColor = '#4CAF50'; // سبز
+            progressText.style.color = '#4CAF50';
+        } else {
+            progressBar.style.backgroundColor = '#4CAF50';
+            progressText.style.color = '#4CAF50';
+        }
         return;
     }
 
-    const messagePayload = {
-        to: currentChat.id,
-        text: messageText,
-        timestamp: new Date().toISOString()
-    };
+    // ساختن آیتم جدید
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('upload-progress-item');
+    itemDiv.dataset.id = id; // ذخیره ID برای آپدیت‌های بعدی
 
-    const messageElement = document.createElement('div');
-    const timestamp = new Date(messagePayload.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    messageElement.innerHTML = `
-        <div class="message-content">${messagePayload.text}</div>
-        <div class="message-timestamp">${timestamp}</div>
-        <div class="message-status" id="message-status">✓</div>
+    // تعیین آیکون بر اساس نوع فایل (می‌توانید با کتابخانه‌ای مثل file-icons یا یک دیکشنری ساده این کار را انجام دهید)
+    const fileIcon = getFileIcon(fileName);
+
+    itemDiv.innerHTML = `
+        <div class="file-icon">${fileIcon}</div>
+        <div class="file-info">
+            <div class="file-name">${fileName}</div>
+            <div class="file-details">${status === 'pending' ? 'در انتظار...' : ''}</div>
+        </div>
+        <div class="progress-bar-wrapper">
+            <div class="progress-bar" style="width: ${progress}%"></div>
+        </div>
+        <div class="progress-text">${Math.round(progress)}%</div>
     `;
-    messageContainer.appendChild(messageElement);
-    messageContainer.scrollTop = messageContainer.scrollHeight;
+    uploadProgressContainer.appendChild(itemDiv);
+}
 
-    if (socket) {
-        socket.send(JSON.stringify({ type: 'send_message', payload: messagePayload }));
-        messageElement.classList.add('message', 'sent');
+function getFileIcon(fileName) {
+    const extension = fileName.split('.').pop().toLowerCase();
+    switch (extension) {
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'gif':
+            return '<i class="fas fa-image"></i>';
+        case 'pdf':
+            return '<i class="fas fa-file-pdf"></i>';
+        case 'doc':
+        case 'docx':
+            return '<i class="fas fa-file-word"></i>';
+        case 'xls':
+        case 'xlsx':
+            return '<i class="fas fa-file-excel"></i>';
+        case 'zip':
+        case 'rar':
+            return '<i class="fas fa-file-archive"></i>';
+        case 'mp4':
+        case 'mov':
+        case 'avi':
+            return '<i class="fas fa-film"></i>';
+        default:
+            return '<i class="fas fa-file"></i>';
+    }
+}
+
+
+function updateFileStatus(fileId, status, progress = null) {
+    const fileEntry = filesToUpload.find(f => f.id === fileId);
+    if (fileEntry) {
+        if (progress !== null) fileEntry.progress = progress;
+        fileEntry.status = status;
+        renderUploadProgressItem(fileId, fileEntry.file.name, fileEntry.progress, status);
+    }
+}
+
+function sendMessage() {
+    const messageText = messageInput.value.trim();
+
+    const pendingUploads = filesToUpload.filter(f => f.status === 'pending' || f.status === 'uploading');
+
+    if (pendingUploads.length > 0) {
+        pendingUploads.forEach(fileEntry => {
+            uploadFile(fileEntry);
+        });
+
+        if (messageText && currentChat) {
+            console.log("Message text will be sent after file uploads are complete.");
+        }
+
+        return;
     }
 
-    else {
-        console.error("WebSocket is not connected.");
+    if (!messageText && filesToUpload.length === 0) {
+        console.warn("Nothing to send.");
+        return;
     }
 
-    messageInput.value = '';
+    if (filesToUpload.length > 0 && filesToUpload.every(f => f.status === 'completed')) {
+        // اینجا باید پیام حاوی اطلاعات فایل‌ها را ارسال کنی
+        // مثلاً لیستی از fileIds که در دیتابیس ذخیره شده‌اند
+        // این بخش نیاز به تعریف یک نوع پیام جدید برای "ارسال فایل" دارد
+        console.log("All files uploaded. Sending message with file references.");
+        sendFilesMessage(filesToUpload.map(f => f.fileDetails.id)); // id فایل ذخیره شده در دیتابیس
+        filesToUpload = []; // پاک کردن صف فایل‌ها بعد از ارسال
+        uploadProgressContainer.style.display = 'none'; // مخفی کردن ناحیه پیشرفت
+        messageInput.value = ''; // پاک کردن اینپوت متن
+    }
+
+    else if (messageText && currentChat) {
+        // ارسال پیام متنی ساده
+        const messagePayload = {
+            to: currentChat.id,
+            text: messageText,
+            type: 'text', // نوع پیام متنی
+            timestamp: new Date().toISOString()
+        };
+
+        const messageElement = createMessageElement(messagePayload); // تابع کمکی برای ساخت المان پیام
+        messageContainer.appendChild(messageElement);
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ type: 'send_message', payload: messagePayload }));
+            messageElement.classList.add('message', 'sent');
+            // آپدیت وضعیت پیام به ✓✓ (Sent)
+        }
+
+        else {
+            console.error("WebSocket is not connected.");
+        }
+
+        messageInput.value = '';
+    }
 
     return;
+}
+
+function uploadFile(fileEntry) {
+    const reader = new FileReader();
+    const file = fileEntry.file;
+
+    reader.onloadend = () => {
+        const base64Content = reader.result; // این شامل پیشوند data:mime/type;base64, است
+        const fileName = file.name;
+        const fileType = file.type;
+        const fileSize = file.size;
+
+        // برای نمایش پیشرفت، می‌توانیم فایل را به قطعات کوچک‌تر تقسیم کرده و Chunked ارسال کنیم
+        // اما برای سادگی، ابتدا Base64 را کامل می‌کنیم و بعد ارسال می‌کنیم
+        // در یک سناریوی واقعی، باید از Stream API یا تقسیم‌بندی دستی برای نمایش دقیق پیشرفت استفاده کرد.
+
+        // ارسال پیام با نوع 'file_upload'
+        const uploadPayload = {
+            type: 'file_upload',
+            fileName: fileName,
+            fileType: fileType,
+            fileSize: fileSize,
+            fileContent: base64Content, // یا فقط محتوای بعد از پیشوند
+            senderId: currentUser.id, // شناسه کاربر فعلی
+            fileId: fileEntry.id // ارجاع به فایل در صف آپلود
+        };
+
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            updateFileStatus(fileEntry.id, 'uploading', 50); // فرض کنید ۵۰٪ پیشرفت اولیه
+            socket.send(JSON.stringify(uploadPayload));
+        }
+
+        else {
+            updateFileStatus(fileEntry.id, 'failed');
+            console.error("WebSocket is not connected. Cannot upload file.");
+        }
+    };
+
+    reader.onerror = () => {
+        updateFileStatus(fileEntry.id, 'failed');
+        console.error("Error reading file:", reader.error);
+    };
+
+    // خواندن فایل به صورت Data URL (Base64)
+    reader.readAsDataURL(file);
+}
+
+// تابع کمکی برای ساخت المان پیام (برای جلوگیری از تکرار کد)
+function createMessageElement(messagePayload) {
+    const messageElement = document.createElement('div');
+    const timestamp = new Date(messagePayload.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    let contentHtml = '';
+    if (messagePayload.type === 'text') {
+        contentHtml = `<div class="message-content">${messagePayload.text}</div>`;
+    }
+
+    else if (messagePayload.type === 'file' || messagePayload.type === 'image' || messagePayload.type === 'video') {
+        // اینجا باید المان مربوط به نمایش فایل را بسازیم
+        // مثلاً لینک دانلود یا نمایش تصویر/ویدیو
+        contentHtml = `<div class="message-content"><a href="${messagePayload.filePath}" target="_blank">${messagePayload.fileName || 'فایل'}</a></div>`;
+        // اگر عکس بود، المان <img>
+    }
+
+    else if (messagePayload.type === 'emoji') {
+        contentHtml = `<div class="message-content">${messagePayload.emoji}</div>`;
+    }
+    // ... انواع دیگر پیام‌ها
+
+    messageElement.innerHTML = `
+        ${contentHtml}
+        <div class="message-timestamp">${timestamp}</div>
+        <div class="message-status" id="message-status">✓</div> <!-- وضعیت ارسال -->
+    `;
+    return messageElement;
 }
 
 /**

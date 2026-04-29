@@ -7,9 +7,11 @@ const chatId = require("../../utils/chatId");
  * @param {string} from 
  * @param {string} to 
  * @param {string} text 
- * @returns {{ messageId: number from: string to: string text: string timestamp: string status: { sentToUser: boolean deliveredToUser: boolean seenByuser: boolean } deliveredAt: string | null seenAt: string | null }}
+ * @param {{name: string file: string type: string}[] | undefined} attachment
+ * @param {"text" | "emoji" | "image" | "video" | "voice" | "music" | "file"} type 
+ * @returns {{ messageId: number from: string to: string text: string type: string timestamp: string status: { sentToUser: boolean deliveredToUser: boolean seenByuser: boolean } deliveredAt: string | null seenAt: string | null }}
  */
-module.exports = function (from, to, text) {
+module.exports = function (from, to, text, type, attachments, timestamp) {
     const cid = chatId(from, to);
     let messages = getData("messages", cid);
 
@@ -18,6 +20,8 @@ module.exports = function (from, to, text) {
         from,
         to,
         text,
+        attachments,
+        type,
         timestamp: new Date().toISOString(),
         status: {
             sentToUser: false,
@@ -28,7 +32,7 @@ module.exports = function (from, to, text) {
         seenAt: null
     };
 
-    if (!messages || messages.length < 1) {
+    if (!messages || !messages.value || messages.value.length < 1) {
         messages = {
             id: cid,
             value: []

@@ -1,12 +1,11 @@
 const { verifyToken } = require('../utils/security');
-const updateMessageStatus = require('../db/messages/updateMessageStatus');
+const getUserStatus = require('../db/users/getUserStatus');
 const setOffline = require('../db/users/setOffline');
 const setOnline = require('../db/users/setOnline');
 const WebSocket = require('ws')
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
-const getUserStatus = require('../db/users/getUserStatus');
 
 const ws_port = 3000;
 
@@ -23,32 +22,33 @@ module.exports = (app) => {
     const userMessageMap = new Map(); // { userId: Set<messageId> } 
 
     wss.on('connection', async (ws, req) => {
-        console.log('the WebSocket client is connected');
-
+        
         const query = url.parse(req.url, true).query;
         const token = query.token;
-
+        
         if (!token) {
             console.error("Authentication error: Token missing");
             ws.send(JSON.stringify({ type: 'auth_error', message: 'Token missing' }));
             ws.close();
-
+            
             return;
         }
-
+        
         try {
             const currentUser = verifyToken(token);
-
-            if (!currentUser) {
+            
+            if (!currentUser || currentUser.expire < Date.now()) {
                 ws.send(JSON.stringify({
                     type: 'auth_error',
                     message: 'Invalid token'
                 }));
-
+                
                 ws.close();
-
+                
                 return;
             }
+            
+            console.log('the WebSocket client is connected:', currentUser.id);
 
             ws.user = currentUser;
             const senderId = currentUser.id;
@@ -58,7 +58,7 @@ module.exports = (app) => {
             onlineUsers.set(senderId, ws);
             userMessageMap.set(senderId, new Set());
 
-            broadcast(JSON.stringify({ type: 'user_status', payload: getUserStatus(senderId) }));
+            broadcast({ type: 'user_status', payload: getUserStatus(senderId) });
 
             ws.on('message', async (message) => {
                 const parsedMessage = JSON.parse(message);
@@ -71,6 +71,7 @@ module.exports = (app) => {
 
                         if (parsedMessage.type === fileEvent) {
                             const eventHandle = require(`./events/${file}`);
+
                             await eventHandle(ws, parsedMessage, senderId, currentUser, onlineUsers, userMessageMap)
                         }
                     })
@@ -80,11 +81,11 @@ module.exports = (app) => {
             ws.on("close", async () => {
                 onlineUsers.delete(senderId);
 
-                console.log('WebSocket client was disconnected! : ', senderId);
+                console.log('WebSocket client was disconnected!: ', senderId);
 
                 setOffline(senderId);
 
-                broadcast(JSON.stringify({ type: 'user_status', payload: getUserStatus(senderId) }));
+                broadcast({ type: 'user_status', payload: getUserStatus(senderId) });
             });
 
             ws.on('error', (error) => {
@@ -110,6 +111,7 @@ module.exports = (app) => {
 
         catch (err) {
             console.error("Authentication failed:", err);
+            
             ws.send(JSON.stringify({ type: 'auth_error', message: 'Invalid token' }));
             ws.close();
         }

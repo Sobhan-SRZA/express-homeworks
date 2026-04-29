@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
     const { username, password } = req.body;
 
     try {
-        const account = await findAccount(username);
+        const account = findAccount(username);
 
         if (!account) {
             return res

@@ -1,15 +1,15 @@
-const fs = require("fs");
 const getData = require("./getData");
+const tables = require("./tables");
+const fs = require("fs");
 
 /**
  * 
- * @param {"accounts" | "messages" | "users"} table 
+ * @param {(typeof tables)[number]} table 
  * @param {Array<{id:string value: object}>} data 
  * @param {string | undefined} id 
  * @returns {Array<{id:string value: object}>}
  */
 module.exports = function (table, data, id) {
-    const tables = ["accounts", "messages", "users", "chats"];
 
     if (!tables.includes(table))
         throw Error("DB: wrong table name!")
