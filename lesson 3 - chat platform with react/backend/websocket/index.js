@@ -1,6 +1,7 @@
 const { verifyToken } = require('../utils/security');
 const getUserStatus = require('../db/users/getUserStatus');
 const setOffline = require('../db/users/setOffline');
+const getAccount = require('../db/account/getAccount');
 const setOnline = require('../db/users/setOnline');
 const WebSocket = require('ws')
 const http = require('http');
@@ -22,32 +23,44 @@ module.exports = (app) => {
     const userMessageMap = new Map(); // { userId: Set<messageId> } 
 
     wss.on('connection', async (ws, req) => {
-        
+
         const query = url.parse(req.url, true).query;
         const token = query.token;
-        
+
         if (!token) {
             console.error("Authentication error: Token missing");
             ws.send(JSON.stringify({ type: 'auth_error', message: 'Token missing' }));
             ws.close();
-            
+
             return;
         }
-        
+
         try {
             const currentUser = verifyToken(token);
-            
+
             if (!currentUser || currentUser.expire < Date.now()) {
                 ws.send(JSON.stringify({
                     type: 'auth_error',
                     message: 'Invalid token'
                 }));
-                
+
                 ws.close();
-                
+
                 return;
             }
-            
+
+            const isValidAccount = getAccount(currentUser.id);
+            if (!isValidAccount) {
+                ws.send(JSON.stringify({
+                    type: 'auth_error',
+                    message: 'Invalid token'
+                }));
+
+                ws.close();
+
+                return;
+            }
+
             console.log('the WebSocket client is connected:', currentUser.id);
 
             ws.user = currentUser;
@@ -111,7 +124,7 @@ module.exports = (app) => {
 
         catch (err) {
             console.error("Authentication failed:", err);
-            
+
             ws.send(JSON.stringify({ type: 'auth_error', message: 'Invalid token' }));
             ws.close();
         }
