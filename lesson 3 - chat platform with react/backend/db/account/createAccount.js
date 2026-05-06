@@ -1,4 +1,4 @@
-const generateUserId = require("../../utils/generateUserId");
+const generateId = require("../../utils/generateId");
 const getData = require("../../database/commands/getData");
 const setData = require("../../database/commands/setData");
 
@@ -11,7 +11,7 @@ const setData = require("../../database/commands/setData");
 module.exports = (username, hashedPassword) => {
     try {
         const timestamp = Date.now();
-        const userId = generateUserId(username, timestamp);
+        const userId = generateId();
 
         const accounts = getData("accounts");
         accounts.push({
