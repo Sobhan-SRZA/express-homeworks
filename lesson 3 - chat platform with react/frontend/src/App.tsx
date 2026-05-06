@@ -4,12 +4,11 @@ import {
   Routes
 } from "react-router-dom";
 import { useEffect } from "react";
+import TermOfServices from "./pages/TermOfServices";
 import ScrollToTop from "./components/ScrollToTop";
 import NotFound from "./pages/NotFound";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
-import TermOfServices from "./pages/TermOfServices";
-import Application from "./pages/Application";
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -36,19 +35,17 @@ const App: React.FC = () => {
       <ScrollToTop />
 
       <div className={`min-h-screen flex flex-col font-sans ltr`}>
-        <main className="grow custom-container mx-auto px-4 py-8 flex flex-col justify-center text-center">
-          <Routes>
-            {/* Home page */}
-            <Route index element={<Home />} />
+        <Routes>
+          {/* Home page */}
+          <Route index element={<Home />} />
 
-            {/* Tos */}
-            <Route path="/tos" element={<TermOfServices />} />
+          {/* Tos */}
+          <Route path="/tos" element={<TermOfServices />} />
 
-            {/* Catch-all route for undefined paths */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-
+          {/* Catch-all route for undefined paths */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+          
         {/* Footer component for bottom navigation and information */}
         {/* <Footer /> */}
 
