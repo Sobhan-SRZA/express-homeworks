@@ -13,8 +13,9 @@
   "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^4.22.1",
     "snowflake-id": "^1.1.0",
-    "ws": "^8.20.0"
+    "socket.io": "^4.8.3"
   }
 }
