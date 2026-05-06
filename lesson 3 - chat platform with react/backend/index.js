@@ -1,22 +1,21 @@
-const express = require("express");
-const cors = require('cors');
-
-const fs = require("fs");
 const websocket = require("./websocket");
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const fs = require("fs");
+
+dotenv.config();
 
 const port = 8888;
 const app = express();
 
 // CORS
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000']
+    origin: ["http://localhost:5173", "http://localhost:3000"]
 }));
 
 // Use json in express get and post
 app.use(express.json());
-
-// Load static files path
-app.use(express.static(__dirname + "/public"));
 
 fs.readdirSync("./api")
     .filter((file) => file.endsWith(".js"))
@@ -36,7 +35,7 @@ app.listen(
     port,
 
     (e) => {
-        console.log('App started:', `http://localhost:${port}`);
+        console.log("App started:", `http://localhost:${port}`);
     }
 )
 
