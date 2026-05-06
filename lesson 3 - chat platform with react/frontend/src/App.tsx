@@ -36,7 +36,7 @@ const App: React.FC = () => {
       <ScrollToTop />
 
       <div className={`min-h-screen flex flex-col font-sans ltr`}>
-        <main className="grow custom-container mx-auto px-4 py-8">
+        <main className="grow custom-container mx-auto px-4 py-8 flex flex-col justify-center text-center">
           <Routes>
             {/* Home page */}
             <Route index element={<Home />} />
@@ -44,16 +44,13 @@ const App: React.FC = () => {
             {/* Tos */}
             <Route path="/tos" element={<TermOfServices />} />
 
-            {/* App */}
-            <Route path="/app" element={<Application />} />
-
             {/* Catch-all route for undefined paths */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
 
         {/* Footer component for bottom navigation and information */}
-        <Footer />
+        {/* <Footer /> */}
 
       </div>
     </BrowserRouter>
