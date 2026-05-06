@@ -52,7 +52,7 @@ module.exports = (username, accoutTimestamp) => {
         ".": 38
     }
 
-    let charsSum = username.split("").map(a => username_chars_code[a]).reduce((a, b) => b + a);
+    let charsSum = username.split("").map(a => a in username_chars_code && username_chars_code[a]).reduce((a, b) => b + a);
     if (charsSum < 10) {
         charsSum = `${generateRandomNumber(3)}${charsSum}`
     }
