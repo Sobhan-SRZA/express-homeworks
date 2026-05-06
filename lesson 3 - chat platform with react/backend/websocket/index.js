@@ -3,7 +3,7 @@ const getUserStatus = require('../db/users/getUserStatus');
 const setOffline = require('../db/users/setOffline');
 const getAccount = require('../db/account/getAccount');
 const setOnline = require('../db/users/setOnline');
-const WebSocket = require('ws')
+const { Server, Socket } = require('socket.io')
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
@@ -17,20 +17,28 @@ const ws_port = 3000;
  */
 module.exports = (app) => {
     const server = http.createServer(app);
-    const wss = new WebSocket.Server({ server, path: '/ws' });
+    const io = new Server({ ...server, path: '/ws' });
 
+    /**
+     * @type {Map<string, Socket>}
+     */
     const onlineUsers = new Map(); // { userId: wsClient }
     const userMessageMap = new Map(); // { userId: Set<messageId> } 
 
-    wss.on('connection', async (ws, req) => {
+    io.on('connection', async (socket) => {
 
-        const query = url.parse(req.url, true).query;
+        const query = url.parse(socket.request.url, true).query;
         const token = query.token;
 
         if (!token) {
             console.error("Authentication error: Token missing");
-            ws.send(JSON.stringify({ type: 'auth_error', message: 'Token missing' }));
-            ws.close();
+            socket.send(JSON.stringify({
+                type: "error",
+                code: "AUTH_MISSING",
+                message: "Token is missing"
+            }));
+
+            io.close();
 
             return;
         }
@@ -38,42 +46,32 @@ module.exports = (app) => {
         try {
             const currentUser = verifyToken(token);
 
-            if (!currentUser || currentUser.expire < Date.now()) {
-                ws.send(JSON.stringify({
-                    type: 'auth_error',
-                    message: 'Invalid token'
-                }));
-
-                ws.close();
-
-                return;
-            }
-
             const isValidAccount = getAccount(currentUser.id);
-            if (!isValidAccount) {
-                ws.send(JSON.stringify({
-                    type: 'auth_error',
-                    message: 'Invalid token'
+            if (!currentUser || currentUser.expire < Date.now() || !isValidAccount) {
+                socket.send(JSON.stringify({
+                    type: "error",
+                    code: "AUTH_EXPIRE",
+                    message: 'Token is invalid please login again!'
                 }));
 
-                ws.close();
+                io.close();
 
                 return;
             }
 
             console.log('the WebSocket client is connected:', currentUser.id);
 
-            ws.user = currentUser;
+            socket.user = currentUser;
             const senderId = currentUser.id;
 
             setOnline(senderId);
 
-            onlineUsers.set(senderId, ws);
+            onlineUsers.set(senderId, socket);
             userMessageMap.set(senderId, new Set());
 
             broadcast({ type: 'user_status', payload: getUserStatus(senderId) });
 
-            ws.on('message', async (message) => {
+            socket.on('message', async (message) => {
                 const parsedMessage = JSON.parse(message);
 
                 fs
@@ -85,13 +83,13 @@ module.exports = (app) => {
                         if (parsedMessage.type === fileEvent) {
                             const eventHandle = require(`./events/${file}`);
 
-                            await eventHandle(ws, parsedMessage, senderId, currentUser, onlineUsers, userMessageMap)
+                            await eventHandle(socket, parsedMessage, senderId, currentUser, onlineUsers, userMessageMap)
                         }
                     })
 
             });
 
-            ws.on("close", async () => {
+            socket.on("close", async () => {
                 onlineUsers.delete(senderId);
 
                 console.log('WebSocket client was disconnected!: ', senderId);
@@ -101,11 +99,11 @@ module.exports = (app) => {
                 broadcast({ type: 'user_status', payload: getUserStatus(senderId) });
             });
 
-            ws.on('error', (error) => {
+            socket.on('error', (error) => {
                 console.error('خطای WebSocket:', error);
             });
 
-            ws.send(JSON.stringify({ type: 'connected', payload: currentUser }));
+            socket.send(JSON.stringify({ type: 'connected', payload: currentUser }));
 
             /**
              * 
@@ -125,8 +123,8 @@ module.exports = (app) => {
         catch (err) {
             console.error("Authentication failed:", err);
 
-            ws.send(JSON.stringify({ type: 'auth_error', message: 'Invalid token' }));
-            ws.close();
+            socket.send(JSON.stringify({ type: 'auth_error', message: 'Invalid token' }));
+            io.close();
         }
     });
 
