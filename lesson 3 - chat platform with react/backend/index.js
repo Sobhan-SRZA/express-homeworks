@@ -1,12 +1,16 @@
 const express = require("express");
+const cors = require('cors');
+
 const fs = require("fs");
 const websocket = require("./websocket");
 
 const port = 8888;
 const app = express();
 
-app.set("view engine", "ejs");
-app.set("views", __dirname + "/views");
+// CORS
+app.use(cors({
+    origin: ['http://localhost:5173', 'http://localhost:3000']
+}));
 
 // Use json in express get and post
 app.use(express.json());
