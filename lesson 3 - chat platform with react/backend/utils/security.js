@@ -1,5 +1,5 @@
-const crypto = require('crypto');
-const SECRET_KEY = 'thisIs-SecretKeyof*cryptiNgTh(**is ShIt%#12';
+const crypto = require("crypto");
+const SECRET_KEY = "thisIs-SecretKeyof*cryptiNgTh(**is ShIt%#12";
 
 /**
  * 
@@ -7,8 +7,8 @@ const SECRET_KEY = 'thisIs-SecretKeyof*cryptiNgTh(**is ShIt%#12';
  * @returns {string} 
  */
 function hashPassword(password) {
-    const salt = crypto.randomBytes(16).toString('hex');
-    const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+    const salt = crypto.randomBytes(16).toString("hex");
+    const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, "sha512").toString("hex");
 
     return `${salt}:${hashedPassword}`;
 }
@@ -20,13 +20,13 @@ function hashPassword(password) {
  * @returns {boolean}
  */
 function verifyPassword(storedHash, providedPassword) {
-    const [salt, hashedPassword] = storedHash.split(':');
-    const providedHash = crypto.pbkdf2Sync(providedPassword, salt, 10000, 64, 'sha512').toString('hex');
+    const [salt, hashedPassword] = storedHash.split(":");
+    const providedHash = crypto.pbkdf2Sync(providedPassword, salt, 10000, 64, "sha512").toString("hex");
 
     return providedHash === hashedPassword;
 }
 
-const base64UrlEncode = (str) => Buffer.from(str).toString('base64url');
+const base64UrlEncode = (str) => Buffer.from(str).toString("base64url");
 
 /**
  * 
@@ -36,14 +36,14 @@ const base64UrlEncode = (str) => Buffer.from(str).toString('base64url');
 function generateToken(payload) {
     payload.expire = Date.now() + 900_000;
 
-    const header = { alg: 'HS256', typ: 'JWT' };
+    const header = { alg: "HS256", typ: "JWT" };
 
     const encodedHeader = base64UrlEncode(JSON.stringify(header));
     const encodedPayload = base64UrlEncode(JSON.stringify(payload));
 
-    const signature = crypto.createHmac('sha256', SECRET_KEY)
+    const signature = crypto.createHmac("sha256", SECRET_KEY)
         .update(`${encodedHeader}.${encodedPayload}`)
-        .digest('base64url');
+        .digest("base64url");
 
     const signedToken = `${encodedHeader}.${encodedPayload}.${base64UrlEncode(signature)}`;
 
@@ -56,20 +56,20 @@ function generateToken(payload) {
  * @returns {{username: string; id: string; created_at: number; expire: number;} | null} 
  */
 function verifyToken(token) {
-    const parts = token.split('.');
+    const parts = token.split(".");
     if (parts.length !== 3) {
         return null;
     }
 
     const [encodedHeader, encodedPayload, signature] = parts;
 
-    const calculatedSignature = crypto.createHmac('sha256', SECRET_KEY)
+    const calculatedSignature = crypto.createHmac("sha256", SECRET_KEY)
         .update(`${encodedHeader}.${encodedPayload}`)
-        .digest('base64url');
+        .digest("base64url");
 
     try {
         if (crypto.timingSafeEqual(Buffer.from(signature, "base64url"), Buffer.from(calculatedSignature))) {
-            const payload = JSON.parse(Buffer.from(encodedPayload, 'base64url').toString("utf8"));
+            const payload = JSON.parse(Buffer.from(encodedPayload, "base64url").toString("utf8"));
 
             return payload;
         }
