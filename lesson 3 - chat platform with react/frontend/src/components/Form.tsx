@@ -113,7 +113,7 @@ export default function Form({ isLoggin, validateForm, loading, setLoading, aler
 
                     else {
                         setInputActiveted(false)
-                    }
+                    }   
                 }}
                 name={name}
                 id={name}
