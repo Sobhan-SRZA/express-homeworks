@@ -63,6 +63,142 @@
 }
 
 /* Dark Theme: Define CSS custom properties for the dark theme, applied when [data-theme="dark"] is set on an element. */
+[data-theme="dark-black"] {
+  /* Background color for the dark theme */
+  --background: #0b0b0b;
+
+  /* Hover color for interactive elements in dark theme */
+  --hover: #9ea7ab;
+  --nav-hover: #8c9396;
+  --nav-text-hover: #000000;
+
+  /* Text color for the dark theme */
+  --text: #dcdcdc;
+
+  /* Primary color for buttons, links, etc. in dark theme */
+  --primary: #ccd3d5;
+
+  /* Hover state for primary color in dark theme */
+  --primary-hover: #c4c4c4;
+
+  /* Background color for cards or panels in dark theme */
+  --card-bg: #151515;
+
+  /* Border color for elements in dark theme */
+  --border: #667176;
+
+  /* Background for specific UI components in dark theme */
+  --lgs-bg: #222222;
+
+  /* Secondary background with slight transparency in dark theme */
+  --sec-bg: #181818f1;
+
+  /* Accent color for highlights in dark theme */
+  --accent: #9d9d9d;
+
+  /* Hover state for accent color in dark theme */
+  --accent-hover: #f4f4f4;
+
+  /* Home page skills free space color */
+  --bar: #464a4d;
+
+  /* Error message from projects */
+  --error-message: #FF8A8A;
+
+  /* Skeleton items from projects */
+  --loding-item: #5e6670;
+}
+[data-theme="dark-cyan"] {
+  /* Background color for the dark theme */
+  --background: #0f262a;
+
+  /* Hover color for interactive elements in dark theme */
+  --hover: #3bc7f6;
+  --nav-hover: #baeaff;
+  --nav-text-hover: #000000;
+
+  /* Text color for the dark theme */
+  --text: #f8fbfc;
+
+  /* Primary color for buttons, links, etc. in dark theme */
+  --primary: #60d6fa;
+
+  /* Hover state for primary color in dark theme */
+  --primary-hover: #a8f2ff;
+
+  /* Background color for cards or panels in dark theme */
+  --card-bg: #1e333b;
+
+  /* Border color for elements in dark theme */
+  --border: #60747e;
+
+  /* Background for specific UI components in dark theme */
+  --lgs-bg: #1e323b;
+
+  /* Secondary background with slight transparency in dark theme */
+  --sec-bg: #182c33f1;
+
+  /* Accent color for highlights in dark theme */
+  --accent: #3ccefb;
+
+  /* Hover state for accent color in dark theme */
+  --accent-hover: #74d6fd;
+
+  /* Home page skills free space color */
+  --bar: #486974;
+
+  /* Error message from projects */
+  --error-message: #FF8A8A;
+
+  /* Skeleton items from projects */
+  --loding-item: #6c8fb7;
+}
+[data-theme="dark-purple"] {
+  /* Background color for the dark theme */
+  --background: #1f0f2a;
+
+  /* Hover color for interactive elements in dark theme */
+  --hover: #bb3bf6;
+  --nav-hover: #f9baff;
+  --nav-text-hover: #000000;
+
+  /* Text color for the dark theme */
+  --text: #fbf8fc;
+
+  /* Primary color for buttons, links, etc. in dark theme */
+  --primary: #cc60fa;
+
+  /* Hover state for primary color in dark theme */
+  --primary-hover: #e5a8ff;
+
+  /* Background color for cards or panels in dark theme */
+  --card-bg: #331e3b;
+
+  /* Border color for elements in dark theme */
+  --border: #75607e;
+
+  /* Background for specific UI components in dark theme */
+  --lgs-bg: #311e3b;
+
+  /* Secondary background with slight transparency in dark theme */
+  --sec-bg: #291833f1;
+
+  /* Accent color for highlights in dark theme */
+  --accent: #b23cfb;
+
+  /* Hover state for accent color in dark theme */
+  --accent-hover: #e274fd;
+
+  /* Home page skills free space color */
+  --bar: #485a74;
+
+  /* Error message from projects */
+  --error-message: #FF8A8A;
+
+  /* Skeleton items from projects */
+  --loding-item: #6c8fb7;
+}
+
 [data-theme="dark"] {
   /* Background color for the dark theme */
   --background: #0f172a;
