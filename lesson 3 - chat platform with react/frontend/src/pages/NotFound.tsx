@@ -28,9 +28,7 @@ const NotFound: React.FC = () => {
                 <title>Segraph | Page Not Found</title>
             </Helmet>
 
-            <main
-                className={`min-h-min grid rounded-3xl place-items-center px-6 py-24 sm:py-32 lg:px-8 animate-fade-in transition-all ${"ltr"}`}
-            >
+            <main className="grow custom-container mx-auto flex flex-col justify-center text-center px-4 py-8">
                 <div className="text-center">
                     <p className="text-7xl font-semibold text-(--primary) font-iransans">404</p>
                     <h1 className="mt-4 text-4xl sm:text-5xl font-semibold tracking-tight text-(--text) font-iransans">
