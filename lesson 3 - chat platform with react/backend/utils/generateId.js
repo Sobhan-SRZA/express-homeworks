@@ -1,20 +1,17 @@
-const { default: SnowflakeId } = require('snowflake-id');
+const { default: SnowflakeId } = require("snowflake-id");
 
 /**
  * 
  * @returns {string}
  */
 module.exports = () => {
-    const worderId = process.env.WORKER_ID;
-    console.log("🚀 ~ worderId:", worderId)
+    const worderId = process.env.WORKER_ID || 1;
+
     const snowflake = new SnowflakeId({
-        mid: worderId,
-        offset: Date.now()
+        mid: worderId
     })
 
     const id = snowflake.generate();
-    console.log("🚀 ~ id:", id)
 
-    console.log("🚀 ~ Number(id):", Number(id))
-    return Number(id);
+    return BigInt(id);
 }
