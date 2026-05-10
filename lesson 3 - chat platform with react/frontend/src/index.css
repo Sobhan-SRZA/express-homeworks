@@ -63,7 +63,7 @@
 }
 
 /* Dark Theme: Define CSS custom properties for the dark theme, applied when [data-theme="dark"] is set on an element. */
-[data-theme="dark-black"] {
+[data-theme="dark"] {
   /* Background color for the dark theme */
   --background: #0b0b0b;
 
@@ -108,6 +108,7 @@
   /* Skeleton items from projects */
   --loding-item: #5e6670;
 }
+
 [data-theme="dark-cyan"] {
   /* Background color for the dark theme */
   --background: #0f262a;
@@ -153,6 +154,7 @@
   /* Skeleton items from projects */
   --loding-item: #6c8fb7;
 }
+
 [data-theme="dark-purple"] {
   /* Background color for the dark theme */
   --background: #1f0f2a;
@@ -199,7 +201,7 @@
   --loding-item: #6c8fb7;
 }
 
-[data-theme="dark"] {
+[data-theme="dark-blue"] {
   /* Background color for the dark theme */
   --background: #0f172a;
 
@@ -271,14 +273,39 @@ body {
 
 /* Tailwind utilities layer: Define custom utility classes for text direction and transitions. */
 @layer utilities {
+
+  /* Right-to-left text direction for languages like Persian */
   .rtl {
     direction: rtl;
-    /* Right-to-left text direction for languages like Persian */
   }
 
+  /* Left-to-right text direction for languages like English */
   .ltr {
     direction: ltr;
-    /* Left-to-right text direction for languages like English */
+  }
+
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+
+  .custom-scroll::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .custom-scroll::-webkit-scrollbar-thumb{
+    background-color: var(--border);
   }
 
   .custom-container {
