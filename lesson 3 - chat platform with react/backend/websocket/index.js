@@ -17,7 +17,7 @@ const ws_port = 3000;
  */
 module.exports = (app) => {
     const server = http.createServer(app);
-    const io = new Server({ ...server, path: '/ws' });
+    const io = new Server(server);
 
     /**
      * @type {Map<string, Socket>}
@@ -25,10 +25,13 @@ module.exports = (app) => {
     const onlineUsers = new Map(); // { userId: wsClient }
     const userMessageMap = new Map(); // { userId: Set<messageId> } 
 
-    io.on('connection', async (socket) => {
+    io.on('connection', (socket) => {
+        console.log("🚀 ~ socket:", socket)
 
         const query = url.parse(socket.request.url, true).query;
+        console.log("🚀 ~ socket.request.url:", socket.request.url)
         const token = query.token;
+        console.log("🚀 ~ token:", token)
 
         if (!token) {
             console.error("Authentication error: Token missing");
@@ -123,7 +126,11 @@ module.exports = (app) => {
         catch (err) {
             console.error("Authentication failed:", err);
 
-            socket.send(JSON.stringify({ type: 'auth_error', message: 'Invalid token' }));
+            socket.send(JSON.stringify({
+                type: 'error',
+                code: "AUTH_INVALID",
+                message: 'Invalid token'
+            }));
             io.close();
         }
     });
