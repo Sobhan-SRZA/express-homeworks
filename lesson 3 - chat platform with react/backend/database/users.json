@@ -31,7 +31,14 @@
         "id": "4096",
         "value": {
             "online": true,
-            "lastSeen": "2026-05-06T12:27:07.927Z"
+            "lastSeen": "2026-05-10T14:25:04.955Z"
+        }
+    },
+    {
+        "id": "7459252967808438272",
+        "value": {
+            "online": true,
+            "lastSeen": null
         }
     }
 ]
