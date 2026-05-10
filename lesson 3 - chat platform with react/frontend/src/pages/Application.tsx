@@ -9,9 +9,17 @@ interface ApplicationProbs {
 }
 
 export default function Application({ token }: ApplicationProbs) {
-  const url = `${backend.websocket}?token=${token}`;
+  const { } = useWebSocket({
+    token, url: backend.websocket,
+    onAuthFail: (socket) => {
+      window.location.reload();
 
-  // const { } = useWebSocket(url);
+      socket.close()
+
+      return;
+    }
+  });
+  
   const [openChat, setOpenChat] = useState<boolean>(false);
 
   const chats = [
@@ -37,32 +45,7 @@ export default function Application({ token }: ApplicationProbs) {
     { id: 52, avatar: "/favicon.ico", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
     { id: 554642, muted: false, name: "setayesh hazery", last_message: { text: "Ashkum", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
     { id: 613, muted: true, name: "sepehr", last_message: { text: "bro where are you???", timestamp: Date.now() }, status: "offline", unread_message: 5 },
-  ]
-  const socket = new WebSocket(url);
-  const sendMessage = (msg: string | object) => {
-    if (socket.readyState === WebSocket.OPEN) {
-
-      if (typeof msg !== "string")
-        msg = JSON.stringify(msg);
-
-      socket.send(msg);
-    }
-  };
-  socket.onopen = () => {
-    console.log('WebSocket connection established');
-    sendMessage({ type: 'get_initial_data' });
-  };
-
-  socket.onmessage = (event) => {
-    const data = event.data;
-
-    if (data.type === "error") {
-      if (["AUTH_EXPIRE", "AUTH_MISSING"].includes(data.code)) {
-        location.reload();
-      }
-    }
-
-  };
+  ];
 
   const sortedChats = chats.sort((a, b) => {
     const timestampA = Number(a.last_message?.timestamp || 0);
