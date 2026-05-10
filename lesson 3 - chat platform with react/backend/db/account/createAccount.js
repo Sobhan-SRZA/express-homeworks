@@ -15,7 +15,7 @@ module.exports = (username, hashedPassword) => {
 
         const accounts = getData("accounts");
         accounts.push({
-            id: `${userId}`,
+            id: userId,
             value: {
                 created_at: timestamp,
                 username,
