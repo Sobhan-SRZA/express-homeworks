@@ -14,6 +14,11 @@ export default function useWebSocket(url: string) {
     useEffect(() => {
         socketRef.current = new WebSocket(url);
 
+        socketRef.current.onopen = () => {
+            console.log('WebSocket connection established');
+            sendMessage({ type: 'get_initial_data' });
+        };
+
         socketRef.current.onmessage = (event) => {
             const data = event.data;
 
@@ -22,7 +27,7 @@ export default function useWebSocket(url: string) {
                     location.reload();
                 }
             }
-            
+
             setMessages(prev => [...prev, event.data]);
         };
 
@@ -31,8 +36,12 @@ export default function useWebSocket(url: string) {
         };
     }, [url]);
 
-    const sendMessage = (msg: string) => {
+    const sendMessage = (msg: string | object) => {
         if (socketRef.current?.readyState === WebSocket.OPEN) {
+
+            if (typeof msg !== "string")
+                msg = JSON.stringify(msg);
+
             socketRef.current?.send(msg);
         }
     };
