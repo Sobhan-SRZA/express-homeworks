@@ -10,8 +10,14 @@ const port = 8888;
 const app = express();
 
 // CORS
+const FRONT_URL = process.env.FRONT_URL;
+
+if (!FRONT_URL) {
+    throw "You didn't add FRONT_URL to .env file."
+}
+
 app.use(cors({
-    origin: ["http://localhost:5173"]
+    origin: [FRONT_URL]
 }));
 
 // Use json in express get and post
