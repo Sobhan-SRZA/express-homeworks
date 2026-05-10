@@ -13,5 +13,5 @@ module.exports = () => {
 
     const id = snowflake.generate();
 
-    return BigInt(id);
+    return id;
 }
