@@ -1,26 +1,42 @@
+import {
+    DatabaseEntry,
+    TableDataMap,
+    Tables
+} from "./types";
 import { readFileSync } from "fs";
-import { Database, Tables } from "../../types/database";
 import tables from "./tables";
 
+export default function getData<T extends Tables>(
+    table: T
+): DatabaseEntry<TableDataMap[T]>[];
 
-export default function (table: Tables, id?: string) {
+export default function getData<T extends Tables>(
+    table: T,
+    id: string
+): DatabaseEntry<TableDataMap[T]> | undefined;
+export default function getData<T extends Tables>(
+    table: T,
+    id?: string
+) {
     if (!tables.includes(table))
-        throw Error("DB: wrong table name!")
+        throw "DB: wrong table name!";
 
-    let data: Database[] | Database;
+    const filePath = `./database/${table}.json`;
+
+    let parsed: DatabaseEntry<TableDataMap[T]>[];
+
     try {
-        data = JSON.parse(readFileSync(`./database/${table}.json`).toString("utf8")) as Database[];
-
-        if (id) {
-            const foundedId = data.find(a => a.id === `${id}`);
-            if (foundedId)
-                data = foundedId as Database;
-        }
+        const file = readFileSync(filePath, "utf8");
+        parsed = JSON.parse(file);
     }
-
+    
     catch {
-        data = []
+        parsed = [];
     }
 
-    return data
+    if (id !== undefined) {
+        return parsed.find(entry => entry.id === id);
+    }
+
+    return parsed;
 }
