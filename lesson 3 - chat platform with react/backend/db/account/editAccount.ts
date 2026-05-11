@@ -1,27 +1,23 @@
-const checkUsername = require("./checkUsername");
-const getData = require("../../database/commands/getData");
-const setData = require("../../database/commands/setData");
-const getAccount = require("./getAccount");
+import getData from "../../database/commands/getData";
+import checkUsername from "./checkUsername";
+import getAccount from "./getAccount";
 
-/**
- * 
- * @param {string} userId 
- * @param {string | undefined} username 
- * @param {string | undefined} hashedPassword 
- * @returns 
- */
-module.exports = (userId, username, hashedPassword) => {
+export default (userId: string, username?: string, hashedPassword?: string) => {
     try {
         const accounts = getData("accounts");
 
         const account = getAccount(userId);
 
+        if (!account) {
+            throw ("Account was not found!")
+        }
+
         if (username) {
             if (checkUsername(username)) {
-                throw Error("username was used before!")
+                throw ("The username was used before!")
             }
 
-            account.value.username = username;
+            account.username = username;
 
             setData("accounts", accounts);
 
@@ -29,7 +25,7 @@ module.exports = (userId, username, hashedPassword) => {
         }
 
         if (hashedPassword) {
-            account.value.password = hashedPassword;
+            account.password = hashedPassword;
 
             setData("accounts", accounts);
 
