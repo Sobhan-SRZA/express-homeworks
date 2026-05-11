@@ -1,17 +1,7 @@
-const getData = require("../../database/commands/getData");
-const setData = require("../../database/commands/setData");
-const chatId = require("../../utils/chatId");
+import getData from "../../database/commands/getData";
+import chatId from "../../utils/chatId";
 
-/**
- * 
- * @param {string} from 
- * @param {string} to 
- * @param {string} text 
- * @param {{name: string file: string type: string}[] | undefined} attachment
- * @param {"text" | "emoji" | "image" | "video" | "voice" | "music" | "file"} type 
- * @returns {{ messageId: number from: string to: string text: string type: string timestamp: string status: { sentToUser: boolean deliveredToUser: boolean seenByuser: boolean } deliveredAt: string | null seenAt: string | null }}
- */
-module.exports = function (from, to, text, type, attachments, timestamp) {
+export default function (from: string, to: string, text: string) {
     const cid = chatId(from, to);
     let messages = getData("messages", cid);
 
@@ -20,14 +10,9 @@ module.exports = function (from, to, text, type, attachments, timestamp) {
         from,
         to,
         text,
-        attachments,
-        type,
         timestamp: new Date().toISOString(),
-        status: {
-            sentToUser: false,
-            deliveredToUser: false,
-            seenByuser: false
-        },
+        sentToUser: false,
+        status: "sent",
         deliveredAt: null,
         seenAt: null
     };
