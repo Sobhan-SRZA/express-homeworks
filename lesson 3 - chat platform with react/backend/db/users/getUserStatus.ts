@@ -1,13 +1,12 @@
-const getData = require("../../database/commands/getData");
-const getAccount = require("../account/getAccount");
+import { User } from "../../database/commands/types";
+import getAccount from "../account/getAccount";
+import getData from "../../database/commands/getData";
 
-/**
- * 
- * @param {string} userId 
- * @returns {{userId:string online:boolean lastSeen:string|null}}
- */
-module.exports = function (userId) {
+export default function (userId: string): User {
     const account = getAccount(userId);
+    if (!account) {
+        throw "Account was not found."
+    }
 
     const users = getData("users");
     const userStatusData = users.find(a => a.id === `${account.id}`);
