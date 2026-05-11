@@ -1,21 +1,21 @@
-const getAccount = require("./getAccount");
-const getData = require("../../database/commands/getData");
-const setData = require("../../database/commands/setData");
+import getAccount from "./getAccount";
+import getData from "../../database/commands/getData";
 
-/**
- * 
- * @param {string} userId 
- * @returns {boolean}
- */
-module.exports = (userId) => {
+export default (userId: string) => {
     try {
         const accounts = getData("accounts");
 
         const account = getAccount(userId);
+        if (account) {
+            setData("accounts", accounts.filter(a => a.id !== account.id));
 
-        setData("accounts", accounts.filter(a => a.id !== account.id));
+            return true;
+        }
 
-        return true;
+        console.log("Error deleting account from database: Account with id ", userId, " was not founded.")
+        
+        return false;
+
     }
 
     catch (error) {
