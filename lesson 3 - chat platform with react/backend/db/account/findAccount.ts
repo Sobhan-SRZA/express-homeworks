@@ -1,11 +1,6 @@
-const getData = require("../../database/commands/getData");
+import getData from "../../database/commands/getData";
 
-/**
- * 
- * @param {string} search 
- * @returns {{username: string; id: string; created_at: number; password: string;} | null} 
- */
-module.exports = (search) => {
+export default (search:string) => {
     try {
         if (!search || typeof search !== "string")
             return null;
@@ -32,6 +27,7 @@ module.exports = (search) => {
         let startsWith = accounts.find(a =>
             a.value.username.toLowerCase().startsWith(q)
         );
+        
         if (startsWith)
             return startsWith.value;
 
