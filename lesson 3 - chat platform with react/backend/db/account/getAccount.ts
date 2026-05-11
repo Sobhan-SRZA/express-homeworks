@@ -1,16 +1,11 @@
-const getData = require("../../database/commands/getData");
+import getData from "../../database/commands/getData";
 
-/**
- * 
- * @param {string} userId 
- * @returns {{username: string; id: string; created_at: number; password: string;} | null} 
- */
-module.exports = (userId) => {
+export default (userId: string) => {
     try {
         const account = getData("accounts", userId);
 
         if (!account)
-            throw Error("Account with " + userId + " ID didn't founded!");
+            throw ("Account with " + userId + " ID didn't founded!");
 
         return account.value;
     }
