@@ -1,17 +1,11 @@
-const generateId = require("../../utils/generateId");
-const getData = require("../../database/commands/getData");
-const setData = require("../../database/commands/setData");
+import generateId from "../../utils/generateId";
+import setData from "../../database/commands/setData";
+import getData from "../../database/commands/getData";
 
-/**
- * 
- * @param {string} username 
- * @param {string} hashedPassword 
- * @returns 
- */
-module.exports = (username, hashedPassword) => {
+export default (username: string, hashedPassword: string) => {
     try {
         const timestamp = Date.now();
-        const userId = generateId();
+        const userId = generateId()!;
 
         const accounts = getData("accounts");
         accounts.push({
