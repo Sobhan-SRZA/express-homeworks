@@ -1,13 +1,7 @@
-const getUserStatus = require("../users/getUserStatus");
-const getData = require("../../database/commands/getData");
+import getData from "../../database/commands/getData";
+import getUserStatus from "../users/getUserStatus";
 
-/**
- * 
- * @param {string} search 
- * @param {number} limit
- * @returns {Array<{username: string; id: string;}>}
- */
-module.exports = (search, limit = 10) => {
+export default (search: string, limit: number = 10) => {
     try {
         if (!search || typeof search !== "string")
             return [];
@@ -18,7 +12,11 @@ module.exports = (search, limit = 10) => {
         if (!accounts || accounts.length < 1)
             return [];
 
-        let results = [];
+        let results: {
+            username: string;
+            id: string;
+            score: number;
+        }[] = [];
 
         for (const a of accounts) {
             const user = a.value;
@@ -78,13 +76,7 @@ module.exports = (search, limit = 10) => {
     }
 }
 
-/**
- * 
- * @param {string} a 
- * @param {string} b 
- * @returns {number}
- */
-function levenshtein(a, b) {
+function levenshtein(a:string, b:string) {
     const matrix = [];
 
     let i;
