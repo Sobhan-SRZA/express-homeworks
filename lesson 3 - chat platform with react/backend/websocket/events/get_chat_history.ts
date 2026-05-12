@@ -1,25 +1,15 @@
-const getHistory = require("../../db/messages/getHistory");
+import { CustomSocket } from "../../types/requests";
+import getHistory from "../../db/messages/getHistory";
 
-/**
- * 
- * @param {WebSocket} ws 
- * @param {{ payload: { with: string } }} parsedMessage 
- * @param {string} senderId 
- * @returns {void}
- */
-module.exports = async (ws, parsedMessage, senderId) => {
+export default (socket: CustomSocket, payload: any, senderId: string) => {
+    const { with: otherUser } = payload;
 
-    const { with: otherUser } = parsedMessage.payload;
+    const history = getHistory(senderId, otherUser);
 
-    const history = await getHistory(senderId, otherUser);
-
-    ws.send(JSON.stringify({
-        type: "chat_history",
-        payload: {
-            with: otherUser,
-            messages: history
-        }
-    }));
+    socket.emit("chat_history", {
+        with: otherUser,
+        messages: history
+    });
 
     return;
 }
