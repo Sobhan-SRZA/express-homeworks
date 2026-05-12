@@ -1,34 +1,40 @@
-const getAccount = require("../account/getAccount");
-const getData = require("../../database/commands/getData");
-const setData = require("../../database/commands/setData");
+import getData from "../../database/commands/getData";
+import getAccount from "../account/getAccount";
 
-/**
- * 
- * @param {string} userId 
- * @returns {{userId:string online:true lastSeen:string}}
- */
-module.exports = function (userId) {
-    const account = getAccount(userId);
+export default function (userId: string) {
+    try {
+        const account = getAccount(userId);
 
-    const users = getData("users");
-    let userStatusData = users.find(a => a.id === `${account.id}`);
+        if (!account)
+            throw ("Account with " + userId + " ID didn't founded!");
 
-    if (userStatusData)
-        userStatusData.value.online = true;
+        const users = getData("users");
+        let userStatusData = users.find(a => a.id === `${account.id}`);
 
-    else {
-        userStatusData = {
-            id: `${account.id}`,
-            value: {
-                online: true,
-                lastSeen: null
-            }
+        if (userStatusData)
+            userStatusData.value.online = true;
+
+        else {
+            userStatusData = {
+                id: `${account.id}`,
+                value: {
+                    userId: account.id,
+                    online: true,
+                    lastSeen: null
+                }
+            };
+
+            users.push(userStatusData);
         };
 
-        users.push(userStatusData);
-    };
+        setData("users", users);
 
-    setData("users", users);
+        return userStatusData.value;
+    }
 
-    return userStatusData.value;
+    catch (e) {
+        console.error("Setting the user status to online has problem:", e)
+
+        return null;
+    }
 }
