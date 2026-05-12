@@ -1,22 +1,17 @@
-const searchAccounts = require("../../db/account/searchAccounts");
+import searchAccounts from "../../db/account/searchAccounts";
+import { CustomSocket } from "../../types/requests";
+import { UserTokenVerify } from "../../types/user";
 
-/**
- * 
- * @param {WebSocket} ws 
- * @param {{ payload: { query: string } }} parsedMessage 
- * @param {string} senderId 
- * @param {{ username: string }} currentUser 
- * @returns {void}
- */
-module.exports = async (ws, parsedMessage, senderId, currentUser) => {
-    const { query, size } = parsedMessage.payload;
+export default (socket: CustomSocket, payload: any, senderId: string, currentUser: UserTokenVerify) => {
+    const { query, size } = payload;
     console.log(`searching: ${query} from: ${currentUser.username}`);
 
     const foundUsers = searchAccounts(query);
 
-    ws.send(JSON.stringify({
-        type: 'search_results', payload: foundUsers, size
-    }));
+    socket.emit('search_results', {
+        foundUsers,
+        size
+    });
 
     return;
 }
