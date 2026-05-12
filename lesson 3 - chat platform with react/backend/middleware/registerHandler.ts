@@ -1,8 +1,12 @@
 import { NextFunction, Response } from "express";
 import { RequestRouter } from "../types/requests";
+import findAccount from "../db/account/findAccount";
+import createAccount from "../db/account/createAccount";
+import { generateToken, hashPassword } from "../utils/security";
+import { UserTokenPlayload } from "../types/user";
 
 
-export default async (req: RequestRouter, res: Response, next: NextFunction) => {
+export default (req: RequestRouter, res: Response, next: NextFunction) => {
     if (!req.body.password || !req.body.username) {
         return res
             .status(400)
@@ -17,7 +21,7 @@ export default async (req: RequestRouter, res: Response, next: NextFunction) => 
     const { username, password } = req.body;
 
     try {
-        const existingUser = await findAccount(username);
+        const existingUser = findAccount(username);
         if (existingUser) {
             return res
                 .status(409) // Conflict
@@ -31,7 +35,10 @@ export default async (req: RequestRouter, res: Response, next: NextFunction) => 
 
         const hashedPassword = hashPassword(password);
 
-        const user = await createAccount(username, hashedPassword);
+        const user: UserTokenPlayload | null = createAccount(username, hashedPassword);
+        if (!user) {
+            throw "Faild to create a account."
+        }
 
         const token = generateToken(user);
 
@@ -44,6 +51,7 @@ export default async (req: RequestRouter, res: Response, next: NextFunction) => 
                 token: token
             });
 
+        return;
     }
 
     catch (error) {
@@ -56,5 +64,7 @@ export default async (req: RequestRouter, res: Response, next: NextFunction) => 
                 message: "An unexpected error occurred during registration.",
                 code: 500
             });
+
+        return;
     }
 };
