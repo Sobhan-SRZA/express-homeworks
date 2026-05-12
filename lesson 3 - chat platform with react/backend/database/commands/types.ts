@@ -3,9 +3,9 @@ import tables from "./tables";
 export type Tables = typeof tables[number];
 
 export type TableDataMap = {
-    [K in Tables]: K extends "users" ? User :
+    [K in Tables]: K extends "users" ? UserStatus :
     K extends "accounts" ? Account :
-    K extends "messages" ? Message :
+    K extends "messages" ? Message[] :
     K extends "chats" ? Chat :
     K extends "files" ? File :
     never;
@@ -25,14 +25,14 @@ export interface Message {
     from: string;
     to: string;
     text: string;
-    timestamp: string;
-    status: "sent" | "deliverd" | "seen";
-    sentToUser: boolean;
+    timestamp: number;
+    status: MessageStatus;
+    sentAt: number | null;
     deliveredAt: number | null;
     seenAt: number | null;
 }
 
-export interface User {
+export interface UserStatus {
     userId: string;
     online: boolean;
     lastSeen: string | null;
@@ -54,3 +54,5 @@ export interface DatabaseEntry<T> {
     id: string;
     value: T;
 }
+
+export type MessageStatus = "sent" | "deliverd" | "seen";
