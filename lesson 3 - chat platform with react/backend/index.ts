@@ -1,4 +1,5 @@
 import { readdirSync } from "fs";
+import websocket from "./websocket";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
