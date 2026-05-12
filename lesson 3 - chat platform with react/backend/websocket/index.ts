@@ -1,35 +1,30 @@
-const { verifyToken } = require('../utils/security');
-const getUserStatus = require('../db/users/getUserStatus');
-const setOffline = require('../db/users/setOffline');
-const getAccount = require('../db/account/getAccount');
-const setOnline = require('../db/users/setOnline');
-
-const http = require('http');
-const { Server } = require("socket.io");
+import { CustomSocket } from "../types/requests";
+import { createServer } from "http";
+import { readdirSync } from "fs";
+import { verifyToken } from "../utils/security";
+import { Express } from "express";
+import { Server, Socket } from "socket.io";
 
 const ws_port = 3000;
 
-/**
- * @param {import("express").Express} app 
- */
-module.exports = (app) => {
+export default (app: Express) => {
     const FRONT_URL = process.env.FRONT_URL;
 
-    if(!FRONT_URL){
+    if (!FRONT_URL) {
         throw "You didn't add FRONT_URL to .env file."
     }
 
-    const server = http.createServer(app);
+    const server = createServer(app);
 
     const io = new Server(server, {
         cors: {
-            origin: [FRONT_URL] 
+            origin: [FRONT_URL]
         }
     });
 
-    const onlineUsers = new Map(); // { userId: socket }
+    const onlineUsers: Map<string, Socket> = new Map(); // { userId: socket }
 
-    io.use((socket, next) => {
+    io.use((socket: CustomSocket, next) => {
         const token = socket.handshake.auth?.token;
 
         if (!token) {
@@ -52,34 +47,27 @@ module.exports = (app) => {
             next();
 
         }
-        
+
         catch (err) {
             return next(new Error("Authentication failed"));
         }
     });
 
-    // ✅ اتصال موفق
-    io.on("connection", (socket) => {
-
+    io.on("connection", (socket: CustomSocket) => {
         const currentUser = socket.user;
-        const userId = currentUser.id;
+        const userId = currentUser!.id;
 
         console.log("✅ Socket connected:", userId);
 
         setOnline(userId);
         onlineUsers.set(userId, socket);
 
-        // broadcast وضعیت آنلاین
         io.emit("user_status", getUserStatus(userId));
 
-        // ✅ جایگزین message event
         socket.on("event", async (data) => {
             const { type, payload } = data;
 
-            const fs = require('fs');
-
-            fs
-                .readdirSync("websocket/events")
+            readdirSync("websocket/events")
                 .filter(file => file.endsWith(".js"))
                 .forEach(async (file) => {
 
@@ -99,9 +87,7 @@ module.exports = (app) => {
                 });
         });
 
-        // ✅ disconnect
         socket.on("disconnect", () => {
-
             onlineUsers.delete(userId);
 
             console.log("❌ Socket disconnected:", userId);
