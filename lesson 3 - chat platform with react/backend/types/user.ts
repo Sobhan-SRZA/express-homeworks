@@ -4,3 +4,5 @@ export interface UserTokenVerify {
     created_at: number;
     expire: number;
 }
+
+export type UserTokenPlayload = Omit<UserTokenVerify, "expire">;
