@@ -35,8 +35,8 @@ export default (userId: string, username?: string, hashedPassword?: string) => {
         return false;
     }
 
-    catch (error) {
-        console.log("Error editing account from database:", error)
+    catch (e) {
+        console.error("Error editing account from database:", e)
 
         return false;
     }
