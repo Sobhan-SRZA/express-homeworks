@@ -58,25 +58,28 @@ export default (search: string, limit: number = 10) => {
         return results
             .slice(0, limit)
             .map(r => {
-                const { online, lastSeen } = getUserStatus(r.id);
+                const status = getUserStatus(r.id);
+                if (!status) {
+                    throw "Can't get user status."
+                }
 
                 return {
                     username: r.username,
                     id: r.id,
-                    status: online,
-                    lastSeen
+                    status: status.online,
+                    lastSeen: status.lastSeen
                 }
             });
     }
 
-    catch (error) {
-        console.log("Error searching accounts from database:", error)
+    catch (e) {
+        console.error("Error searching accounts from database:", e)
 
         return [];
     }
 }
 
-function levenshtein(a:string, b:string) {
+function levenshtein(a: string, b: string) {
     const matrix = [];
 
     let i;
