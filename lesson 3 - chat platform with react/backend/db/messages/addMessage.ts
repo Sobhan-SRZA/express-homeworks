@@ -9,7 +9,7 @@ export default function (from: string, to: string, text: string) {
 
         const currentTime = Date.now();
         const message: Message = {
-            messageId: currentTime,
+            messageId: currentTime.toString(),
             from,
             to,
             text,
