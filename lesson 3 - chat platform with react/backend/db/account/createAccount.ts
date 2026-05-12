@@ -27,8 +27,8 @@ export default (username: string, hashedPassword: string) => {
         };
     }
 
-    catch (error) {
-        console.log("Error creating account from database:", error)
+    catch (e) {
+        console.error("Error creating account from database:", e)
 
         return null;
     }
