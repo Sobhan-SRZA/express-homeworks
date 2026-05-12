@@ -1,6 +1,7 @@
-import getData from "../../database/commands/getData";
 import checkUsername from "./checkUsername";
 import getAccount from "./getAccount";
+import setData from "../../database/commands/setData";
+import getData from "../../database/commands/getData";
 
 export default (userId: string, username?: string, hashedPassword?: string) => {
     try {

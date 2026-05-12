@@ -1,9 +1,15 @@
-import { NextFunction, Response } from "express";
-import { RequestRouter } from "../types/requests";
-import findAccount from "../db/account/findAccount";
-import createAccount from "../db/account/createAccount";
-import { generateToken, hashPassword } from "../utils/security";
+import {
+    generateToken,
+    hashPassword
+} from "../utils/security";
+import {
+    NextFunction,
+    Response
+} from "express";
 import { UserTokenPlayload } from "../types/user";
+import { RequestRouter } from "../types/requests";
+import createAccount from "../db/account/createAccount";
+import findAccount from "../db/account/findAccount";
 
 
 export default (req: RequestRouter, res: Response, next: NextFunction) => {

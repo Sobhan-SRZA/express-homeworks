@@ -1,8 +1,9 @@
+import { MessageStatus } from "../../database/commands/types";
 import getData from "../../database/commands/getData";
 import setData from "../../database/commands/setData";
-import { MessageStatus } from "../../database/commands/types";
+import chatId from "../../utils/chatId";
 
-export default async function (userId: string, targetUserId: string, messageId: string, statusType: MessageStatus) {
+export default function (userId: string, targetUserId: string, messageId: string, statusType: MessageStatus) {
     try {
         const cid = chatId(userId, targetUserId);;
         const messages = getData("messages", `${cid}`);

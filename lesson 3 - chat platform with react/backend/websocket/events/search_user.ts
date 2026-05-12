@@ -1,6 +1,6 @@
-import searchAccounts from "../../db/account/searchAccounts";
-import { CustomSocket } from "../../types/requests";
 import { UserTokenVerify } from "../../types/user";
+import { CustomSocket } from "../../types/requests";
+import searchAccounts from "../../db/account/searchAccounts";
 
 export default (socket: CustomSocket, payload: any, senderId: string, currentUser: UserTokenVerify) => {
     const { query, size } = payload;

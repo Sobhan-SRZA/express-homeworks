@@ -1,5 +1,6 @@
-import getData from "../../database/commands/getData";
 import getAccount from "../account/getAccount";
+import getData from "../../database/commands/getData";
+import setData from "../../database/commands/setData";
 
 export default function (userId: string) {
     try {

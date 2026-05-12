@@ -1,7 +1,7 @@
 import { UserTokenVerify } from "../../types/user";
 import { CustomSocket } from "../../types/requests";
-import getAccount from "../../db/account/getAccount";
 import getUserStatus from "../../db/users/getUserStatus";
+import getAccount from "../../db/account/getAccount";
 
 export default (socket: CustomSocket, payload: any, senderId: string, currentUser: UserTokenVerify) => {
     const { userId } = payload;

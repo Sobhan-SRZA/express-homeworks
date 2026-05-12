@@ -36,6 +36,7 @@ export interface UserStatus {
     userId: string;
     online: boolean;
     lastSeen: string | null;
+    typing?: boolean;
 }
 
 export interface Chat { }

@@ -1,5 +1,5 @@
-import getData from "../../database/commands/getData";
 import getUserStatus from "../users/getUserStatus";
+import getData from "../../database/commands/getData";
 
 export default (search: string, limit: number = 10) => {
     try {

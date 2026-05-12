@@ -1,16 +1,12 @@
-const updateMessageStatus = require("../../db/messages/updateMessageStatus");
+import {
+    OnlineUsers,
+    UserTokenVerify
+} from "../../types/user";
+import { CustomSocket } from "../../types/requests";
+import updateMessageStatus from "../../db/messages/updateMessageStatus";
 
-/**
- * 
- * @param {WebSocket} ws 
- * @param {{ payload: { messageId: string targetUserId: string statusType: string } }} parsedMessage 
- * @param {string} senderId 
- * @param {{ username: string }} currentUser 
- * @param {Map<string, WebSocket>} onlineUsers 
- * @returns {void}
- */
-module.exports = async (ws, parsedMessage, senderId, currentUser, onlineUsers) => {
-    const { messageId, targetUserId, statusType } = parsedMessage.payload;
+export default (socket: CustomSocket, payload: any, senderId: string, currentUser: UserTokenVerify, onlineUsers: OnlineUsers) => {
+    const { messageId, targetUserId, statusType } = payload;
 
     const updatedMessage = updateMessageStatus(senderId, targetUserId, messageId, statusType);
 

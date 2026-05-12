@@ -1,5 +1,6 @@
 import getAccount from "./getAccount";
 import getData from "../../database/commands/getData";
+import setData from "../../database/commands/setData";
 
 export default (userId: string) => {
     try {

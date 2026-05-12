@@ -3,9 +3,9 @@ import {
     UserTokenVerify
 } from "../../types/user";
 import { CustomSocket } from "../../types/requests";
-import addMessage from "../../db/messages/addMessage";
 import { Message } from "../../database/commands/types";
 import updateMessageStatus from "../../db/messages/updateMessageStatus";
+import addMessage from "../../db/messages/addMessage";
 
 export default (socket: CustomSocket, payload: any, senderId: string, currentUser: UserTokenVerify, onlineUsers: OnlineUsers) => {
     handleSendMessage(socket, payload, senderId, currentUser, onlineUsers);

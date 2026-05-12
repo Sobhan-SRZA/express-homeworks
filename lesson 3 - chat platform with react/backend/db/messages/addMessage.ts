@@ -1,5 +1,6 @@
 import { Message } from "../../database/commands/types";
 import getData from "../../database/commands/getData";
+import setData from "../../database/commands/setData";
 import chatId from "../../utils/chatId";
 
 export default function (from: string, to: string, text: string) {
