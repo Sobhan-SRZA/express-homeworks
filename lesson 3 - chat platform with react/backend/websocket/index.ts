@@ -5,6 +5,7 @@ import { verifyToken } from "../utils/security";
 import { OnlineUsers } from "../types/user";
 import { Express } from "express";
 import { Server } from "socket.io";
+import getUserStatus from "../db/users/getUserStatus";
 import getAccount from "../db/account/getAccount";
 import setOffline from "../db/users/setOffline";
 import setOnline from "../db/users/setOnline";
