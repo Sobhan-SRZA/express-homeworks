@@ -13,13 +13,13 @@ export default (userId: string) => {
         }
 
         console.log("Error deleting account from database: Account with id ", userId, " was not founded.")
-        
+
         return false;
 
     }
 
-    catch (error) {
-        console.log("Error deleting account from database:", error)
+    catch (e) {
+        console.error("Error deleting account from database:", e)
 
         return false;
     }
