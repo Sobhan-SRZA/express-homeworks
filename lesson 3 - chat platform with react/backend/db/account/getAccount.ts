@@ -10,8 +10,8 @@ export default (userId: string) => {
         return account.value;
     }
 
-    catch (error) {
-        console.log("Error getting account from database:", error)
+    catch (e) {
+        console.error("Error getting account from database:", e)
 
         return null;
     }
