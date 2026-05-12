@@ -1,5 +1,13 @@
-import { createHmac, pbkdf2Sync, randomBytes, timingSafeEqual } from "crypto";
-import { UserTokenVerify } from "../types/user";
+import {
+    createHmac,
+    pbkdf2Sync,
+    randomBytes,
+    timingSafeEqual
+} from "crypto";
+import {
+    UserTokenPlayload,
+    UserTokenVerify
+} from "../types/user";
 
 const SECRET_KEY = "thisIs-SecretKeyof*cryptiNgTh(**is ShIt%#12";
 
@@ -19,7 +27,7 @@ function verifyPassword(storedHash: string, providedPassword: string) {
 
 const base64UrlEncode = (str: string) => Buffer.from(str).toString("base64url");
 
-function generateToken(payload: UserTokenVerify) {
+function generateToken(payload: UserTokenPlayload & { expire?: number }) {
     payload.expire = Date.now() + 900_000;
 
     const header = { alg: "HS256", typ: "JWT" };
