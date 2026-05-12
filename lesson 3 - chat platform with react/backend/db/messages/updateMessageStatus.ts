@@ -1,49 +1,46 @@
-const getData = require("../../database/commands/getData");
-const setData = require("../../database/commands/setData");
-const chatId = require("../../utils/chatId");
+import getData from "../../database/commands/getData";
+import setData from "../../database/commands/setData";
+import { MessageStatus } from "../../database/commands/types";
 
-/**
- * 
- * @param {string} userId 
- * @param {string} targetUserId 
- * @param {string} messageId 
- * @param {'sent' | 'delivered' | 'seen'} statusType 
- * @returns {{ messageId: number from: string to: string text: string timestamp: string status: { sentToUser: boolean deliveredToUser: boolean seenByuser: boolean } deliveredAt: string | null seenAt: string | null }}
- */
-module.exports = async function (userId, targetUserId, messageId, statusType) {
-    const cid = chatId(userId, targetUserId);;
-    const messages = getData("messages", `${cid}`);
-    if (!messages || !messages.value || messages.value.length < 1)
-        return false;
+export default async function (userId: string, targetUserId: string, messageId: string, statusType: MessageStatus) {
+    try {
+        const cid = chatId(userId, targetUserId);;
+        const messages = getData("messages", `${cid}`);
+        if (!messages || !messages.value || messages.value.length < 1)
+            return null;
 
-    const messageIndex = messages.value.findIndex(msg => `${msg.messageId}` === `${messageId}`);
+        const messageIndex = messages.value.findIndex(msg => `${msg.messageId}` === `${messageId}`);
 
-    if (messageIndex === -1)
-        return false;
+        if (messageIndex === -1)
+            return null;
 
-    const message = messages.value[messageIndex];
-    const currentTime = new Date().toISOString();
+        const message = messages.value[messageIndex];
+        const currentTime = Date.now();
 
-    if (statusType === 'sent') {
-        message.status.sentToUser = true;
+        if (statusType === "sent") {
+            message.status = "sent";
+            message.seenAt = currentTime;
+        }
+
+        else if (statusType === "deliverd") {
+            message.status = "deliverd";
+            message.deliveredAt = currentTime;
+        }
+
+        else if (statusType === "seen") {
+            message.status = "seen";
+            message.seenAt = currentTime;
+        }
+
+        messages.value[messageIndex] = message;
+        setData("messages", messages, `${cid}`);
+
+        return message;
     }
 
-    else if (statusType === 'delivered') {
-        message.status.sentToUser = true;
-        message.status.deliveredToUser = true;
-        message.deliveredAt = currentTime;
+    catch (e) {
+        console.error("Updating message status has problem:", e);
+
+        return null;
     }
-
-    else if (statusType === 'seen') {
-        message.status.sentToUser = true;
-        message.status.deliveredToUser = true;
-        message.deliveredAt = currentTime;
-        message.status.seenByuser = true;
-        message.seenAt = currentTime;
-    }
-
-    messages.value[messageIndex] = message;
-    setData("messages", messages, `${cid}`);
-
-    return message;
 }
