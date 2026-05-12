@@ -21,7 +21,7 @@ export interface Account {
 }
 
 export interface Message {
-    messageId: number;
+    messageId: string;
     from: string;
     to: string;
     text: string;
