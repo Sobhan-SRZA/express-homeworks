@@ -1,36 +1,43 @@
-const getAccount = require("../account/getAccount");
-const getData = require("../../database/commands/getData");
-const setData = require("../../database/commands/setData");
+import getAccount from "../account/getAccount";
+import getData from "../../database/commands/getData";
+import setData from "../../database/commands/setData";
 
-/**
- * 
- * @param {string} userId 
- * @returns {{userId:string online:false lastSeen:string}}
- */
-module.exports = function (userId) {
-    const account = getAccount(userId);
+export default function (userId: string) {
+    try {
+        const account = getAccount(userId);
 
-    const users = getData("users");
-    let userStatusData = users.find(a => a.id === `${account.id}`);
+        if (!account)
+            throw ("Account with " + userId + " ID didn't founded!");
 
-    if (userStatusData) {
-        userStatusData.value.online = false;
-        userStatusData.value.lastSeen = new Date().toISOString();
+        const users = getData("users");
+        let userStatusData = users.find(a => a.id === `${account.id}`);
+
+        if (userStatusData) {
+            userStatusData.value.online = false;
+            userStatusData.value.lastSeen = new Date().toISOString();
+        }
+
+        else {
+            userStatusData = {
+                id: account.id,
+                value: {
+                    userId: account.id,
+                    online: false,
+                    lastSeen: new Date().toISOString()
+                }
+            };
+
+            users.push(userStatusData);
+        }
+
+        setData("users", users);
+
+        return userStatusData.value;
     }
 
-    else {
-        userStatusData = {
-            id: `${account.id}`,
-            value: {
-                online: false,
-                lastSeen: new Date().toISOString()
-            }
-        };
+    catch (e) {
+        console.error("Setting the user status to offline has problem:", e)
 
-        users.push(userStatusData);
+        return null;
     }
-
-    setData("users", users);
-
-    return userStatusData.value;
 }
