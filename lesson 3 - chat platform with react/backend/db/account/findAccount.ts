@@ -27,7 +27,7 @@ export default (search:string) => {
         let startsWith = accounts.find(a =>
             a.value.username.toLowerCase().startsWith(q)
         );
-        
+
         if (startsWith)
             return startsWith.value;
 
@@ -42,8 +42,8 @@ export default (search:string) => {
         return null;
     }
 
-    catch (error) {
-        console.log("Error finding account from database:", error)
+    catch (e) {
+        console.error("Error finding account from database:", e)
 
         return null;
     }
