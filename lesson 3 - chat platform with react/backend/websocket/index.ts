@@ -2,8 +2,9 @@ import { CustomSocket } from "../types/requests";
 import { createServer } from "http";
 import { readdirSync } from "fs";
 import { verifyToken } from "../utils/security";
+import { OnlineUsers } from "../types/user";
 import { Express } from "express";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 
 const ws_port = 3000;
 
@@ -22,7 +23,7 @@ export default (app: Express) => {
         }
     });
 
-    const onlineUsers: Map<string, Socket> = new Map(); // { userId: socket }
+    const onlineUsers: OnlineUsers = new Map(); // { userId: socket }
 
     io.use((socket: CustomSocket, next) => {
         const token = socket.handshake.auth?.token;
