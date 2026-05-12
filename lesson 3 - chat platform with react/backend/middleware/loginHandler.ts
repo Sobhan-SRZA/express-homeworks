@@ -2,8 +2,13 @@ import {
     NextFunction,
     Response
 } from "express";
+import {
+    generateToken,
+    verifyPassword
+} from "../utils/security";
 import { RequestRouter } from "../types/requests";
-import { verifyPassword } from "../utils/security";
+import findAccount from "../db/account/findAccount";
+import { UserTokenPlayload } from "../types/user";
 
 export default async (req: RequestRouter, res: Response, next: NextFunction) => {
     if (!req.body.password || !req.body.username) {
@@ -45,10 +50,10 @@ export default async (req: RequestRouter, res: Response, next: NextFunction) => 
                 });
         }
 
-        const user = {
+        const user: UserTokenPlayload = {
             id: account.id,
             created_at: account.created_at,
-            username: account.username,
+            username: account.username
         };
 
         const token = generateToken(user);
@@ -64,8 +69,8 @@ export default async (req: RequestRouter, res: Response, next: NextFunction) => 
 
     }
 
-    catch (error) {
-        console.error("Login error:", error);
+    catch (e) {
+        console.error("Login error:", e);
 
         res
             .status(500)
