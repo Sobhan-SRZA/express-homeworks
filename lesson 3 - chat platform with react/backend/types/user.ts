@@ -1,3 +1,5 @@
+import { Socket } from "socket.io";
+
 export interface UserTokenVerify {
     username: string;
     id: string;
@@ -6,3 +8,5 @@ export interface UserTokenVerify {
 }
 
 export type UserTokenPlayload = Omit<UserTokenVerify, "expire">;
+
+export type OnlineUsers = Map<string, Socket>;
