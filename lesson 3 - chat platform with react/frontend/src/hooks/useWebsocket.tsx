@@ -1,5 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import {
+    useCallback,
+    useEffect,
+    useRef,
+    useState
+} from "react";
+import {
+    io,
+    Socket
+} from "socket.io-client";
 
 interface SocketMessage {
     type: string;
@@ -92,7 +100,7 @@ export default function useWebSocket({
 
             const msg = err.message.toLowerCase();
 
-            // اینجا فقط گزارش می‌دهیم، تصمیم refresh/login با لایه بالاتر
+            // refresh/login 
             if (
                 msg.includes("token") ||
                 msg.includes("auth") ||
