@@ -93,6 +93,8 @@ export default function SignInForm() {
                     >
                         {/* Alert icon based on type (success, error, loading) */}
                         <div className="flex justify-center mb-4">
+
+                            {/* Checkmark for success */}
                             {alert.type === "success" && (
                                 <svg
                                     className="w-12 h-12 text-green-400"
@@ -105,9 +107,11 @@ export default function SignInForm() {
                                         strokeLinejoin="round"
                                         strokeWidth={2}
                                         d="M5 13l4 4L19 7"
-                                    /> {/* Checkmark for success */}
+                                    />
                                 </svg>
                             )}
+
+                            {/* Cross for error */}
                             {alert.type === "error" && (
                                 <svg
                                     className="w-12 h-12 text-red-400"
@@ -120,9 +124,11 @@ export default function SignInForm() {
                                         strokeLinejoin="round"
                                         strokeWidth={2}
                                         d="M6 18L18 6M6 6l12 12"
-                                    /> {/* Cross for error */}
+                                    />
                                 </svg>
                             )}
+
+                            {/* Spinner for loading */}
                             {alert.type === "loading" && (
                                 <svg
                                     className="w-12 h-12 text-(--primary) animate-spin"
@@ -135,7 +141,7 @@ export default function SignInForm() {
                                         strokeLinejoin="round"
                                         strokeWidth={2}
                                         d="M4 12a8 8 0 018-8v1a7 7 0 00-7 7h1z"
-                                    /> {/* Spinner for loading */}
+                                    />
                                 </svg>
                             )}
                         </div>
@@ -147,9 +153,9 @@ export default function SignInForm() {
                         <button
                             onClick={() => setAlert({ ...alert, show: false })}
                             className="cursor-pointer px-6 py-2 font-semibold text-black hover:text-white dark:hover:text-black dark:text-white backdrop-blur-2xl border-4 border-(--accent) bg-(--accent-hover)/30 rounded-md shadow-sm hover:bg-(--accent) transition-all"
-                            aria-label={"Close"} // Accessible label for screen readers
+                            aria-label={"Close"}
                         >
-                            {alert.type === "success" ? "OK" : "Close"} {/* Translated close button text */}
+                            {alert.type === "success" ? "OK" : "Close"}
                         </button>
                     </DialogPanel>
                 </div>
