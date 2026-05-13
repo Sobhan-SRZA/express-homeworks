@@ -302,11 +302,25 @@ body {
     border-radius: 9999px;
     border: 2px solid transparent;
     background-clip: content-box;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
   }
 
-  /* .custom-scroll::-webkit-scrollbar-thumb {
+  .custom-scroll:hover::-webkit-scrollbar-thumb {
     background-color: var(--border);
-  } */
+  }
+
+  .custom-scroll:not(:hover)::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  .custom-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  .custom-scroll:hover {
+    scrollbar-color: var(--border) transparent;
+  }
 
   .custom-container {
     width: 100%;
