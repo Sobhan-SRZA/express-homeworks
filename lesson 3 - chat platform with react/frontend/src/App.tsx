@@ -4,10 +4,8 @@ import {
   Routes
 } from "react-router-dom";
 import { useEffect } from "react";
-import TermOfServices from "./pages/TermOfServices";
 import ScrollToTop from "./components/ScrollToTop";
 import NotFound from "./pages/NotFound";
-import Footer from "./components/Footer";
 import Home from "./pages/Home";
 
 const App: React.FC = () => {
@@ -39,16 +37,9 @@ const App: React.FC = () => {
           {/* Home page */}
           <Route index element={<Home />} />
 
-          {/* Tos */}
-          <Route path="/tos" element={<TermOfServices />} />
-
           {/* Catch-all route for undefined paths */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-          
-        {/* Footer component for bottom navigation and information */}
-        {/* <Footer /> */}
-
       </div>
     </BrowserRouter>
   );
