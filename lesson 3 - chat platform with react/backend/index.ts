@@ -23,13 +23,13 @@ app.use(cors({
 // Use json in express get and post
 app.use(express.json());
 
-readdirSync("./api")
+readdirSync("./dist/api")
     .filter((file) => file.endsWith(".js"))
     .forEach((file) => {
-        const fileCode = require(`./api/${file}`)
+        const fileCode = require(`./api/${file}`);
         const fileName = file.split(".")[0];
 
-        app.use(`/api/${fileName}`, fileCode)
+        app.use(`/api/${fileName}`, fileCode.default || fileCode)
     })
 
 // Redirect all invalid url to /404
