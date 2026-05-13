@@ -19,7 +19,7 @@ export default function Application({ token }: ApplicationProbs) {
       return;
     }
   });
-  
+
   const [openChat, setOpenChat] = useState<boolean>(false);
 
   const chats = [
@@ -30,21 +30,21 @@ export default function Application({ token }: ApplicationProbs) {
     { id: 5, muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725598 }, status: "offline", unread_message: 250 },
     { id: 6, muted: true, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925858 }, status: "online", unread_message: 45 },
     { id: 7, muted: true, name: "narges", last_message: { text: "کجایی", timestamp: 1778075241372 }, status: "online", unread_message: 69 },
-    { id: 8, muted: true, name: "mmd", last_message: { text: "sexy boy", timestamp: 1777920999999 }, status: "online", unread_message: 0 },
-    { id: 9, muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047725678 }, status: "offline", unread_message: 1 },
-    { id: 10, muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047755578 }, status: "offline", unread_message: 1 },
-    { id: 11, avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947525578 }, status: "offline", unread_message: 250 },
-    { id: 12, avatar: "/favicon.ico", muted: true, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768043925358 }, status: "online", unread_message: 45 },
-    { id: 13, avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777941225578 }, status: "offline", unread_message: 250 },
-    { id: 14, muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047225578 }, status: "offline", unread_message: 1 },
-    { id: 16, muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947735578 }, status: "offline", unread_message: 250 },
-    { id: 15, muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768028925358 }, status: "online", unread_message: 45 },
-    { id: 17, avatar: "/favicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777027725578 }, status: "offline", unread_message: 1 },
-    { id: 18, muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725578 }, status: "offline", unread_message: 250 },
-    { id: 19, muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768041925358 }, status: "online", unread_message: 45 },
-    { id: 52, avatar: "/favicon.ico", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
-    { id: 554642, muted: false, name: "setayesh hazery", last_message: { text: "Ashkum", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
-    { id: 613, muted: true, name: "sepehr", last_message: { text: "bro where are you???", timestamp: Date.now() }, status: "offline", unread_message: 5 },
+    // { id: 8, muted: true, name: "mmd", last_message: { text: "sexy boy", timestamp: 1777920999999 }, status: "online", unread_message: 0 },
+    // { id: 9, muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047725678 }, status: "offline", unread_message: 1 },
+    // { id: 10, muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047755578 }, status: "offline", unread_message: 1 },
+    // { id: 11, avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947525578 }, status: "offline", unread_message: 250 },
+    // { id: 12, avatar: "/favicon.ico", muted: true, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768043925358 }, status: "online", unread_message: 45 },
+    // { id: 13, avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777941225578 }, status: "offline", unread_message: 250 },
+    // { id: 14, muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047225578 }, status: "offline", unread_message: 1 },
+    // { id: 16, muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947735578 }, status: "offline", unread_message: 250 },
+    // { id: 15, muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768028925358 }, status: "online", unread_message: 45 },
+    // { id: 17, avatar: "/favicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777027725578 }, status: "offline", unread_message: 1 },
+    // { id: 18, muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725578 }, status: "offline", unread_message: 250 },
+    // { id: 19, muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768041925358 }, status: "online", unread_message: 45 },
+    // { id: 52, avatar: "/favicon.ico", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
+    // { id: 554642, muted: false, name: "setayesh hazery", last_message: { text: "Ashkum", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
+    // { id: 613, muted: true, name: "sepehr", last_message: { text: "bro where are you???", timestamp: Date.now() }, status: "offline", unread_message: 5 },
   ];
 
   const sortedChats = chats.sort((a, b) => {
@@ -146,7 +146,7 @@ export default function Application({ token }: ApplicationProbs) {
 
   const SearchReuslt = () => {
     return (
-      <ul className={`flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-auto custom-scroll h-screen scroll-smooth px-2 gap-2`}>
+      <ul className={`flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-scroll custom-scroll h-screen scroll-smooth px-2 gap-2`}>
         {
           searchReuslt.length < 1 && <li className="flex justify-center text-center items-center p-4 w-full min-w-xs rounded-2xl">
             <p className="rtl">چتی پیدا نشد.</p>
@@ -194,7 +194,7 @@ export default function Application({ token }: ApplicationProbs) {
     }
 
     return (
-      <ul className="flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-auto custom-scroll h-screen scroll-smooth px-2 gap-2">
+      <ul className="flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-scroll custom-scroll h-screen scroll-smooth px-2 gap-2">
         {sortedChats
           .map((chat, index) => {
             return (
@@ -254,12 +254,12 @@ export default function Application({ token }: ApplicationProbs) {
             }
 
             {/* Searching part */}
-            <div className="flex justify-center items-center place-self-center p-2 px-4 gap-2 rounded-4xl bg-(--border)/30 w-max h-full border-3 border-transparent focus-within:border-(--primary) transition-colors duration-200" >
-              <Search className="bg-transparent text-(--text) in-focus-within:text-(--primary) transition-colors duration-200" />
+            <div className="flex justify-center items-center place-self-center p-2 px-4 gap-2 rounded-4xl bg-(--border)/30 w-max h-full border-3 border-transparent focus-within:border-(--primary) hover:border-(--primary) transition-colors duration-200" >
+              <Search className="bg-transparent text-(--text) in-hover:border-(--primary) in-focus-within:text-(--primary) transition-colors duration-200" />
 
               <input
                 type="text"
-                className="rtl outline-none bg-transparent text-(--text) focus:outline-(--primary)"
+                className="rtl outline-none bg-transparent text-(--text) in-hover:outline-(--primary) focus:outline-(--primary)"
                 placeholder="جست و جو کاربر"
                 ref={searchInput}
               />
