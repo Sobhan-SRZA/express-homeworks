@@ -304,9 +304,9 @@ body {
     background-clip: content-box;
   }
 
-  .custom-scroll::-webkit-scrollbar-thumb{
+  /* .custom-scroll::-webkit-scrollbar-thumb {
     background-color: var(--border);
-  }
+  } */
 
   .custom-container {
     width: 100%;
