@@ -37,8 +37,8 @@
     {
         "id": "7459252967808438272",
         "value": {
-            "online": true,
-            "lastSeen": null
+            "online": false,
+            "lastSeen": "2026-05-13T10:53:03.782Z"
         }
     }
 ]
