@@ -72,7 +72,7 @@ export default (app: Express) => {
         socket.on("event", async (data) => {
             const { type, payload } = data;
 
-            readdirSync("websocket/events")
+            readdirSync(__dirname + "/websocket/events")
                 .filter(file => file.endsWith(".js"))
                 .forEach(async (file) => {
 
