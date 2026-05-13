@@ -146,7 +146,7 @@ export default function Application({ token }: ApplicationProbs) {
 
   const SearchReuslt = () => {
     return (
-      <ul className={`flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-auto ${searchReuslt.length < 1 ? "min-h-full" : "min-h-0"} felx-1 custom-scroll scroll-smooth px-2 gap-2`}>
+      <ul className={`flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-auto custom-scroll h-screen scroll-smooth px-2 gap-2`}>
         {
           searchReuslt.length < 1 && <li className="flex justify-center text-center items-center p-4 w-full min-w-xs rounded-2xl">
             <p className="rtl">چتی پیدا نشد.</p>
@@ -194,7 +194,7 @@ export default function Application({ token }: ApplicationProbs) {
     }
 
     return (
-      <ul className="flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-auto felx-1 custom-scroll h-screen scroll-smooth px-2 gap-2">
+      <ul className="flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-auto custom-scroll h-screen scroll-smooth px-2 gap-2">
         {sortedChats
           .map((chat, index) => {
             return (
