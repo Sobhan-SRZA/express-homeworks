@@ -1,7 +1,8 @@
 import {
   useEffect,
   useRef,
-  useState
+  useState,
+  type MouseEvent
 } from "react";
 import {
   MoveLeft,
@@ -27,31 +28,31 @@ export default function Application({ token }: ApplicationProbs) {
     }
   });
 
-  const [openChat, setOpenChat] = useState<boolean>(false);
+  const [openChat, setOpenChat] = useState<string | null>(null);
 
   const chats = [
-    { id: 1, avatar: "/favicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047725578 }, status: "offline", unread_message: 1 },
-    { id: 2, muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047925578 }, status: "offline", unread_message: 1 },
-    { id: 3, avatar: "/favicon.ico", muted: true, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725578 }, status: "offline", unread_message: 250 },
-    { id: 4, muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
-    { id: 5, muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725598 }, status: "offline", unread_message: 250 },
-    { id: 6, muted: true, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925858 }, status: "online", unread_message: 45 },
-    { id: 7, muted: true, name: "narges", last_message: { text: "کجایی", timestamp: 1778075241372 }, status: "online", unread_message: 69 },
-    // { id: 8, muted: true, name: "mmd", last_message: { text: "sexy boy", timestamp: 1777920999999 }, status: "online", unread_message: 0 },
-    // { id: 9, muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047725678 }, status: "offline", unread_message: 1 },
-    // { id: 10, muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047755578 }, status: "offline", unread_message: 1 },
-    // { id: 11, avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947525578 }, status: "offline", unread_message: 250 },
-    // { id: 12, avatar: "/favicon.ico", muted: true, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768043925358 }, status: "online", unread_message: 45 },
-    // { id: 13, avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777941225578 }, status: "offline", unread_message: 250 },
-    // { id: 14, muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047225578 }, status: "offline", unread_message: 1 },
-    // { id: 16, muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947735578 }, status: "offline", unread_message: 250 },
-    // { id: 15, muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768028925358 }, status: "online", unread_message: 45 },
-    // { id: 17, avatar: "/favicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777027725578 }, status: "offline", unread_message: 1 },
-    // { id: 18, muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725578 }, status: "offline", unread_message: 250 },
-    // { id: 19, muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768041925358 }, status: "online", unread_message: 45 },
-    // { id: 52, avatar: "/favicon.ico", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
-    // { id: 554642, muted: false, name: "setayesh hazery", last_message: { text: "Ashkum", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
-    // { id: 613, muted: true, name: "sepehr", last_message: { text: "bro where are you???", timestamp: Date.now() }, status: "offline", unread_message: 5 },
+    { id: "1", avatar: "/favicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047725578 }, status: "offline", unread_message: 1 },
+    { id: "2", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047925578 }, status: "offline", unread_message: 1 },
+    { id: "3", avatar: "/favicon.ico", muted: true, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725578 }, status: "offline", unread_message: 250 },
+    { id: "4", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
+    { id: "5", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725598 }, status: "offline", unread_message: 250 },
+    { id: "6", muted: true, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925858 }, status: "online", unread_message: 45 },
+    { id: "7", muted: true, name: "narges", last_message: { text: "کجایی", timestamp: 1778075241372 }, status: "online", unread_message: 69 },
+    { id: "8", muted: true, name: "mmd", last_message: { text: "sexy boy", timestamp: 1777920999999 }, status: "online", unread_message: 0 },
+    { id: "9", muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047725678 }, status: "offline", unread_message: 1 },
+    { id: "10", muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047755578 }, status: "offline", unread_message: 1 },
+    { id: "11", avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947525578 }, status: "offline", unread_message: 250 },
+    { id: "12", avatar: "/favicon.ico", muted: true, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768043925358 }, status: "online", unread_message: 45 },
+    { id: "13", avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777941225578 }, status: "offline", unread_message: 250 },
+    { id: "14", muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047225578 }, status: "offline", unread_message: 1 },
+    { id: "16", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947735578 }, status: "offline", unread_message: 250 },
+    { id: "15", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768028925358 }, status: "online", unread_message: 45 },
+    { id: "17", avatar: "/favicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777027725578 }, status: "offline", unread_message: 1 },
+    { id: "18", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725578 }, status: "offline", unread_message: 250 },
+    { id: "19", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768041925358 }, status: "online", unread_message: 45 },
+    { id: "52", avatar: "/favicon.ico", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
+    { id: "554642", muted: false, name: "setayesh hazery", last_message: { text: "Ashkum", timestamp: 1768048925358 }, status: "online", unread_message: 45 },
+    { id: "613", muted: true, name: "sepehr", last_message: { text: "bro where are you???", timestamp: Date.now() }, status: "offline", unread_message: 5 },
   ];
 
   const sortedChats = chats.sort((a, b) => {
@@ -134,10 +135,10 @@ export default function Application({ token }: ApplicationProbs) {
   };
 
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
-  const searchInput = useRef<HTMLInputElement>(null);
-
+  
   const searchReuslt: any[] = [];
-
+  
+  const searchInput = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (searchInput.current) {
       const handleSearchInput = () => {
@@ -148,14 +149,22 @@ export default function Application({ token }: ApplicationProbs) {
 
       return () => searchInput.current?.removeEventListener("focus", handleSearchInput);
     }
+  }, [searchInput, searchInput.current]);
 
-  }, [searchInput, searchInput.current])
+  const handleClickChat = (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
+    e.preventDefault();
+
+    console.log("🚀 ~ handleClickChat ~ e.currentTarget:", e.currentTarget.accessKey)
+    if (openChat === e.currentTarget.enterKeyHint) { }
+  }
 
   const SearchReuslt = () => {
     return (
       <ul className={`flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-scroll custom-scroll h-screen scroll-smooth px-2 gap-2`}>
         {
-          searchReuslt.length < 1 && <li className="flex justify-center text-center items-center p-4 w-full min-w-xs rounded-2xl">
+          searchReuslt.length < 1
+
+          && <li className="flex justify-center text-center items-center p-4 w-full min-w-xs rounded-2xl">
             <p className="rtl">چتی پیدا نشد.</p>
           </li>
 
@@ -205,7 +214,7 @@ export default function Application({ token }: ApplicationProbs) {
         {sortedChats
           .map((chat, index) => {
             return (
-              <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl" key={chat.id}>
+              <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl" key={chat.id} accessKey={chat.id} onClick={(e) => handleClickChat(e)}>
 
                 <div className="felx flex-col justify-center items-center text-left h-full w-max">
                   {/* last message time */}
