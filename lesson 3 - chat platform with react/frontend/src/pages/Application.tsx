@@ -1,14 +1,14 @@
 import {
   useEffect,
   useRef,
-  useState,
-  type MouseEvent
+  useState
 } from "react";
 import {
   MoveLeft,
   Search
 } from "lucide-react";
 import { Bars3Icon } from "@heroicons/react/16/solid";
+import ChatsList, { type UserChat } from "../components/chat/ChatsList";
 import useWebSocket from "../hooks/useWebsocket"
 import backend from "../backend/backend"
 
@@ -17,7 +17,7 @@ interface ApplicationProbs {
 }
 
 export default function Application({ token }: ApplicationProbs) {
-  const { } = useWebSocket({
+  useWebSocket({
     token, url: backend.websocket,
     onAuthFail: (socket) => {
       window.location.reload();
@@ -28,7 +28,7 @@ export default function Application({ token }: ApplicationProbs) {
     }
   });
 
-  const [openChat, setOpenChat] = useState<string | null>(null);
+  const [openChat, setOpenChat] = useState<boolean>(false);
 
   const chats = [
     { id: "1", avatar: "/favicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047725578 }, status: "offline", unread_message: 1 },
@@ -68,76 +68,12 @@ export default function Application({ token }: ApplicationProbs) {
     }
 
     return 0;
-  });
-
-  const showTime = (time: number): string => {
-    const date = new Date(time);
-    const now = new Date();
-
-    const faTime = new Intl.DateTimeFormat("fa-IR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    const faDayName = new Intl.DateTimeFormat("fa-IR", {
-      weekday: "long",
-    });
-
-    const faMonthDay = new Intl.DateTimeFormat("fa-IR", {
-      month: "long",
-      day: "numeric",
-    });
-
-    const faFullDate = new Intl.DateTimeFormat("fa-IR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
-    const faFYearDate = new Intl.DateTimeFormat("fa-IR", {
-      year: "numeric"
-    });
-
-    // today
-    if (date.toDateString() === now.toDateString()) {
-      return faTime.format(date);
-    }
-
-    // yesterday
-    const yesterday = new Date();
-    yesterday.setDate(now.getDate() - 1);
-
-    if (date.toDateString() === yesterday.toDateString()) {
-      return "دیروز";
-    }
-
-    // calculating week
-    const startOfWeek = new Date(now);
-    const day = (now.getDay() + 1) % 7; // strat week from saturday
-    startOfWeek.setDate(now.getDate() - day);
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 7);
-
-    // current week
-    if (date >= startOfWeek && date < endOfWeek) {
-      return faDayName.format(date);
-    }
-
-    // current year
-    if (faFYearDate.format(date) === faFYearDate.format(now)) {
-      return faMonthDay.format(date);
-    }
-
-    // last years
-    return faFullDate.format(date);
-  };
+  }) as UserChat[];
 
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
-  
+
   const searchReuslt: any[] = [];
-  
+
   const searchInput = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (searchInput.current) {
@@ -151,12 +87,6 @@ export default function Application({ token }: ApplicationProbs) {
     }
   }, [searchInput, searchInput.current]);
 
-  const handleClickChat = (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
-    e.preventDefault();
-
-    console.log("🚀 ~ handleClickChat ~ e.currentTarget:", e.currentTarget.accessKey)
-    if (openChat === e.currentTarget.enterKeyHint) { }
-  }
 
   const SearchReuslt = () => {
     return (
@@ -174,9 +104,6 @@ export default function Application({ token }: ApplicationProbs) {
                 <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl" key={chat.id}>
 
                   <div className="felx flex-col justify-center items-center text-left h-full w-max">
-                    {/* last message time */}
-                    <p className="text-left text-(--text)/60 text-[0.8rem] rtl">{showTime(chat.last_message.timestamp)}</p>
-
                     {chat.unread_message > 0 && <span className={`flex flex-col mt-2 w-fit px-2 rounded-full font-bold text-(--text)/80 text-[0.7rem] p-[0.2rem] ${!chat.muted ? "bg-green-600/70" : "bg-gray-400/70"}`}>{chat.unread_message}</span>}
                   </div>
 
@@ -199,51 +126,6 @@ export default function Application({ token }: ApplicationProbs) {
     )
   }
 
-  const ChatsList = () => {
-    const DisplayUserAvatar = ({ chat }: { chat: typeof sortedChats[0] }) => {
-      return (
-        chat.avatar
-        && <img src={chat.avatar} alt="" className="size-13 rounded-full" />
-        || <div className="size-13 rounded-full bg-(--primary) text-(--background) font-bold text-2xl content-center"><p>{chat.name.toUpperCase().split(" ")[0].toString()[0]}{chat.name.toUpperCase().split(" ")[1]?.toString()![0] || ""}</p></div>
-
-      )
-    }
-
-    return (
-      <ul className="flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-scroll custom-scroll h-screen scroll-smooth px-2 gap-2">
-        {sortedChats
-          .map((chat, index) => {
-            return (
-              <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl" key={chat.id} accessKey={chat.id} onClick={(e) => handleClickChat(e)}>
-
-                <div className="felx flex-col justify-center items-center text-left h-full w-max">
-                  {/* last message time */}
-                  <p className="text-left text-(--text)/60 text-[0.8rem] rtl">{showTime(chat.last_message.timestamp)}</p>
-
-                  {chat.unread_message > 0 && <span className={`flex flex-col mt-2 w-fit px-2 rounded-full font-bold text-(--text)/80 text-[0.7rem] p-[0.2rem] ${!chat.muted ? "bg-green-600/70" : "bg-gray-400/70"}`}>{chat.unread_message}</span>}
-                </div>
-
-                <div className="flex gap-2">
-                  {/* profile */}
-                  <div className="flex flex-col text-right">
-                    <h3 className="font-semibold text-[1.1rem] text-(--text)">{chat.name}</h3>
-                    <p className="text-(--text)/60 text-[0.80rem]">{chat.last_message.text}</p>
-                  </div>
-
-                  <div className="relative">
-                    <DisplayUserAvatar chat={chat} />
-
-                    <span className={`rounded-full size-4 absolute inset-0 top-9 left-0.5 border-3 border-(--card-bg) ${chat.status === "online" ? "bg-green-500" : "bg-gray-400"}`} />
-                  </div>
-                </div>
-                {/* {index + 1 < chats.length && index % 2 !== 0 && <span className="w-3/4 h-[0.1rem] bg-(--border)" />}
-                {index % 2 !== 0 && <span className="w-3/4 h-[0.1rem] bg-(--border)" />} */}
-              </li>
-            )
-          })}
-      </ul>
-    )
-  };
 
   return (
     <>
@@ -286,7 +168,11 @@ export default function Application({ token }: ApplicationProbs) {
 
           {searchOpen
             && <SearchReuslt />
-            || <ChatsList />}
+            || <ChatsList
+              openChat={openChat}
+              setOpenChat={setOpenChat}
+              sortedChats={sortedChats}
+            />}
         </section>
       </main>
     </>
