@@ -106,7 +106,6 @@ export default function useWebSocket({
                 msg.includes("auth") ||
                 msg.includes("unauthorized")
             ) {
-                console.log("🚀 ~ handleConnectError ~ msg:", msg)
                 if (onAuthFail) {
                     onAuthFail(socket);
 
