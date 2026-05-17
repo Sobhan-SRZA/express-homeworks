@@ -9,13 +9,6 @@ import {
     Socket
 } from "socket.io-client";
 
-interface SocketMessage {
-    type: string;
-    code?: string;
-    message?: string;
-    payload?: unknown;
-}
-
 type ConnectionStatus = "idle" | "connecting" | "connected" | "disconnected" | "error";
 
 interface UseWebSocketOptions {
@@ -29,13 +22,11 @@ interface UseWebSocketOptions {
 type ServerToClientEvents = {
     connected: (user: unknown) => void;
     user_status: (data: unknown) => void;
-    message: (msg: SocketMessage) => void;
 };
 
 type ClientToServerEvents = {
     get_initial_data: () => void;
     event: (data: unknown) => void;
-    message: (msg: SocketMessage) => void;
 };
 
 type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
@@ -49,7 +40,6 @@ export default function useWebSocket({
 }: UseWebSocketOptions) {
     const socketRef = useRef<AppSocket | null>(null);
 
-    const [messages, setMessages] = useState<SocketMessage[]>([]);
     const [status, setStatus] = useState<ConnectionStatus>("idle");
     const [isConnected, setIsConnected] = useState(false);
     const [socketId, setSocketId] = useState<string | null>(null);
@@ -122,16 +112,11 @@ export default function useWebSocket({
             console.log("status update:", data);
         };
 
-        const handleMessage = (msg: SocketMessage) => {
-            setMessages((prev) => [...prev, msg]);
-        };
-
         socket.on("connect", handleConnect);
         socket.on("disconnect", handleDisconnect);
         socket.on("connect_error", handleConnectError);
         socket.on("connected", handleConnectedEvent);
         socket.on("user_status", handleUserStatus);
-        socket.on("message", handleMessage);
 
         return () => {
             socket.off("connect", handleConnect);
@@ -139,7 +124,6 @@ export default function useWebSocket({
             socket.off("connect_error", handleConnectError);
             socket.off("connected", handleConnectedEvent);
             socket.off("user_status", handleUserStatus);
-            socket.off("message", handleMessage);
 
             socket.disconnect();
             socketRef.current = null;
@@ -168,13 +152,6 @@ export default function useWebSocket({
         []
     );
 
-    const sendMessage = useCallback(
-        (msg: SocketMessage) => {
-            return emitEvent("message", msg);
-        },
-        [emitEvent]
-    );
-
     const disconnect = useCallback(() => {
         socketRef.current?.disconnect();
     }, []);
@@ -185,13 +162,11 @@ export default function useWebSocket({
 
     return {
         socket: socketRef.current,
-        messages,
         status,
         isConnected,
         socketId,
-        sendMessage,
         emitEvent,
         disconnect,
-        reconnect,
+        reconnect
     };
 }
