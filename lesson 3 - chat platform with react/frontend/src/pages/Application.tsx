@@ -1,15 +1,16 @@
 import {
-  useEffect,
-  useRef,
+  useMemo,
   useState
 } from "react";
-import {
-  MoveLeft,
-  Search
-} from "lucide-react";
 import { Bars3Icon } from "@heroicons/react/16/solid";
+import { MoveLeft } from "lucide-react";
 import ChatsList, { type UserChat } from "../components/chat/ChatsList";
+import useChatSearch from "../hooks/useChatSearch";
 import useWebSocket from "../hooks/useWebsocket"
+import SearchReuslt from "../components/chat/SearchReuslt";
+import SearchInput from "../components/chat/SearchInput";
+import OpenedChat from "../components/chat/OpenedChat";
+import ClosedChat from "../components/chat/ClosedChat";
 import backend from "../backend/backend"
 
 interface ApplicationProbs {
@@ -17,8 +18,9 @@ interface ApplicationProbs {
 }
 
 export default function Application({ token }: ApplicationProbs) {
-  useWebSocket({
-    token, url: backend.websocket,
+  const { } = useWebSocket({
+    token,
+    url: backend.websocket,
     onAuthFail: (socket) => {
       window.location.reload();
 
@@ -30,7 +32,7 @@ export default function Application({ token }: ApplicationProbs) {
 
   const [openChat, setOpenChat] = useState<boolean>(false);
 
-  const chats = [
+  const chats: UserChat[] = [
     { id: "1", avatar: "/favicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047725578 }, status: "offline", unread_message: 1 },
     { id: "2", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047925578 }, status: "offline", unread_message: 1 },
     { id: "3", avatar: "/favicon.ico", muted: true, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725578 }, status: "offline", unread_message: 250 },
@@ -55,88 +57,24 @@ export default function Application({ token }: ApplicationProbs) {
     { id: "613", muted: true, name: "sepehr", last_message: { text: "bro where are you???", timestamp: Date.now() }, status: "offline", unread_message: 5 },
   ];
 
-  const sortedChats = chats.sort((a, b) => {
-    const timestampA = Number(a.last_message?.timestamp || 0);
-    const timestampB = Number(b.last_message?.timestamp || 0);
+  const { query, setQuery, results } = useChatSearch(chats);
 
-    if (timestampA < timestampB) {
-      return 1;
-    }
-
-    if (timestampA > timestampB) {
-      return -1;
-    }
-
-    return 0;
-  }) as UserChat[];
+  const sortedChats = useMemo(() => {
+    return [...chats].sort((a, b) =>
+      (b.last_message?.timestamp ?? 0) -
+      (a.last_message?.timestamp ?? 0)
+    );
+  }, [chats]);
 
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
-
-  const searchReuslt: any[] = [];
-
-  const searchInput = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (searchInput.current) {
-      const handleSearchInput = () => {
-        setSearchOpen(true);
-      };
-
-      searchInput.current.addEventListener("focus", handleSearchInput);
-
-      return () => searchInput.current?.removeEventListener("focus", handleSearchInput);
-    }
-  }, [searchInput, searchInput.current]);
-
-
-  const SearchReuslt = () => {
-    return (
-      <ul className={`flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-scroll custom-scroll h-screen scroll-smooth px-2 gap-2`}>
-        {
-          searchReuslt.length < 1
-
-          && <li className="flex justify-center text-center items-center p-4 w-full min-w-xs rounded-2xl">
-            <p className="rtl">چتی پیدا نشد.</p>
-          </li>
-
-          || searchReuslt
-            .map((chat) => {
-              return (
-                <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl" key={chat.id}>
-
-                  <div className="felx flex-col justify-center items-center text-left h-full w-max">
-                    {chat.unread_message > 0 && <span className={`flex flex-col mt-2 w-fit px-2 rounded-full font-bold text-(--text)/80 text-[0.7rem] p-[0.2rem] ${!chat.muted ? "bg-green-600/70" : "bg-gray-400/70"}`}>{chat.unread_message}</span>}
-                  </div>
-
-                  <div className="flex gap-2">
-                    {/* profile */}
-                    <div className="flex flex-col text-right">
-                      <h3 className="font-semibold text-[1.1rem] text-(--text)">{chat.name}</h3>
-                      <p className="text-(--text)/60 text-[0.80rem]">{chat.last_message.text}</p>
-                    </div>
-
-                    <div className="relative">
-                      <img src="/favicon.ico" alt="" className="size-13 rounded-full" />
-                      <span className={`rounded-full size-4 absolute inset-0 top-9 left-0.5 border-3 border-(--card-bg) ${chat.status === "online" ? "bg-green-500" : "bg-gray-400"}`} />
-                    </div>
-                  </div>
-                </li>
-              )
-            })}
-      </ul>
-    )
-  }
-
 
   return (
     <>
       <main id="platform" className="flex justify-between items-center text-center min-h-full min-w-full p-0 inset-0 m-0 relative">
         <section id="chat" className="flex flex-col w-full">
           {openChat
-            && <div>
-            </div>
-            || <div className="text-center rtl">
-              <p>برای شروع گفت و گو چتی را انتخاب کنید.</p>
-            </div>}
+            && <OpenedChat />
+            || <ClosedChat />}
         </section>
 
         <section id="conversetion" className="flex flex-col max-w-full max-h-screen bg-(--card-bg) border-l-(--border) border-l-2">
@@ -145,33 +83,34 @@ export default function Application({ token }: ApplicationProbs) {
             {searchOpen
               && <MoveLeft
                 className="size-10 bg-transparent text-(--text) cursor-pointer p-1 rounded-full hover:bg-(--border)/30 transition-colors duration-300"
-                onClick={() => setSearchOpen(false)}
+                onClick={() => {
+                  setQuery("");
+                  setSearchOpen(false);
+                }}
               />
 
               || <Bars3Icon className="size-10 bg-transparent text-(--text) cursor-pointer p-1 rounded-full hover:bg-(--border)/30 transition-colors duration-300" />
             }
 
             {/* Searching part */}
-            <div className="flex justify-center items-center place-self-center p-2 px-4 gap-2 rounded-4xl bg-(--border)/30 w-max h-full border-3 border-transparent focus-within:border-(--primary) hover:border-(--primary) transition-colors duration-200" >
-              <Search className="bg-transparent text-(--text) in-hover:border-(--primary) in-focus-within:text-(--primary) transition-colors duration-200" />
-
-              <input
-                type="text"
-                className="rtl outline-none bg-transparent text-(--text) in-hover:outline-(--primary) focus:outline-(--primary)"
-                placeholder="جست و جو کاربر"
-                ref={searchInput}
-              />
-            </div>
+            <SearchInput
+              query={query}
+              setQuery={setQuery}
+              setSearchOpen={setSearchOpen}
+            />
           </div>
 
           <div className="w-full h-[0.1rem] bg-(--border)" />
 
           {searchOpen
-            && <SearchReuslt />
+            && <SearchReuslt
+              results={results}
+              onSelect={setOpenChat}
+            />
+
             || <ChatsList
-              openChat={openChat}
-              setOpenChat={setOpenChat}
-              sortedChats={sortedChats}
+              chats={sortedChats}
+              onSelect={setOpenChat}
             />}
         </section>
       </main>
