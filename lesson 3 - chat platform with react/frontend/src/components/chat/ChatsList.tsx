@@ -11,7 +11,7 @@ export interface UserChat {
     };
     status: string;
     unread_message: number;
-    avatar?: undefined;
+    avatar?: string;
 }
 
 export const showTime = (time: number): string => {
@@ -79,26 +79,29 @@ export const showTime = (time: number): string => {
 };
 
 export default function ChatsList({
-    sortedChats,
-    openChat,
-    setOpenChat
+    chats,
+    onSelect
 }: {
-    sortedChats: UserChat[];
-    openChat: boolean;
-    setOpenChat: React.Dispatch<React.SetStateAction<boolean>>;
+    chats: UserChat[];
+    onSelect: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
     const handleClickChat = (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
         e.preventDefault();
 
         console.log("🚀 ~ handleClickChat ~ e.currentTarget:", e.currentTarget.accessKey)
+        onSelect(true)
     }
 
     return (
         <ul className="flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-scroll custom-scroll h-screen scroll-smooth px-2 gap-2">
-            {sortedChats
+            {chats
                 .map((chat) => {
                     return (
-                        <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl" key={chat.id} accessKey={chat.id} onClick={(e) => handleClickChat(e)}>
+                        <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl"
+                            key={chat.id}
+                            accessKey={chat.id}
+                            onClick={(e) => handleClickChat(e)}
+                        >
 
                             <div className="felx flex-col justify-center items-center text-left h-full w-max">
                                 {/* last message time */}
