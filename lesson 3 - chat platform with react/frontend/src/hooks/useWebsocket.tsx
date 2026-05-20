@@ -36,7 +36,7 @@ export default function useWebSocket({
     token,
     onAuthFail,
     onConnect,
-    onDisconnect,
+    onDisconnect
 }: UseWebSocketOptions) {
     const socketRef = useRef<AppSocket | null>(null);
 
@@ -92,9 +92,9 @@ export default function useWebSocket({
 
             // refresh/login 
             if (
-                msg.includes("token") ||
-                msg.includes("auth") ||
-                msg.includes("unauthorized")
+                msg.includes("token")
+                || msg.includes("auth")
+                || msg.includes("unauthorized")
             ) {
                 if (onAuthFail) {
                     onAuthFail(socket);
