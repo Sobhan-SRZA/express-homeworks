@@ -1,0 +1,6 @@
+/node_modules
+/.env
+/quickdb.json
+/test.js
+/package-lock.json
+/dist
