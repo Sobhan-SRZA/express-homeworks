@@ -17,6 +17,13 @@ interface ApplicationProbs {
   token: string;
 }
 
+interface OpenChat {
+  isOpen: boolean;
+  id: string;
+}
+
+export type OpenChatState = OpenChat | null;
+
 export default function Application({ token }: ApplicationProbs) {
   const { } = useWebSocket({
     token,
@@ -30,7 +37,7 @@ export default function Application({ token }: ApplicationProbs) {
     }
   });
 
-  const [openChat, setOpenChat] = useState<boolean>(false);
+  const [openChat, setOpenChat] = useState<OpenChatState>(null);
 
   const chats: UserChat[] = [
     { id: "1", avatar: "/favicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047725578 }, status: "offline", unread_message: 1 },

@@ -1,3 +1,4 @@
+import type { OpenChatState } from "../../pages/Application";
 import type { UserChat } from "./ChatsList"
 
 export default function SearchReuslt({
@@ -5,7 +6,7 @@ export default function SearchReuslt({
     onSelect
 }: {
     results: UserChat[];
-    onSelect: React.Dispatch<React.SetStateAction<boolean>>;
+    onSelect: React.Dispatch<React.SetStateAction<OpenChatState>>;
 }) {
     return (
         <ul className={`flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-scroll custom-scroll h-screen scroll-smooth px-2 gap-2`}>
@@ -21,7 +22,7 @@ export default function SearchReuslt({
                         return (
                             <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl"
                                 key={chat.id}
-                                onClick={() => onSelect(true)}
+                                onClick={() => onSelect({ isOpen: true, id: chat.id })}
                             >
 
                                 <div className="felx flex-col justify-center items-center text-left h-full w-max">

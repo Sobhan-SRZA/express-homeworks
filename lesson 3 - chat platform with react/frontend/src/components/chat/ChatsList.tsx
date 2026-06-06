@@ -1,3 +1,4 @@
+import type { OpenChatState } from "../../pages/Application";
 import type { MouseEvent } from "react";
 import DisplayUserAvatar from "./DisplayUserAvatar";
 
@@ -83,13 +84,12 @@ export default function ChatsList({
     onSelect
 }: {
     chats: UserChat[];
-    onSelect: React.Dispatch<React.SetStateAction<boolean>>;
+    onSelect: React.Dispatch<React.SetStateAction<OpenChatState>>;
 }) {
     const handleClickChat = (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
         e.preventDefault();
 
-        console.log("🚀 ~ handleClickChat ~ e.currentTarget:", e.currentTarget.accessKey)
-        onSelect(true)
+        onSelect({ isOpen: true, id: e.currentTarget.accessKey })
     }
 
     return (
