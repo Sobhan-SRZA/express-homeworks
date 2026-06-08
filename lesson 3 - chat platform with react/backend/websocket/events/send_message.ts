@@ -15,6 +15,7 @@ export default (socket: CustomSocket, payload: any, senderId: string, currentUse
 
 function handleSendMessage(socket: CustomSocket, payload: any, senderId: string, currentUser: UserTokenVerify, onlineUsers: OnlineUsers) {
     const { to, text, originalMessageId } = payload;
+    console.log("🚀 ~ handleSendMessage ~ to, text, originalMessageId:", to, text, originalMessageId)
 
     let savedMessage: Message | null;
 
