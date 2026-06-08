@@ -26,8 +26,18 @@ type ServerToClientEvents = {
 
 type ClientToServerEvents = {
     get_initial_data: () => void;
+    get_user_status: (data: { userId: string }) => void;
+    get_chat_history: (data: { with: string }) => void;
+    open_chat: (data: { userId: string }) => void;
+    send_message: (data: { to: string; text: string; originalMessageId: string; }) => void;
     event: (data: unknown) => void;
 };
+
+type EventPayload<T> = T extends (data: infer P) => void
+    ? P
+    : T extends () => void
+    ? undefined
+    : never;
 
 type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -131,19 +141,24 @@ export default function useWebSocket({
     }, [url, token]);
 
     const emitEvent = useCallback(
-        (event: keyof ClientToServerEvents, payload?: unknown) => {
+        <E extends keyof ClientToServerEvents>(
+            event: E,
+            payload?: EventPayload<ClientToServerEvents[E]>
+        ) => {
             const socket = socketRef.current;
 
             if (!socket || !socket.connected) {
                 console.warn("socket is not connected");
+
                 return false;
             }
 
             if (payload === undefined) {
-                socket.emit(event);
+                socket.emit(event as keyof ClientToServerEvents);
             }
 
             else {
+                // @ts-ignore
                 socket.emit(event, payload);
             }
 
