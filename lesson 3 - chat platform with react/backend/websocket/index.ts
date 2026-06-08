@@ -9,6 +9,7 @@ import getUserStatus from "../db/users/getUserStatus";
 import getAccount from "../db/account/getAccount";
 import setOffline from "../db/users/setOffline";
 import setOnline from "../db/users/setOnline";
+import { handleEvent, loadEventHandlers } from "./eventHandler";
 
 const ws_port = 3000;
 
@@ -58,9 +59,15 @@ export default (app: Express) => {
         }
     });
 
-    io.on("connection", (socket: CustomSocket) => {
+    io.on("connection", async (socket: CustomSocket) => {
         const currentUser = socket.user;
         const userId = currentUser!.id;
+
+        await loadEventHandlers();
+
+        socket.on("event", (data) => {
+            handleEvent(socket, data, userId, currentUser, onlineUsers);
+        });
 
         console.log("✅ Socket connected:", userId);
 
@@ -68,29 +75,6 @@ export default (app: Express) => {
         onlineUsers.set(userId, socket);
 
         io.emit("user_status", getUserStatus(userId));
-
-        socket.on("event", async (data) => {
-            const { type, payload } = data;
-
-            readdirSync(__dirname + "/websocket/events")
-                .filter(file => file.endsWith(".js"))
-                .forEach(async (file) => {
-
-                    const fileEvent = file.replace(".js", "");
-
-                    if (type === fileEvent) {
-                        const eventHandle = require(`./events/${file}`);
-
-                        await eventHandle(
-                            socket,
-                            payload,
-                            userId,
-                            currentUser,
-                            onlineUsers
-                        );
-                    }
-                });
-        });
 
         socket.on("disconnect", () => {
             onlineUsers.delete(userId);
