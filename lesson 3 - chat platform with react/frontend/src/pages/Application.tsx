@@ -25,7 +25,7 @@ interface OpenChat {
 export type OpenChatState = OpenChat | null;
 
 export default function Application({ token }: ApplicationProbs) {
-  const { } = useWebSocket({
+  const { emitEvent } = useWebSocket({
     token,
     url: backend.websocket,
     onAuthFail: (socket) => {
@@ -79,8 +79,8 @@ export default function Application({ token }: ApplicationProbs) {
     <>
       <main id="platform" className="flex justify-between items-center text-center min-h-full min-w-full p-0 inset-0 m-0 relative">
         <section id="chat" className="flex flex-col w-full">
-          {openChat
-            && <OpenedChat />
+          {openChat?.id
+            && <OpenedChat id={openChat.id} />
             || <ClosedChat />}
         </section>
 
@@ -96,7 +96,17 @@ export default function Application({ token }: ApplicationProbs) {
                 }}
               />
 
-              || <Bars3Icon className="size-10 bg-transparent text-(--text) cursor-pointer p-1 rounded-full hover:bg-(--border)/30 transition-colors duration-300" />
+              || <Bars3Icon
+                className="size-10 bg-transparent text-(--text) cursor-pointer p-1 rounded-full hover:bg-(--border)/30 transition-colors duration-300"
+                onClick={() => {
+                  emitEvent("event", {
+                    type:"send_message",
+payload:{                    originalMessageId: Date.now().toString(),
+                    text: "se kon",
+                    to: "19676527011955802113"}
+                  })
+                }}
+              />
             }
 
             {/* Searching part */}
