@@ -4,13 +4,15 @@ export default (username: string) => {
     try {
         const accounts = getData("accounts");
 
-        if (!accounts || !Array.isArray(accounts) || accounts.length < 1)
+        if (!accounts || !Array.isArray(accounts) || accounts.length < 1) {
             return false;
+        }
 
         const usernames = accounts.map(a => a.value.username.toLowerCase());
 
-        if (usernames.includes(username.toLowerCase()))
+        if (usernames.includes(username.toLowerCase())) {
             return true;
+        }
 
         return false;
     }
