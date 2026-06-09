@@ -1,6 +1,9 @@
+import {
+    handleEvent,
+    loadEventHandlers
+} from "./eventHandler";
 import { CustomSocket } from "../types/requests";
 import { createServer } from "http";
-import { readdirSync } from "fs";
 import { verifyToken } from "../utils/security";
 import { OnlineUsers } from "../types/user";
 import { Express } from "express";
@@ -9,7 +12,6 @@ import getUserStatus from "../db/users/getUserStatus";
 import getAccount from "../db/account/getAccount";
 import setOffline from "../db/users/setOffline";
 import setOnline from "../db/users/setOnline";
-import { handleEvent, loadEventHandlers } from "./eventHandler";
 
 const ws_port = 3000;
 
