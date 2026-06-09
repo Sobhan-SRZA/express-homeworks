@@ -10,6 +10,7 @@ import { UserTokenPlayload } from "../types/user";
 import { RequestRouter } from "../types/requests";
 import createAccount from "../db/account/createAccount";
 import findAccount from "../db/account/findAccount";
+import checkUsername from "../db/account/checkUsername";
 
 
 export default (req: RequestRouter, res: Response, next: NextFunction) => {
@@ -27,7 +28,7 @@ export default (req: RequestRouter, res: Response, next: NextFunction) => {
     const { username, password } = req.body;
 
     try {
-        const existingUser = findAccount(username);
+        const existingUser = checkUsername(username);
         if (existingUser) {
             return res
                 .status(409) // Conflict
