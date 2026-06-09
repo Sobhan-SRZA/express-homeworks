@@ -3,16 +3,16 @@
         "id": "19676527011939024896",
         "value": {
             "userId": "19676527011939024896",
-            "online": true,
-            "lastSeen": null
+            "online": false,
+            "lastSeen": "2026-06-09T15:11:39.365Z"
         }
     },
     {
         "id": "19676509419769757696",
         "value": {
             "userId": "19676509419769757696",
-            "online": true,
-            "lastSeen": "2026-06-09T13:19:45.145Z"
+            "online": false,
+            "lastSeen": "2026-06-09T15:32:56.277Z"
         }
     }
 ]
