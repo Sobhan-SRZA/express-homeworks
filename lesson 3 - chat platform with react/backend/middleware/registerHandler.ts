@@ -9,7 +9,6 @@ import {
 import { UserTokenPlayload } from "../types/user";
 import { RequestRouter } from "../types/requests";
 import createAccount from "../db/account/createAccount";
-import findAccount from "../db/account/findAccount";
 import checkUsername from "../db/account/checkUsername";
 
 

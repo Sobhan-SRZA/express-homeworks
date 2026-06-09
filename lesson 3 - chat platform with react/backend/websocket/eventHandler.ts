@@ -45,11 +45,15 @@ export const handleEvent = async (
     if (handler) {
         try {
             await handler(socket, payload, userId, currentUser, onlineUsers);
-        } catch (error) {
+        }
+        
+        catch (error) {
             console.error(`Error in event ${type}:`, error);
             socket.emit("error", { message: `خطا در اجرای ${type}` });
         }
-    } else {
+    } 
+    
+    else {
         console.warn(`⚠️ No handler found for event: ${type}`);
         socket.emit("error", { message: `ایونت ناشناخته: ${type}` });
     }

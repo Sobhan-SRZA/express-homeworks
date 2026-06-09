@@ -23,5 +23,4 @@ export default (socket: CustomSocket, payload: any, senderId: string, currentUse
             }));
         }
     }
-
 }

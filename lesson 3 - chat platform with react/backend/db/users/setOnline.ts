@@ -6,14 +6,16 @@ export default function (userId: string) {
     try {
         const account = getAccount(userId);
 
-        if (!account)
+        if (!account) {
             throw ("Account with " + userId + " ID didn't founded!");
+        }
 
         const users = getData("users");
         let userStatusData = users.find(a => a.id === `${account.id}`);
 
-        if (userStatusData)
+        if (userStatusData) {
             userStatusData.value.online = true;
+        }
 
         else {
             userStatusData = {

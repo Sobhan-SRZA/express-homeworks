@@ -1,5 +1,5 @@
-import getUserStatus from "../../db/users/getUserStatus";
 import { CustomSocket } from "../../types/requests";
+import getUserStatus from "../../db/users/getUserStatus";
 
 export default (socket: CustomSocket, paylaod: any) => {
     const { userId } = paylaod;

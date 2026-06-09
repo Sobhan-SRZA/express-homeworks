@@ -6,9 +6,9 @@ import {
     generateToken,
     verifyPassword
 } from "../utils/security";
+import { UserTokenPlayload } from "../types/user";
 import { RequestRouter } from "../types/requests";
 import findAccount from "../db/account/findAccount";
-import { UserTokenPlayload } from "../types/user";
 
 export default async (req: RequestRouter, res: Response, next: NextFunction) => {
     if (!req.body.password || !req.body.username) {

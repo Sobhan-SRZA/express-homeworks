@@ -53,7 +53,6 @@ export default (app: Express) => {
 
             socket.user = currentUser;
             next();
-
         }
 
         catch (err) {
