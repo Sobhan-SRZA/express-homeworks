@@ -29,7 +29,7 @@ export default function getData<T extends Tables>(
         const file = readFileSync(filePath, "utf8");
         parsed = JSON.parse(file);
     }
-    
+
     catch {
         parsed = [];
     }
