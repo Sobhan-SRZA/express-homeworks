@@ -25,24 +25,29 @@ export default (search: string, limit: number = 10) => {
             let score = 0;
 
             // 1: exact match
-            if (username === q)
+            if (username === q) {
                 score += 100;
+            }
 
             // 2: ID match
-            if (a.id === search)
+            if (a.id === search) {
                 score += 95;
+            }
 
             // 3: startswith
-            if (username.startsWith(q))
+            if (username.startsWith(q)) {
                 score += 50;
+            }
 
             // 4: includes
-            if (username.includes(q))
+            if (username.includes(q)) {
                 score += 30;
+            }
 
             // 5: fuzzy-light  
-            if (levenshtein(username, q) <= 2)
+            if (levenshtein(username, q) <= 2) {
                 score += 15;
+            }
 
             if (score > 0) {
                 results.push({
