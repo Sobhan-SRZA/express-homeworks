@@ -9,9 +9,9 @@ import {
     Socket
 } from "socket.io-client";
 
-type ConnectionStatus = "idle" | "connecting" | "connected" | "disconnected" | "error";
+export type ConnectionStatus = "idle" | "connecting" | "connected" | "disconnected" | "error";
 
-interface UseWebSocketOptions {
+export interface UseWebSocketOptions {
     url: string;
     token: string;
     onAuthFail?: (socket: AppSocket) => void;
@@ -19,12 +19,12 @@ interface UseWebSocketOptions {
     onDisconnect?: (reason: string) => void;
 }
 
-type ServerToClientEvents = {
+export type ServerToClientEvents = {
     connected: (user: unknown) => void;
     user_status: (data: unknown) => void;
 };
 
-type ClientToServerEvents = {
+export type ClientToServerEvents = {
     get_initial_data: () => void;
     get_user_status: (data: { userId: string }) => void;
     get_chat_history: (data: { with: string }) => void;
@@ -33,13 +33,13 @@ type ClientToServerEvents = {
     event: (data: unknown) => void;
 };
 
-type EventPayload<T> = T extends (data: infer P) => void
+export type EventPayload<T> = T extends (data: infer P) => void
     ? P
     : T extends () => void
     ? undefined
     : never;
 
-type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
+export type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 export default function useWebSocket({
     url,
