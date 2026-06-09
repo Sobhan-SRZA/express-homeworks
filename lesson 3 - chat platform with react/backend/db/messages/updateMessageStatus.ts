@@ -7,13 +7,15 @@ export default function (userId: string, targetUserId: string, messageId: string
     try {
         const cid = chatId(userId, targetUserId);;
         const messages = getData("messages", `${cid}`);
-        if (!messages || !messages.value || messages.value.length < 1)
+        if (!messages || !messages.value || messages.value.length < 1) {
             return null;
+        }
 
         const messageIndex = messages.value.findIndex(msg => `${msg.messageId}` === `${messageId}`);
 
-        if (messageIndex === -1)
+        if (messageIndex === -1) {
             return null;
+        }
 
         const message = messages.value[messageIndex];
         const currentTime = Date.now();
