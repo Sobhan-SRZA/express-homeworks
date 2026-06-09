@@ -6,6 +6,7 @@ import { CustomSocket } from "../../types/requests";
 import { Message } from "../../database/commands/types";
 import updateMessageStatus from "../../db/messages/updateMessageStatus";
 import addMessage from "../../db/messages/addMessage";
+import getAccount from "../../db/account/getAccount";
 
 export default (socket: CustomSocket, payload: any, senderId: string, currentUser: UserTokenVerify, onlineUsers: OnlineUsers) => {
     handleSendMessage(socket, payload, senderId, currentUser, onlineUsers);
@@ -15,11 +16,16 @@ export default (socket: CustomSocket, payload: any, senderId: string, currentUse
 
 function handleSendMessage(socket: CustomSocket, payload: any, senderId: string, currentUser: UserTokenVerify, onlineUsers: OnlineUsers) {
     const { to, text, originalMessageId } = payload;
-    console.log("🚀 ~ handleSendMessage ~ to, text, originalMessageId:", to, text, originalMessageId)
 
     let savedMessage: Message | null;
 
     try {
+        if (!getAccount(senderId)) {
+            throw new Error("Invalid account")
+        }
+
+        console.log("🚀 ~ handleSendMessage ~ to, text, originalMessageId:", to, text, originalMessageId)
+
         savedMessage = addMessage(senderId, to, text);
 
         socket.emit('message_sent_ack', {
