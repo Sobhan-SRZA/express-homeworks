@@ -39,7 +39,11 @@ export interface UserStatus {
     typing?: boolean;
 }
 
-export interface Chat { }
+export interface Chat {
+    username: string;
+    unread_messages: number;
+    last_message: Message | null;
+}
 
 export interface File {
     originalName: string;
