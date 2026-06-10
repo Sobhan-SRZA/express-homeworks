@@ -44,8 +44,8 @@ export default (starterId: string, userId: string) => {
     }
 
     catch (e) {
-        console.error("Error getting account from database:", e)
+        console.error("Error openning chat from database:", e)
 
-        return false;
+        return null;
     }
 }
