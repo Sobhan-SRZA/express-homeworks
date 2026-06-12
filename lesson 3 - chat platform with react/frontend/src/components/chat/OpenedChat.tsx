@@ -6,10 +6,13 @@ import {
   useRef,
   useState
 } from "react";
-import { SendHorizonal  } from "lucide-react";
+import { SendHorizonal } from "lucide-react";
 
 export default function OpenedChat(
-  { id, emitEvent }: {
+  {
+    id,
+    emitEvent
+  }: {
     id: string;
     emitEvent: <E extends keyof ClientToServerEvents>(event: E, payload?: EventPayload<ClientToServerEvents[E]>) => boolean;
   }
@@ -20,18 +23,24 @@ export default function OpenedChat(
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
 
   const sendMessage = () => {
+    const messageContent = message.current?.value;
+    message.current!.value = "";
+    setIsEmpty(true);
+
     emitEvent("event", {
       type: "send_message",
       payload: {
         originalMessageId: Date.now().toString(),
-        text: message.current?.value,
+        text: messageContent,
         to: id
       }
     })
   }
 
+
+
   return (
-    <div className="flex flex-col justify-between">
+    <div className="flex flex-col justify-between"    >
       {/* Chat history */}
       <div>
 
@@ -39,7 +48,15 @@ export default function OpenedChat(
 
 
       {/* Sendding part */}
-      <div className="bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center items-center w-[70%] flex-2">
+      <div className="bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center items-center w-[70%] flex-2"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            if ((message.current?.value.length || 0) > 0){
+              sendMessage();
+            }
+          }
+        }}
+      >
         <textarea
           name="message"
           id="message"
