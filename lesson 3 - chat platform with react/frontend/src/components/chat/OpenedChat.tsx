@@ -43,7 +43,7 @@ export default function OpenedChat(
     <div className="flex flex-col justify-between"    >
       {/* Chat history */}
       <div>
-
+        
       </div>
 
 
