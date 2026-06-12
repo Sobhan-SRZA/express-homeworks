@@ -6,7 +6,7 @@ import {
   Send,
   SendHorizonal
 } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function OpenedChat(
   { id, emitEvent }: {
@@ -16,6 +16,8 @@ export default function OpenedChat(
 ) {
 
   const message = useRef<HTMLTextAreaElement | null>(null);
+
+  const [isEmpty, setIsEmpty] = useState<boolean>(true);
 
   const sendMessage = () => {
     emitEvent("event", {
@@ -45,11 +47,15 @@ export default function OpenedChat(
           dir="auto"
           placeholder="پیام بنویسید..."
           className="empty:h-8 w-full rtl outline-0 bg-transparent placeholder:text-(--text)/50"
+          onChange={(element) => {
+            element.preventDefault();
+            element.target.value.length > 0 ? setIsEmpty(false) : setIsEmpty(true)
+          }}
         />
         <button
           onClick={sendMessage}
           form="message"
-          disabled={(message.current?.value.length || 0) < 1}
+          disabled={isEmpty}
           className="cursor-pointer bg-(--hover) rounded-full size-10 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <SendHorizonal
