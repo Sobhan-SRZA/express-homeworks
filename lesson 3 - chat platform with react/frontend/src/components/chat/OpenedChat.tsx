@@ -3,10 +3,10 @@ import type {
   EventPayload
 } from "../../hooks/useWebsocket";
 import {
-  Send,
-  SendHorizonal
-} from "lucide-react";
-import { useRef, useState } from "react";
+  useRef,
+  useState
+} from "react";
+import { SendHorizonal  } from "lucide-react";
 
 export default function OpenedChat(
   { id, emitEvent }: {
