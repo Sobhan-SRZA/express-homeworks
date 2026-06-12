@@ -21,7 +21,11 @@ function handleSendMessage(socket: CustomSocket, payload: any, senderId: string,
 
     try {
         if (!getAccount(senderId)) {
-            throw new Error("Invalid account")
+            throw "Invalid account";
+        }
+
+        if (!getAccount(to)) {
+            throw "Wrong user to send message";
         }
 
         console.log("🚀 ~ handleSendMessage ~ to, text, originalMessageId:", to, text, originalMessageId)
