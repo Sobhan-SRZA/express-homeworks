@@ -11,6 +11,10 @@ import {
 
 export type ConnectionStatus = "idle" | "connecting" | "connected" | "disconnected" | "error";
 
+interface MessageError {
+    message: string;
+}
+
 export interface UseWebSocketOptions {
     url: string;
     token: string;
@@ -22,6 +26,10 @@ export interface UseWebSocketOptions {
 export type ServerToClientEvents = {
     connected: (user: unknown) => void;
     user_status: (data: unknown) => void;
+    message_error: (data: MessageError) => void;
+    message_sent_ack: (data: unknown) => void;
+    message_delivered_notification: (data: unknown) => void;
+    new_message: (data: unknown) => void;
 };
 
 export type ClientToServerEvents = {
@@ -31,6 +39,7 @@ export type ClientToServerEvents = {
     open_chat: (data: { userId: string }) => void;
     send_message: (data: { to: string; text: string; originalMessageId: string; }) => void;
     event: (data: unknown) => void;
+
 };
 
 export type EventPayload<T> = T extends (data: infer P) => void
@@ -122,11 +131,16 @@ export default function useWebSocket({
             console.log("status update:", data);
         };
 
+        const handleMessageError = (data: unknown) => {
+            console.log("get an error from requesting:", data);
+        };
+
         socket.on("connect", handleConnect);
         socket.on("disconnect", handleDisconnect);
         socket.on("connect_error", handleConnectError);
         socket.on("connected", handleConnectedEvent);
         socket.on("user_status", handleUserStatus);
+        socket.on("message_error", handleMessageError);
 
         return () => {
             socket.off("connect", handleConnect);
@@ -134,6 +148,7 @@ export default function useWebSocket({
             socket.off("connect_error", handleConnectError);
             socket.off("connected", handleConnectedEvent);
             socket.off("user_status", handleUserStatus);
+            socket.off("message_error", handleMessageError);
 
             socket.disconnect();
             socketRef.current = null;
