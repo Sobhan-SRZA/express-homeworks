@@ -1,4 +1,8 @@
-import type { ClientToServerEvents, EventPayload } from "../../hooks/useWebsocket";
+import type {
+  ClientToServerEvents,
+  EventPayload
+} from "../../hooks/useWebsocket";
+import { useRef } from "react";
 
 export default function OpenedChat(
   { id, emitEvent }: {
@@ -6,18 +10,24 @@ export default function OpenedChat(
     emitEvent: <E extends keyof ClientToServerEvents>(event: E, payload?: EventPayload<ClientToServerEvents[E]>) => boolean;
   }
 ) {
+
+  const message = useRef<HTMLTextAreaElement | null>(null);
+
+  const sendMessage = () => {
+    emitEvent("event", {
+      type: "send_message",
+      payload: {
+        originalMessageId: Date.now().toString(),
+        text: message.current?.value,
+        to: id
+      }
+    })
+  }
+
   return (
-    <div
-      onClick={() => {
-        emitEvent("event", {
-          type: "send_message",
-          payload: {
-            originalMessageId: Date.now().toString(),
-            text: "se kon",
-            to: id
-          }
-        })
-      }}
-    >OpenedChat</div>
+    <div>
+      <textarea name="message" id="message" ref={message}></textarea>
+      <button onClick={sendMessage} form="message">telegram</button>
+    </div>
   )
 }
