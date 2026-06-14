@@ -26,7 +26,7 @@ export type OpenChatState = OpenChat | null;
 
 
 export default function Application({ token }: ApplicationProbs) {
-  const { emitEvent, currentUser } = useWebSocket({
+  const { emitEvent, currentUser, openedChatMessages } = useWebSocket({
     token,
     url: backend.websocket,
     onAuthFail: (socket) => {
@@ -86,6 +86,7 @@ export default function Application({ token }: ApplicationProbs) {
               emitEvent={emitEvent}
               id={openChat.id}
               currentUserId={currentUser!.id!}
+              messages={openedChatMessages}
             />
             || <ClosedChat />}
         </section>
