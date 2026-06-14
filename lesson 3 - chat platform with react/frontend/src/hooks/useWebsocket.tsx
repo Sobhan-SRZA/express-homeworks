@@ -40,7 +40,7 @@ export interface UseWebSocketOptions {
 }
 
 export type ServerToClientEvents = {
-    connected: (user: unknown) => void;
+    connected: (user: CurrentUser) => void;
     user_status: (data: unknown) => void;
     message_error: (data: MessageError) => void;
     message_sent_ack: (data: unknown) => void;
@@ -70,6 +70,13 @@ export type EventPayload<T> = T extends (data: infer P) => void
 
 export type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
+interface CurrentUser {
+    id: string;
+    created_at: number;
+    username: string;
+    expire: number;
+}
+
 export default function useWebSocket({
     url,
     token,
@@ -82,6 +89,7 @@ export default function useWebSocket({
     const [status, setStatus] = useState<ConnectionStatus>("idle");
     const [isConnected, setIsConnected] = useState(false);
     const [socketId, setSocketId] = useState<string | null>(null);
+    const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
 
     useEffect(() => {
         if (!url || !token)
@@ -143,7 +151,9 @@ export default function useWebSocket({
             }
         };
 
-        const handleConnectedEvent = (user: unknown) => {
+        const handleConnectedEvent = (user: CurrentUser) => {
+            setCurrentUser(user);
+
             console.log("server confirmed:", user);
         };
 
@@ -215,6 +225,7 @@ export default function useWebSocket({
         status,
         isConnected,
         socketId,
+        currentUser,
         emitEvent,
         disconnect,
         reconnect
