@@ -15,9 +15,9 @@ interface MessageError {
     message: string;
 }
 
-type MessageStatus = "sent" | "deliverd" | "seen";
+type MessageStatus = "sending" | "sent" | "delivered" | "read";
 
-interface Message {
+export interface Message {
     messageId: string;
     from: string;
     to: string;
@@ -45,7 +45,7 @@ export type ServerToClientEvents = {
     message_error: (data: MessageError) => void;
     message_sent_ack: (data: unknown) => void;
     message_delivered_notification: (data: unknown) => void;
-    new_message: (data: unknown) => void;
+    new_message: (data: Message) => void;
     chat_history: (data: {
         with: string,
         messages: History
@@ -220,12 +220,48 @@ export default function useWebSocket({
         socketRef.current?.connect();
     }, []);
 
+    const [openedChatMessages, setOpenedChatMessages] = useState<Message[]>([]); // ← اضافه کن
+    const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+
+    const openChat = useCallback((userId: string) => {
+        setCurrentChatId(userId);
+        setOpenedChatMessages([]); // ریست قبل از لود
+
+        emitEvent("event", {
+            type: "get_chat_history",
+            payload: { with: userId }
+        });
+    }, [emitEvent]);
+
+    // دریافت تاریخچه از سرور
+    useEffect(() => {
+        socketRef.current?.on("chat_history", (data: { messages: Message[] }) => {
+            setOpenedChatMessages(data.messages || []);
+        });
+
+        // دریافت پیام جدید realtime
+        socketRef.current?.on("new_message", (newMsg: Message) => {
+            if (newMsg.to === currentChatId || newMsg.from === currentChatId) {
+                setOpenedChatMessages(prev => [...prev, newMsg]);
+            }
+        });
+
+        return () => {
+            socketRef.current?.off("chat_history");
+            socketRef.current?.off("new_message");
+        };
+    }, [socketRef.current, currentChatId]);
+
     return {
         socket: socketRef.current,
         status,
         isConnected,
         socketId,
         currentUser,
+        openChat,
+        openedChatMessages,
+        setOpenedChatMessages,
+        currentChatId,
         emitEvent,
         disconnect,
         reconnect
