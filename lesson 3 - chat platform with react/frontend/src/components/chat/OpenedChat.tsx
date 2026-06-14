@@ -14,66 +14,98 @@ export default function OpenedChat(
     emitEvent
   }: {
     id: string;
-    emitEvent: <E extends keyof ClientToServerEvents>(event: E, payload?: EventPayload<ClientToServerEvents[E]>) => boolean;
+    emitEvent: <E extends keyof ClientToServerEvents>(
+      event: E,
+      payload?: EventPayload<ClientToServerEvents[E]>
+    ) => boolean;
   }
 ) {
-
-  const message = useRef<HTMLTextAreaElement | null>(null);
-
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
 
+  const resetTextarea = () => {
+    if (textareaRef.current) {
+      textareaRef.current.value = "";
+      setIsEmpty(true);
+      // ریست کردن ارتفاع
+      textareaRef.current.style.height = "auto";
+    }
+  };
+
   const sendMessage = () => {
-    const messageContent = message.current?.value;
-    message.current!.value = "";
-    setIsEmpty(true);
+    const textarea = textareaRef.current;
+    if (!textarea)
+      return;
+
+    const text = textarea.value.trim();
+
+    if (text.length === 0)
+      return;
 
     emitEvent("event", {
       type: "send_message",
       payload: {
         originalMessageId: Date.now().toString(),
-        text: messageContent,
+        text: text,
         to: id
       }
     })
+
+    resetTextarea();
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter") {
+      if (e.shiftKey) {
+        // Shift + Enter → خط جدید (رفتار پیش‌فرض textarea)
+        return;
+      }
 
+      else {
+        // فقط Enter → ارسال
+        e.preventDefault(); // جلوگیری از اضافه شدن خط جدید
+        sendMessage();
+      }
+    }
+  };
+
+  const autoResize = () => {
+    const textarea = textareaRef.current;
+    if (!textarea)
+      return;
+
+    textarea.style.height = "auto";
+
+    const newHeight = Math.min(textarea.scrollHeight, 180); // حداکثر حدود ۸-۹ خط
+    textarea.style.height = `${newHeight}px`;
+
+    setIsEmpty(textarea.value.trim().length === 0);
+  };
 
   return (
-    <div className="flex flex-col justify-between"    >
+    <div className="flex flex-col justify-between">
       {/* Chat history */}
-      <div>
-        
+      <div className="">
+        { }
       </div>
 
 
       {/* Sendding part */}
-      <div className="bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center items-center w-[70%] flex-2"
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            if ((message.current?.value.length || 0) > 0){
-              sendMessage();
-            }
-          }
-        }}
-      >
+      <div className="absolute bottom-5 bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center items-center w-[60%] flex-2">
         <textarea
-          name="message"
-          id="message"
-          ref={message}
+          ref={textareaRef}
           dir="auto"
           placeholder="پیام بنویسید..."
-          className="empty:h-8 w-full rtl outline-0 bg-transparent placeholder:text-(--text)/50"
-          onChange={(element) => {
-            element.preventDefault();
-            element.target.value.length > 0 ? setIsEmpty(false) : setIsEmpty(true)
-          }}
+          className="flex-1 max-h-45 min-h-10 empty:h-8 py-2 rtl outline-none bg-transparent placeholder:text-(--text)/50 text-[15px] resize-none leading-relaxed"
+          onChange={autoResize}
+          onKeyDown={handleKeyDown}
+          rows={1}
         />
+
         <button
           onClick={sendMessage}
-          form="message"
           disabled={isEmpty}
-          className="cursor-pointer bg-(--hover) rounded-full size-10 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="cursor-pointer bg-(--hover) rounded-full size-10 disabled:opacity-60 disabled:cursor-not-allowed place-self-end"
         >
           <SendHorizonal
             className="size-[70%] place-self-center"
