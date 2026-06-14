@@ -15,6 +15,22 @@ interface MessageError {
     message: string;
 }
 
+type MessageStatus = "sent" | "deliverd" | "seen";
+
+interface Message {
+    messageId: string;
+    from: string;
+    to: string;
+    text: string;
+    timestamp: number;
+    status: MessageStatus;
+    sentAt: number | null;
+    deliveredAt: number | null;
+    seenAt: number | null;
+}
+
+type History = Message[];
+
 export interface UseWebSocketOptions {
     url: string;
     token: string;
@@ -30,6 +46,10 @@ export type ServerToClientEvents = {
     message_sent_ack: (data: unknown) => void;
     message_delivered_notification: (data: unknown) => void;
     new_message: (data: unknown) => void;
+    chat_history: (data: {
+        with: string,
+        messages: History
+    }) => void;
 };
 
 export type ClientToServerEvents = {
