@@ -24,8 +24,9 @@ interface OpenChat {
 
 export type OpenChatState = OpenChat | null;
 
+
 export default function Application({ token }: ApplicationProbs) {
-  const { emitEvent } = useWebSocket({
+  const { emitEvent, currentUser } = useWebSocket({
     token,
     url: backend.websocket,
     onAuthFail: (socket) => {
@@ -81,7 +82,11 @@ export default function Application({ token }: ApplicationProbs) {
       <main id="platform" className="flex justify-between items-center text-center min-h-full min-w-full p-0 inset-0 m-0 relative">
         <section id="chat" className="flex flex-col w-full">
           {openChat?.id
-            && <OpenedChat emitEvent={emitEvent} id={openChat.id} />
+            && <OpenedChat
+              emitEvent={emitEvent}
+              id={openChat.id}
+              currentUserId={currentUser!.id!}
+            />
             || <ClosedChat />}
         </section>
 
