@@ -1,6 +1,7 @@
 import type {
   ClientToServerEvents,
-  EventPayload
+  EventPayload,
+  Message
 } from "../../hooks/useWebsocket";
 import {
   useCallback,
@@ -10,23 +11,16 @@ import {
 } from "react";
 import { Check, CheckCheck, Clock, SendHorizonal } from "lucide-react";
 
-type Message = {
-  id: string;
-  text: string;
-  from: string;
-  to: string;
-  timestamp: Date;
-  status: "sending" | "sent" | "delivered" | "read"; // استاتوس پیام
-};
-
 export default function OpenedChat(
   {
     id,
     emitEvent,
-    currentUserId
+    currentUserId,
+    messages = []
   }: {
     id: string;
     currentUserId: string;
+    messages: Message[];
     emitEvent: <E extends keyof ClientToServerEvents>(
       event: E,
       payload?: EventPayload<ClientToServerEvents[E]>
@@ -35,6 +29,46 @@ export default function OpenedChat(
 ) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
+
+
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const [localMessages, setLocalMessages] = useState<Message[]>(messages);
+
+  useEffect(() => {
+    setLocalMessages(messages);
+  }, [messages]);
+
+  // Auto scroll to bottom
+  const scrollToBottom = useCallback(() => {
+    chatContainerRef.current?.scrollTo({
+      top: chatContainerRef.current.scrollHeight,
+      behavior: "smooth"
+    });
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [localMessages, scrollToBottom]);
+
+  const MessageStatus = ({ status }: { status: Message["status"] }) => {
+    switch (status) {
+      case "sending":
+        return <Clock className="w-4 h-4 animate-spin text-gray-400" />;
+
+      case "sent":
+        return <Check className="w-4 h-4 text-gray-400" />;
+
+      case "delivered":
+        return <CheckCheck className="w-4 h-4 text-gray-400" />;
+
+      case "read":
+        return <CheckCheck className="w-4 h-4 text-blue-500" />;
+
+      default:
+        return null;
+    }
+  };
+
 
   const resetTextarea = () => {
     if (textareaRef.current) {
@@ -55,20 +89,23 @@ export default function OpenedChat(
       return;
 
     const newMessage: Message = {
-      id: Date.now().toString(),
+      messageId: Date.now().toString(),
       text,
       from: currentUserId,
       to: id,
-      timestamp: new Date(),
+      timestamp: Date.now(),
       status: "sending",
+      deliveredAt: null,
+      seenAt: null,
+      sentAt: null
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    setLocalMessages((prev) => [...prev, newMessage]);
 
     emitEvent("event", {
       type: "send_message",
       payload: {
-        originalMessageId: newMessage.id,
+        originalMessageId: newMessage.messageId,
         text,
         to: id
       }
@@ -95,45 +132,12 @@ export default function OpenedChat(
     setIsEmpty(ta.value.trim().length === 0);
   };
 
-  const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  // Auto scroll to bottom
-  const scrollToBottom = useCallback(() => {
-    chatContainerRef.current?.scrollTo({
-      top: chatContainerRef.current.scrollHeight,
-      behavior: "smooth"
-    });
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
-
-  const MessageStatus = ({ status }: { status: Message["status"] }) => {
-    switch (status) {
-      case "sending":
-        return <Clock className="w-4 h-4 animate-spin text-gray-400" />;
-
-      case "sent":
-        return <Check className="w-4 h-4 text-gray-400" />;
-
-      case "delivered":
-        return <CheckCheck className="w-4 h-4 text-gray-400" />;
-
-      case "read":
-        return <CheckCheck className="w-4 h-4 text-blue-500" />;
-
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="flex flex-col justify-between">
       {/* Header */}
       <div className="p-4 border-b border-(--border) flex items-center gap-3 bg-(--lgs-bg)">
         <div className="w-10 h-10 bg-blue-500 rounded-full" />
+        
         <div>
           <p className="font-semibold">نام کاربر</p>
           <p className="text-sm text-green-500">آنلاین</p>
@@ -145,12 +149,12 @@ export default function OpenedChat(
         ref={chatContainerRef}
         className="flex-1 overflow-y-auto p-4 space-y-3 bg-[url('https://...')] bg-repeat" // والپیپر چت دلخواه
       >
-        {messages.map((msg) => {
+        {localMessages.map((msg) => {
           const isOwn = msg.from === currentUserId;
 
           return (
             <div
-              key={msg.id}
+              key={msg.messageId}
               className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
             >
               <div
@@ -165,7 +169,7 @@ export default function OpenedChat(
 
                 <div className="flex items-center justify-end gap-1 mt-1">
                   <span className="text-[10px] opacity-70">
-                    {msg.timestamp.toLocaleTimeString("fa-IR", {
+                    {new Date(msg.timestamp).toLocaleTimeString("fa-IR", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
