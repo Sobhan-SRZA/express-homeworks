@@ -17,17 +17,18 @@ export default (starterId: string, userId: string) => {
             throw ("Account with " + starterId + " ID didn't founded!");
         }
 
-        const chat = getData("chats", starterId);
+        // const chat = getData("chats", starterId);
 
-        if (chat) {
-            return chat.value;
-        }
+        // // if (chat) {
+        // //     return chat.value;
+        // // }
 
         const messages = getHistory(starterAccount.value.id, userAccount.value.id);
 
         const data: Chat = {
+            userId: userId,
             username: userAccount.value.username,
-            unread_messages: messages?.filter(a => a.status !== "seen").length || 0,
+            unread_messages: messages?.filter(a => a.from === userId && a.status !== "seen").length || 0,
             last_message: messages?.reverse()[0] || null
         };
 
