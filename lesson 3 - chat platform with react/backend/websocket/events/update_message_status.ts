@@ -16,9 +16,9 @@ export default (socket: CustomSocket, payload: any, senderId: string, currentUse
             senderClient.send(JSON.stringify({
                 type: `message_${statusType}_notification`,
                 payload: {
-                    messageId: updatedMessage.messageId,
+                    messageId: updatedMessage.id,
                     userId: senderId,
-                    [statusType === 'delivered' ? 'deliveredAt' : 'seenAt']: updatedMessage[statusType === 'delivered' ? 'deliveredAt' : 'seenAt']
+                    [statusType === 'delivered' ? 'deliveredAt' : 'readAt']: updatedMessage[statusType === 'delivered' ? 'deliveredAt' : 'readAt']
                 }
             }));
         }

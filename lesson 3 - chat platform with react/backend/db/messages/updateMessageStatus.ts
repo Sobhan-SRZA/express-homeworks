@@ -11,7 +11,7 @@ export default function (userId: string, targetUserId: string, messageId: string
             return null;
         }
 
-        const messageIndex = messages.value.findIndex(msg => `${msg.messageId}` === `${messageId}`);
+        const messageIndex = messages.value.findIndex(msg => `${msg.id}` === `${messageId}`);
 
         if (messageIndex === -1) {
             return null;
@@ -22,17 +22,17 @@ export default function (userId: string, targetUserId: string, messageId: string
 
         if (statusType === "sent") {
             message.status = "sent";
-            message.seenAt = currentTime;
+            message.readAt = currentTime;
         }
 
-        else if (statusType === "deliverd") {
-            message.status = "deliverd";
+        else if (statusType === "delivered") {
+            message.status = "delivered";
             message.deliveredAt = currentTime;
         }
 
-        else if (statusType === "seen") {
-            message.status = "seen";
-            message.seenAt = currentTime;
+        else if (statusType === "read") {
+            message.status = "read";
+            message.readAt = currentTime;
         }
 
         messages.value[messageIndex] = message;

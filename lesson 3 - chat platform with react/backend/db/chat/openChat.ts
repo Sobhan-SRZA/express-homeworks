@@ -28,7 +28,7 @@ export default (starterId: string, userId: string) => {
         const data: Chat = {
             userId: userId,
             username: userAccount.value.username,
-            unread_messages: messages?.filter(a => a.from === userId && a.status !== "seen").length || 0,
+            unread_messages: messages?.filter(a => a.from === userId && a.status !== "read").length || 0,
             last_message: messages?.reverse()[0] || null
         };
 

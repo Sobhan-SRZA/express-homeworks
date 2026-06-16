@@ -33,8 +33,8 @@ function handleSendMessage(socket: CustomSocket, payload: any, senderId: string,
         savedMessage = addMessage(senderId, to, text);
 
         socket.emit('message_sent_ack', {
-            originalMessageId: originalMessageId || savedMessage!.messageId,
-            messageId: savedMessage!.messageId,
+            originalMessageId: originalMessageId || savedMessage!.id,
+            messageId: savedMessage!.id,
             sentAt: savedMessage!.timestamp
         });
 
@@ -42,9 +42,9 @@ function handleSendMessage(socket: CustomSocket, payload: any, senderId: string,
         if (targetClient) {
             targetClient.emit('new_message', { message: savedMessage });
 
-            updateMessageStatus(to, senderId, savedMessage!.messageId, 'deliverd');
+            updateMessageStatus(to, senderId, savedMessage!.id, 'delivered');
             targetClient.emit('message_delivered_notification', {
-                messageId: savedMessage!.messageId
+                messageId: savedMessage!.id
             });
         }
 

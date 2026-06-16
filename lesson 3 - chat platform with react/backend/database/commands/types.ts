@@ -21,7 +21,7 @@ export interface Account {
 }
 
 export interface Message {
-    messageId: string;
+    id: string;
     from: string;
     to: string;
     text: string;
@@ -29,7 +29,7 @@ export interface Message {
     status: MessageStatus;
     sentAt: number | null;
     deliveredAt: number | null;
-    seenAt: number | null;
+    readAt: number | null;
 }
 
 export interface UserStatus {
@@ -61,4 +61,4 @@ export interface DatabaseEntry<T> {
     value: T;
 }
 
-export type MessageStatus = "sent" | "deliverd" | "seen";
+export type MessageStatus = "sent" | "delivered" | "read";

@@ -1,8 +1,8 @@
 import { Message } from "../../database/commands/types";
+import openChat from "../chat/openChat";
 import getData from "../../database/commands/getData";
 import setData from "../../database/commands/setData";
 import chatId from "../../utils/chatId";
-import openChat from "../chat/openChat";
 
 export default function (from: string, to: string, text: string) {
     try {
@@ -11,7 +11,7 @@ export default function (from: string, to: string, text: string) {
 
         const currentTime = Date.now();
         const message: Message = {
-            messageId: currentTime.toString(),
+            id: currentTime.toString(),
             from,
             to,
             text,
@@ -19,7 +19,7 @@ export default function (from: string, to: string, text: string) {
             status: "sent",
             sentAt: null,
             deliveredAt: null,
-            seenAt: null
+            readAt: null
         };
 
         if (!messages || !messages.value || messages.value.length < 1) {

@@ -15,10 +15,10 @@ interface MessageError {
     message: string;
 }
 
-type MessageStatus = "sending" | "sent" | "delivered" | "read";
+export type MessageStatus = "sending" | "sent" | "delivered" | "read";
 
 export interface Message {
-    messageId: string;
+    id: string;
     from: string;
     to: string;
     text: string;
@@ -26,7 +26,7 @@ export interface Message {
     status: MessageStatus;
     sentAt: number | null;
     deliveredAt: number | null;
-    seenAt: number | null;
+    readAt: number | null;
 }
 
 type History = Message[];
