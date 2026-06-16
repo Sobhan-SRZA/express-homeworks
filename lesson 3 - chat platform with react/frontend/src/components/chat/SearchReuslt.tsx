@@ -22,7 +22,11 @@ export default function SearchReuslt({
                         return (
                             <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl"
                                 key={chat.id}
-                                onClick={() => onSelect({ isOpen: true, id: chat.id })}
+                                onClick={(e) => {
+                                    e.preventDefault();
+
+                                    onSelect({ isOpen: true, ...chat });
+                                }}
                             >
 
                                 <div className="felx flex-col justify-center items-center text-left h-full w-max">
