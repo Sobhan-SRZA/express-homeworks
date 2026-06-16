@@ -10,15 +10,13 @@ import {
   useState
 } from "react";
 import {
-  Check,
-  CheckCheck,
-  Clock,
   MoveRight,
   SendHorizonal
 } from "lucide-react";
 import type { OpenChatState } from "../../pages/Application";
-import DisplayUserAvatar from "./DisplayUserAvatar";
 import type { UserChat } from "./ChatsList";
+import DisplayUserAvatar from "./DisplayUserAvatar";
+import MessageList from "./MessageList";
 
 export default function OpenedChat(
   {
@@ -63,32 +61,13 @@ export default function OpenedChat(
     scrollToBottom();
   }, [localMessages, scrollToBottom]);
 
-  const MessageStatus = ({ status }: { status: Message["status"] }) => {
-    console.log("🚀 ~ MessageStatus ~ status:", status)
-    switch (status) {
-      case "sending":
-        return <Clock className="w-4 h-4 animate-spin text-gray-400" />;
-
-      case "sent":
-        return <Check className="w-4 h-4 text-gray-400" />;
-
-      case "delivered":
-        return <CheckCheck className="w-4 h-4 text-gray-400" />;
-
-      case "read":
-        return <CheckCheck className="w-4 h-4 text-blue-500" />;
-
-      default:
-        return null;
-    }
-  };
 
 
   const resetTextarea = () => {
     if (textareaRef.current) {
       textareaRef.current.value = "";
       setIsEmpty(true);
-      // ریست کردن ارتفاع
+
       textareaRef.current.style.height = "auto";
     }
   };
@@ -103,14 +82,14 @@ export default function OpenedChat(
       return;
 
     const newMessage: Message = {
-      messageId: Date.now().toString(),
+      id: Date.now().toString(),
       text,
       from: currentUserId,
       to: chat!.id,
       timestamp: Date.now(),
       status: "sending",
       deliveredAt: null,
-      seenAt: null,
+      readAt: null,
       sentAt: null
     };
 
@@ -119,7 +98,7 @@ export default function OpenedChat(
     emitEvent("event", {
       type: "send_message",
       payload: {
-        originalMessageId: newMessage.messageId,
+        originalMessageId: newMessage.id,
         text,
         to: chat!.id
       }
@@ -145,7 +124,6 @@ export default function OpenedChat(
     ta.style.height = `${Math.min(ta.scrollHeight, 180)}px`;
     setIsEmpty(ta.value.trim().length === 0);
   };
-
 
   function timeAgo(timestamp: number | Date): string {
     const now = new Date().getTime();
@@ -207,42 +185,11 @@ export default function OpenedChat(
       </div>
 
       {/* Messages List */}
-      <div
+      <MessageList
         ref={chatContainerRef}
-        className="flex-1 overscroll-y-contain overflow-y-scroll custom-scroll max-h-screen scroll-smooth p-4 py-20 space-y-3"
-      >
-        {localMessages.map((msg) => {
-          const isOwn = msg.from === currentUserId;
-
-          return (
-            <div
-              key={msg.messageId}
-              className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[70%] px-4 py-2.5 rounded-2xl ${isOwn
-                  ? "bg-(--primary)/30 text-(--text) rounded-tr-none"
-                  : "bg-(--lgs-bg) text-(--text) rounded-tl-none"
-                  }`}
-              >
-                <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
-                  {msg.text}
-                </p>
-
-                <div className="flex items-center justify-end gap-1 mt-1">
-                  <span className="text-[10px] opacity-70">
-                    {new Date(msg.timestamp).toLocaleTimeString("fa-IR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                  {isOwn && <MessageStatus status={msg.status} />}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+        from={currentUserId}
+        messages={localMessages}
+      />
 
 
       {/* Input Area */}
