@@ -4,6 +4,7 @@ import DisplayUserAvatar from "./DisplayUserAvatar";
 
 export interface UserChat {
     id: string;
+    last_seen: number;
     muted: boolean;
     name: string;
     last_message: {
@@ -86,10 +87,10 @@ export default function ChatsList({
     chats: UserChat[];
     onSelect: React.Dispatch<React.SetStateAction<OpenChatState>>;
 }) {
-    const handleClickChat = (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
+    const handleClickChat = (e: MouseEvent<HTMLLIElement, globalThis.MouseEvent>, chat: UserChat) => {
         e.preventDefault();
 
-        onSelect({ isOpen: true, id: e.currentTarget.accessKey })
+        onSelect({ isOpen: true, ...chat })
     }
 
     return (
@@ -100,7 +101,7 @@ export default function ChatsList({
                         <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl"
                             key={chat.id}
                             accessKey={chat.id}
-                            onClick={(e) => handleClickChat(e)}
+                            onClick={(e) => handleClickChat(e, chat)}
                         >
 
                             <div className="felx flex-col justify-center items-center text-left h-full w-max">
