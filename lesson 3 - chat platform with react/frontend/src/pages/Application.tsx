@@ -57,11 +57,11 @@ export default function Application({ token }: ApplicationProbs) {
     { id: "10", muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047755578 }, status: "offline", last_seen: 1777047925578, unread_message: 1 },
     { id: "11", avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947525578 }, status: "offline", last_seen: 1777047925578, unread_message: 250 },
     { id: "12", avatar: "/favicon.ico", muted: true, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768043925358 }, status: "online", last_seen: 1777047925578, unread_message: 45 },
-    { id: "13", avatar: "/.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777941225578 }, status: "offline", last_seen: 1777047925578, unread_message: 250 },
+    { id: "13", avatar: "/favicon.ico", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777941225578 }, status: "offline", last_seen: 1777047925578, unread_message: 250 },
     { id: "14", muted: true, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777047225578 }, status: "offline", last_seen: 1777047925578, unread_message: 1 },
     { id: "16", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947735578 }, status: "offline", last_seen: 1777047925578, unread_message: 250 },
     { id: "19676527011939024896", muted: false, name: "Sobhan-SRZA", last_message: { text: "fuck you", timestamp: 1777947735578 }, status: "offline", last_seen: 1777047925578, unread_message: 250 },
-    { id: "15", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768028925358 }, status: "online", last_seen: 1777047925578, unread_message: 45 },
+    { id: "19676509419769757696", muted: false, name: "sobhan", last_message: { text: "سلام عزیزم", timestamp: 1768028925358 }, status: "online", last_seen: 1777047925578, unread_message: 45 },
     { id: "17", avatar: "/faviconfavicon.ico", muted: false, name: "reza", last_message: { text: "کونی چطوری", timestamp: 1777027725578 }, status: "offline", last_seen: 1777047925578, unread_message: 1 },
     { id: "18", muted: false, name: "ehsan", last_message: { text: "fuck you", timestamp: 1777947725578 }, status: "offline", last_seen: 1777047925578, unread_message: 250 },
     { id: "19", muted: false, name: "helia", last_message: { text: "سلام عزیزم", timestamp: 1768041925358 }, status: "online", last_seen: 1777047925578, unread_message: 45 },
@@ -85,7 +85,7 @@ export default function Application({ token }: ApplicationProbs) {
     <>
       <main id="platform" className="flex justify-between items-center text-center min-h-full min-w-full p-0 inset-0 m-0 relative">
         <section id="chat" className="flex flex-col w-full">
-          {chat?.id
+          {(chat && chat.id)
             && <OpenedChat
               emitEvent={emitEvent}
               chat={chat}
