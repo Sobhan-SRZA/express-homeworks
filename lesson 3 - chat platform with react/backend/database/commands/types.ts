@@ -40,6 +40,7 @@ export interface UserStatus {
 }
 
 export interface Chat {
+    userId: string;
     username: string;
     unread_messages: number;
     last_message: Message | null;
