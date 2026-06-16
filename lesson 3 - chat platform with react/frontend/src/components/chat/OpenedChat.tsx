@@ -9,18 +9,28 @@ import {
   useRef,
   useState
 } from "react";
-import { Check, CheckCheck, Clock, SendHorizonal } from "lucide-react";
+import {
+  Check,
+  CheckCheck,
+  Clock,
+  SendHorizonal
+} from "lucide-react";
+import type { OpenChatState } from "../../pages/Application";
+import DisplayUserAvatar from "./DisplayUserAvatar";
+import type { UserChat } from "./ChatsList";
 
 export default function OpenedChat(
   {
-    id,
+    chat,
     emitEvent,
     currentUserId,
-    messages = []
+    messages = [],
+    openChat
   }: {
-    id: string;
+    chat: OpenChatState;
     currentUserId: string;
     messages: Message[];
+    openChat: (userId: string) => void;
     emitEvent: <E extends keyof ClientToServerEvents>(
       event: E,
       payload?: EventPayload<ClientToServerEvents[E]>
@@ -92,7 +102,7 @@ export default function OpenedChat(
       messageId: Date.now().toString(),
       text,
       from: currentUserId,
-      to: id,
+      to: chat!.id,
       timestamp: Date.now(),
       status: "sending",
       deliveredAt: null,
@@ -107,7 +117,7 @@ export default function OpenedChat(
       payload: {
         originalMessageId: newMessage.messageId,
         text,
-        to: id
+        to: chat!.id
       }
     })
 
@@ -133,21 +143,27 @@ export default function OpenedChat(
   };
 
   return (
-    <div className="flex flex-col justify-between">
+    <div className="flex flex-col justify-between"
+      onAbort={() => {
+        console.log("sex")
+        console.log("openChat(id)", chat!.id)
+        openChat(chat!.id)
+      }}>
+
       {/* Header */}
-      <div className="p-4 border-b border-(--border) flex items-center gap-3 bg-(--lgs-bg)">
-        <div className="w-10 h-10 bg-blue-500 rounded-full" />
-        
+      <div className="absolute top-5 bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center items-center w-[40%] flex-2">
+        <DisplayUserAvatar chat={chat as UserChat} />
+
         <div>
-          <p className="font-semibold">نام کاربر</p>
-          <p className="text-sm text-green-500">آنلاین</p>
+          <p className="font-semibold">{chat!.name}</p>
+          <p className={`text-sm ${chat!.status === "online" ? "text-green-500" : "text-gray-400"}`}>{chat!.status === "offline" ? get : chat?.status}</p>
         </div>
       </div>
 
       {/* Messages List */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-3 bg-[url('https://...')] bg-repeat" // والپیپر چت دلخواه
+        className="flex-1 overflow-y-auto p-4 space-y-3" // والپیپر چت دلخواه
       >
         {localMessages.map((msg) => {
           const isOwn = msg.from === currentUserId;
@@ -205,6 +221,6 @@ export default function OpenedChat(
           />
         </button>
       </div>
-    </div>
+    </div >
   )
 }
