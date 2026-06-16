@@ -64,6 +64,7 @@ export default function OpenedChat(
   }, [localMessages, scrollToBottom]);
 
   const MessageStatus = ({ status }: { status: Message["status"] }) => {
+    console.log("🚀 ~ MessageStatus ~ status:", status)
     switch (status) {
       case "sending":
         return <Clock className="w-4 h-4 animate-spin text-gray-400" />;
@@ -181,19 +182,15 @@ export default function OpenedChat(
     return `${Math.floor(diffInSeconds / intervals.year)} سال پیش`;
   }
 
-  console.log("🚀 ~ OpenedChat ~ localMessages:", localMessages)
-
   useEffect(() => {
-    console.log("sex")
-    console.log("openChat(id)", chat!.id)
     openChat(chat!.id)
-  }, [chat]);
-  
+  }, [chat, openChat]);
+
   return (
     <div className="flex flex-col justify-between">
 
       {/* Header */}
-      <div className="absolute top-5 bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center justify-between w-[40%] flex-2">
+      <div className="absolute top-5 rounded-4xl flex gap-3 p-2 place-self-center justify-between w-[40%] flex-2 shadow-2xl backdrop-blur-lg border border-(--border)/40 bg-(--lgs-bg)/30 z-20">
         <DisplayUserAvatar chat={chat as UserChat} />
 
         <div className="place-self-center justify-items-start flex-1">
@@ -212,7 +209,7 @@ export default function OpenedChat(
       {/* Messages List */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overscroll-y-contain overflow-y-scroll custom-scroll max-h-screen scroll-smooth p-4 py-20 space-y-3" 
+        className="flex-1 overscroll-y-contain overflow-y-scroll custom-scroll max-h-screen scroll-smooth p-4 py-20 space-y-3"
       >
         {localMessages.map((msg) => {
           const isOwn = msg.from === currentUserId;
@@ -249,7 +246,7 @@ export default function OpenedChat(
 
 
       {/* Input Area */}
-      <div className="absolute bottom-5 bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center items-center w-[60%] flex-2">
+      <div className="absolute bottom-5 border border-(--border)/40 bg-(--lgs-bg)/30 rounded-4xl flex gap-3 p-2 place-self-center items-center w-[60%] flex-2 shadow-2xl backdrop-blur-lg z-20">
         <textarea
           ref={textareaRef}
           dir="auto"
