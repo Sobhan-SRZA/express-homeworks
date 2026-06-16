@@ -225,6 +225,7 @@ export default function useWebSocket({
 
     const openChat = useCallback((userId: string) => {
         setCurrentChatId(userId);
+        console.log("openChat.useCallback.userId", userId)
         setOpenedChatMessages([]); // ریست قبل از لود
 
         emitEvent("event", {
@@ -235,7 +236,10 @@ export default function useWebSocket({
 
     // دریافت تاریخچه از سرور
     useEffect(() => {
+        console.log("currentChatId", currentChatId)
+
         socketRef.current?.on("chat_history", (data: { messages: Message[] }) => {
+            console.log("chat_history.data", data)
             setOpenedChatMessages(data.messages || []);
         });
 
