@@ -25,7 +25,7 @@ export default function MessageList({
                 return (
                     <div
                         key={msg.id}
-                        className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+                        className={`relative flex ${isOwn ? "justify-end" : "justify-start"}`}
                     >
                         <div
                             className={`max-w-[70%] px-4 py-2.5 rounded-2xl ${isOwn
@@ -41,14 +41,13 @@ export default function MessageList({
                             <span className="text-[10px] opacity-70">
                                 {new Date(msg.timestamp).toLocaleTimeString("fa-IR", {
                                     hour: "2-digit",
-                                    minute: "2-digit",
+                                    minute: "2-digit"
                                 })}
                             </span>
 
                             {isOwn && <MessageStatus status={msg.status} />}
                         </div>
                         </div>
-
                     </div>
                 );
             })}
