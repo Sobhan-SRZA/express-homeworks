@@ -13,6 +13,7 @@ import {
   Check,
   CheckCheck,
   Clock,
+  MoveRight,
   SendHorizonal
 } from "lucide-react";
 import type { OpenChatState } from "../../pages/Application";
@@ -22,12 +23,14 @@ import type { UserChat } from "./ChatsList";
 export default function OpenedChat(
   {
     chat,
+    setChat,
     emitEvent,
     currentUserId,
     messages = [],
     openChat
   }: {
     chat: OpenChatState;
+    setChat: React.Dispatch<React.SetStateAction<OpenChatState>>;
     currentUserId: string;
     messages: Message[];
     openChat: (userId: string) => void;
@@ -151,13 +154,20 @@ export default function OpenedChat(
       }}>
 
       {/* Header */}
-      <div className="absolute top-5 bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center items-center w-[40%] flex-2">
+      <div className="absolute top-5 bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center justify-between w-[40%] flex-2">
         <DisplayUserAvatar chat={chat as UserChat} />
 
-        <div>
+        <div className="place-self-center justify-items-start flex-1">
           <p className="font-semibold">{chat!.name}</p>
-          <p className={`text-sm ${chat!.status === "online" ? "text-green-500" : "text-gray-400"}`}>{chat!.status === "offline" ? get : chat?.status}</p>
+          <p className={`text-sm ${chat!.status === "online" ? "text-green-500" : "text-gray-400"}`}>{chat!.status === "offline" ? new Date(chat!.last_seen).toTimeString() : chat?.status}</p>
         </div>
+
+        <MoveRight
+          className="place-self-center  size-10 bg-transparent text-(--text) cursor-pointer p-1 rounded-full hover:bg-(--border)/30 transition-colors duration-300"
+          onClick={() => {
+            setChat(null)
+          }}
+        />
       </div>
 
       {/* Messages List */}
