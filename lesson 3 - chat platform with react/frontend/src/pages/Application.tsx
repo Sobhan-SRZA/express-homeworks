@@ -90,6 +90,7 @@ export default function Application({ token }: ApplicationProbs) {
             && <OpenedChat
               emitEvent={emitEvent}
               chat={chat}
+              setChat={setChat}
               currentUserId={currentUser!.id!}
               messages={openedChatMessages}
               openChat={openChat}
