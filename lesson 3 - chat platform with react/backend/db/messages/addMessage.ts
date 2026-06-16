@@ -2,6 +2,7 @@ import { Message } from "../../database/commands/types";
 import getData from "../../database/commands/getData";
 import setData from "../../database/commands/setData";
 import chatId from "../../utils/chatId";
+import openChat from "../chat/openChat";
 
 export default function (from: string, to: string, text: string) {
     try {
@@ -31,6 +32,8 @@ export default function (from: string, to: string, text: string) {
         messages.value.push(message);
 
         setData("messages", messages, cid);
+
+        openChat(from, to);
 
         return message;
     }
