@@ -145,13 +145,52 @@ export default function OpenedChat(
     setIsEmpty(ta.value.trim().length === 0);
   };
 
+
+  function timeAgo(timestamp: number | Date): string {
+    const now = new Date().getTime();
+    const past = new Date(timestamp).getTime();
+    const diffInSeconds = Math.floor((now - past) / 1000);
+
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+    };
+
+    if (diffInSeconds < 60)
+      return 'لحظاتی پیش';
+
+    else if (diffInSeconds < 3600)
+      return `${Math.floor(diffInSeconds / intervals.minute)} دقیقه پیش`;
+
+    else if (diffInSeconds < 86400)
+      return `${Math.floor(diffInSeconds / intervals.hour)} ساعت پیش`;
+
+    else if (diffInSeconds < 604800)
+      return `${Math.floor(diffInSeconds / intervals.day)} روز پیش`;
+
+    else if (diffInSeconds < 2592000)
+      return `${Math.floor(diffInSeconds / intervals.week)} هفته پیش`;
+
+    else if (diffInSeconds < 31536000)
+      return `${Math.floor(diffInSeconds / intervals.month)} ماه پیش`;
+
+    return `${Math.floor(diffInSeconds / intervals.year)} سال پیش`;
+  }
+
+  console.log("🚀 ~ OpenedChat ~ localMessages:", localMessages)
+
+  useEffect(() => {
+    console.log("sex")
+    console.log("openChat(id)", chat!.id)
+    openChat(chat!.id)
+  }, [chat]);
+  
   return (
-    <div className="flex flex-col justify-between"
-      onAbort={() => {
-        console.log("sex")
-        console.log("openChat(id)", chat!.id)
-        openChat(chat!.id)
-      }}>
+    <div className="flex flex-col justify-between">
 
       {/* Header */}
       <div className="absolute top-5 bg-(--lgs-bg) rounded-4xl flex gap-3 p-2 place-self-center justify-between w-[40%] flex-2">
@@ -159,7 +198,7 @@ export default function OpenedChat(
 
         <div className="place-self-center justify-items-start flex-1">
           <p className="font-semibold">{chat!.name}</p>
-          <p className={`text-sm ${chat!.status === "online" ? "text-green-500" : "text-gray-400"}`}>{chat!.status === "offline" ? new Date(chat!.last_seen).toTimeString() : chat?.status}</p>
+          <p className={`text-sm ${chat!.status === "online" ? "text-green-500" : "text-gray-400"}`}>{chat!.status === "offline" ? timeAgo(chat!.last_seen) : chat!.status}</p>
         </div>
 
         <MoveRight
@@ -173,7 +212,7 @@ export default function OpenedChat(
       {/* Messages List */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-3" // والپیپر چت دلخواه
+        className="flex-1 overscroll-y-contain overflow-y-scroll custom-scroll max-h-screen scroll-smooth p-4 py-20 space-y-3" 
       >
         {localMessages.map((msg) => {
           const isOwn = msg.from === currentUserId;
@@ -184,9 +223,9 @@ export default function OpenedChat(
               className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[70%] px-4 py-2.5 rounded-2xl rounded-tr-none ${isOwn
-                  ? "bg-(--primary) text-white"
-                  : "bg-(--message-incoming) text-(--text)"
+                className={`max-w-[70%] px-4 py-2.5 rounded-2xl ${isOwn
+                  ? "bg-(--primary)/30 text-(--text) rounded-tr-none"
+                  : "bg-(--lgs-bg) text-(--text) rounded-tl-none"
                   }`}
               >
                 <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
