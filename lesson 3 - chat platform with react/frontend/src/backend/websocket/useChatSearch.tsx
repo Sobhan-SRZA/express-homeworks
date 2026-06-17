@@ -2,7 +2,7 @@ import {
     useEffect,
     useState
 } from "react";
-import type { UserChat } from "../../components/chat/ChatsList";
+import type { UserChat } from "../../components/chat/types";
 
 export default function useChatSearch(chats: UserChat[]) {
     const [query, setQuery] = useState("");
