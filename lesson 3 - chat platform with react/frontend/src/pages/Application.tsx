@@ -2,9 +2,13 @@ import {
   useMemo,
   useState
 } from "react";
+import type {
+  ApplicationProbs,
+  OpenChatState
+} from "./types";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { MoveLeft } from "lucide-react";
-import ChatsList, { type UserChat } from "../components/chat/ChatsList";
+import ChatsList from "../components/chat/ChatsList";
 import useChatSearch from "../backend/websocket/useChatSearch";
 import useWebSocket from "../backend/websocket/useWebsocket"
 import SearchReuslt from "../components/search/SearchResult";
@@ -12,17 +16,7 @@ import SearchInput from "../components/search/SearchInput";
 import OpenedChat from "../components/chat/OpenedChat";
 import ClosedChat from "../components/chat/ClosedChat";
 import backend from "../backend/backend"
-
-interface ApplicationProbs {
-  token: string;
-}
-
-interface OpenChat extends UserChat {
-  isOpen: boolean;
-}
-
-export type OpenChatState = OpenChat | null;
-
+import type { UserChat } from "../components/chat/types";
 
 export default function Application({ token }: ApplicationProbs) {
   const {
