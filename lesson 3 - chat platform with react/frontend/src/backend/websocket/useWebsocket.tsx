@@ -1,12 +1,19 @@
+import type {
+    AppSocket,
+    ClientToServerEvents,
+    ConnectionStatus,
+    CurrentUser,
+    EventPayload,
+    UseWebSocketOptions
+} from "./type";
 import {
     useCallback,
     useEffect,
     useRef,
     useState
 } from "react";
-import { io } from "socket.io-client";
 import type { MessageType } from "../../components/message/types";
-import type { AppSocket, ClientToServerEvents, ConnectionStatus, CurrentUser, EventPayload, UseWebSocketOptions } from "./type";
+import { io } from "socket.io-client";
 
 export default function useWebSocket({
     url,
@@ -165,14 +172,19 @@ export default function useWebSocket({
         });
     }, [emitEvent]);
 
-    // دریافت تاریخچه از سرور
-    useEffect(() => {
-        console.log("currentChatId", currentChatId)
-
+    const updateOpenChatMessages = useCallback(() => {
         socketRef.current?.on("chat_history", (data: { messages: MessageType[] }) => {
             console.log("chat_history.data", data)
             setOpenedChatMessages(data.messages || []);
         });
+    }, [emitEvent]);
+
+
+    // دریافت تاریخچه از سرور
+    useEffect(() => {
+        console.log("currentChatId", currentChatId)
+
+        updateOpenChatMessages();
 
         // دریافت پیام جدید realtime
         socketRef.current?.on("new_message", (newMsg: MessageType) => {
