@@ -4,78 +4,9 @@ import {
     useRef,
     useState
 } from "react";
-import {
-    io,
-    Socket
-} from "socket.io-client";
-
-export type ConnectionStatus = "idle" | "connecting" | "connected" | "disconnected" | "error";
-
-interface MessageError {
-    message: string;
-}
-
-export type MessageStatus = "sending" | "sent" | "delivered" | "read";
-
-export interface MessageType {
-    id: string;
-    from: string;
-    to: string;
-    text: string;
-    timestamp: number;
-    status: MessageStatus;
-    sentAt: number | null;
-    deliveredAt: number | null;
-    readAt: number | null;
-}
-
-type History = MessageType[];
-
-export interface UseWebSocketOptions {
-    url: string;
-    token: string;
-    onAuthFail?: (socket: AppSocket) => void;
-    onConnect?: (socketId: string) => void;
-    onDisconnect?: (reason: string) => void;
-}
-
-export type ServerToClientEvents = {
-    connected: (user: CurrentUser) => void;
-    user_status: (data: unknown) => void;
-    message_error: (data: MessageError) => void;
-    message_sent_ack: (data: unknown) => void;
-    message_delivered_notification: (data: unknown) => void;
-    new_message: (data: MessageType) => void;
-    chat_history: (data: {
-        with: string,
-        messages: History
-    }) => void;
-};
-
-export type ClientToServerEvents = {
-    get_initial_data: () => void;
-    get_user_status: (data: { userId: string }) => void;
-    get_chat_history: (data: { with: string }) => void;
-    open_chat: (data: { userId: string }) => void;
-    send_message: (data: { to: string; text: string; originalMessageId: string; }) => void;
-    event: (data: unknown) => void;
-
-};
-
-export type EventPayload<T> = T extends (data: infer P) => void
-    ? P
-    : T extends () => void
-    ? undefined
-    : never;
-
-export type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
-
-interface CurrentUser {
-    id: string;
-    created_at: number;
-    username: string;
-    expire: number;
-}
+import { io } from "socket.io-client";
+import type { MessageType } from "../../components/message/types";
+import type { AppSocket, ClientToServerEvents, ConnectionStatus, CurrentUser, EventPayload, UseWebSocketOptions } from "./type";
 
 export default function useWebSocket({
     url,

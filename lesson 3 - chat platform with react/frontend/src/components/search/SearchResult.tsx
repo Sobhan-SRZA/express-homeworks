@@ -1,13 +1,9 @@
-import type { OpenChatState } from "../../pages/Application";
-import type { UserChat } from "../chat/ChatsList"
+import type { SearchResultProbs } from "./types";
 
-export default function SearchReuslt({
+export default function SearchResult({
     results,
     onSelect
-}: {
-    results: UserChat[];
-    onSelect: React.Dispatch<React.SetStateAction<OpenChatState>>;
-}) {
+}: SearchResultProbs) {
     return (
         <ul className={`flex flex-col p-0 py-3 justify-start items-center text-center overflow-hidden overscroll-y-contain overflow-y-scroll custom-scroll h-screen scroll-smooth px-2 gap-2`}>
             {

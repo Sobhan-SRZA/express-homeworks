@@ -8,6 +8,7 @@ export type ServerEventHandlers = {
     "search_user": (socket: CustomSocket, payload: any, ...args: any[]) => Promise<void>;
     "typing": (socket: CustomSocket, payload: any, ...args: any[]) => Promise<void>;
     "update_message_status": (socket: CustomSocket, payload: any, ...args: any[]) => Promise<void>;
+    "get_chats": (socket: CustomSocket, payload: any, ...args: any[]) => Promise<void>;
 };
 
 const eventHandlers = new Map<string, Function>();

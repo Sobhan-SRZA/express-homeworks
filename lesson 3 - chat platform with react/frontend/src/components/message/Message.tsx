@@ -1,13 +1,10 @@
 import { Check, CheckCheck, Clock } from "lucide-react";
-import type { MessageType } from "../../hooks/useWebsocket";
+import type { MessageProbs, MessageType } from "./types";
 
 export default function Message({
     message,
     isOwnMessage
-}: {
-    message: MessageType,
-    isOwnMessage: boolean
-}) {
+}: MessageProbs) {
     return (
         <div
             key={message.id}
@@ -40,7 +37,6 @@ export default function Message({
 
 
 export const MessageStatus = ({ status }: { status: MessageType["status"] }) => {
-    console.log("🚀 ~ MessageStatus ~ status:", status)
     switch (status) {
         case "sending":
             return <Clock className="w-4 h-4 animate-spin text-gray-400" />;

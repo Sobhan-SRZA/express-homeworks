@@ -1,20 +1,11 @@
-import {
-    Check,
-    CheckCheck,
-    Clock
-} from "lucide-react";
-import type { MessageType } from "../../hooks/useWebsocket";
 import Message from "./Message";
+import type { MessageListProbs } from "./types";
 
 export default function MessageList({
     messages,
     from,
     ref
-}: {
-    messages: MessageType[];
-    from: string;
-    ref: React.RefObject<HTMLDivElement | null>;
-}) {
+}: MessageListProbs) {
     return (
         <div
             ref={ref}

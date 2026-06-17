@@ -1,30 +1,12 @@
-import { useEffect, useState } from "react";
-import backend from "../backend/backend";
-
-interface FormProps {
-    isLoggin: boolean;
-    alert: {
-        show: boolean;
-        type: "success" | "error" | "loading";
-        message: string;
-    };
-    setAlert: React.Dispatch<React.SetStateAction<{
-        show: boolean;
-        type: "success" | "error" | "loading";
-        message: string;
-    }>>;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-    loading: boolean;
-    validateForm: (formData: FormData) => boolean;
-}
-
-interface InputProbs {
-    name: string;
-    label: string;
-    placeholder: string;
-    type?: React.HTMLInputTypeAttribute;
-    required?: boolean;
-}
+import {
+    useEffect,
+    useState
+} from "react";
+import type {
+    FormProps,
+    InputProbs
+} from "./types";
+import backend from "../../backend/backend";
 
 export default function Form({ isLoggin, validateForm, loading, setLoading, alert, setAlert }: FormProps) {
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -113,7 +95,7 @@ export default function Form({ isLoggin, validateForm, loading, setLoading, aler
 
                     else {
                         setInputActiveted(false)
-                    }   
+                    }
                 }}
                 name={name}
                 id={name}

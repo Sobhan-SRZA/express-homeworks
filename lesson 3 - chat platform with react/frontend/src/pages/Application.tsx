@@ -5,9 +5,9 @@ import {
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { MoveLeft } from "lucide-react";
 import ChatsList, { type UserChat } from "../components/chat/ChatsList";
-import useChatSearch from "../hooks/useChatSearch";
-import useWebSocket from "../hooks/useWebsocket"
-import SearchReuslt from "../components/search/SearchReuslt";
+import useChatSearch from "../backend/websocket/useChatSearch";
+import useWebSocket from "../backend/websocket/useWebsocket"
+import SearchReuslt from "../components/search/SearchResult";
 import SearchInput from "../components/search/SearchInput";
 import OpenedChat from "../components/chat/OpenedChat";
 import ClosedChat from "../components/chat/ClosedChat";

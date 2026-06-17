@@ -3,43 +3,55 @@ import setData from "../../database/commands/setData";
 import { Chat } from "../../database/commands/types";
 import getHistory from "../messages/getHistory";
 
-export default (starterId: string, userId: string) => {
+export default (startId: string, nextId: string) => {
     try {
-        const userAccount = getData("accounts", userId);
+        const userAccount = getData("accounts", nextId);
 
         if (!userAccount) {
-            throw ("Account with " + userId + " ID didn't founded!");
+            throw ("Account with " + nextId + " ID didn't founded!");
         }
 
-        const starterAccount = getData("accounts", starterId);
+        const starterAccount = getData("accounts", startId);
 
         if (!starterAccount) {
-            throw ("Account with " + starterId + " ID didn't founded!");
+            throw ("Account with " + startId + " ID didn't founded!");
         }
 
-        // const chat = getData("chats", starterId);
-
-        // // if (chat) {
-        // //     return chat.value;
-        // // }
+        const chats = getData("chats", startId);
 
         const messages = getHistory(starterAccount.value.id, userAccount.value.id);
 
         const data: Chat = {
-            userId: userId,
+            userId: nextId,
             username: userAccount.value.username,
-            unread_messages: messages?.filter(a => a.from === userId && a.status !== "read").length || 0,
+            unread_messages: messages?.filter(a => a.from === nextId && a.status !== "read").length || 0,
             last_message: messages?.reverse()[0] || null
         };
 
-        setData(
-            "chats",
-            {
-                id: starterId,
-                value: data
-            },
-            starterId
-        )
+        const chatIndex = chats?.value?.findIndex(chat => `${chat.userId}` === `${nextId}`);
+        if (chats && chatIndex && chatIndex !== -1) {
+            const chat = chats.value[chatIndex];
+
+            chat.last_message = data.last_message;
+            chat.unread_messages = data.unread_messages;
+
+            setData(
+                "chats",
+                chats,
+                startId
+            )
+        }
+
+        else {
+            setData(
+                "chats",
+                {
+                    id: startId,
+                    value: chats && chats.value ? [...chats.value, data] : [data]
+                },
+                startId
+            )
+        }
 
         return data;
     }

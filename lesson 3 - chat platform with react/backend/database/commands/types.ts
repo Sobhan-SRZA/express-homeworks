@@ -6,7 +6,7 @@ export type TableDataMap = {
     [K in Tables]: K extends "users" ? UserStatus :
     K extends "accounts" ? Account :
     K extends "messages" ? Message[] :
-    K extends "chats" ? Chat :
+    K extends "chats" ? Chat[] :
     K extends "files" ? File :
     never;
 };

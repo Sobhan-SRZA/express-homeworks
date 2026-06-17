@@ -1,8 +1,3 @@
-import type {
-  ClientToServerEvents,
-  EventPayload,
-  MessageType
-} from "../../hooks/useWebsocket";
 import {
   useCallback,
   useEffect,
@@ -13,7 +8,8 @@ import {
   MoveRight,
   SendHorizonal
 } from "lucide-react";
-import type { OpenChatState } from "../../pages/Application";
+import type { OpenChatProbs } from "./types";
+import type { MessageType } from "../message/types";
 import type { UserChat } from "./ChatsList";
 import DisplayUserAvatar from "../user/DisplayUserAvatar";
 import MessageList from "../message/MessageList";
@@ -26,17 +22,7 @@ export default function OpenedChat(
     currentUserId,
     messages = [],
     openChat
-  }: {
-    chat: OpenChatState;
-    setChat: React.Dispatch<React.SetStateAction<OpenChatState>>;
-    currentUserId: string;
-    messages: MessageType[];
-    openChat: (userId: string) => void;
-    emitEvent: <E extends keyof ClientToServerEvents>(
-      event: E,
-      payload?: EventPayload<ClientToServerEvents[E]>
-    ) => boolean;
-  }
+  }: OpenChatProbs
 ) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
