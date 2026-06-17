@@ -17,7 +17,7 @@ interface MessageError {
 
 export type MessageStatus = "sending" | "sent" | "delivered" | "read";
 
-export interface Message {
+export interface MessageType {
     id: string;
     from: string;
     to: string;
@@ -29,7 +29,7 @@ export interface Message {
     readAt: number | null;
 }
 
-type History = Message[];
+type History = MessageType[];
 
 export interface UseWebSocketOptions {
     url: string;
@@ -45,7 +45,7 @@ export type ServerToClientEvents = {
     message_error: (data: MessageError) => void;
     message_sent_ack: (data: unknown) => void;
     message_delivered_notification: (data: unknown) => void;
-    new_message: (data: Message) => void;
+    new_message: (data: MessageType) => void;
     chat_history: (data: {
         with: string,
         messages: History
@@ -220,7 +220,7 @@ export default function useWebSocket({
         socketRef.current?.connect();
     }, []);
 
-    const [openedChatMessages, setOpenedChatMessages] = useState<Message[]>([]); // ← اضافه کن
+    const [openedChatMessages, setOpenedChatMessages] = useState<MessageType[]>([]); // ← اضافه کن
     const [currentChatId, setCurrentChatId] = useState<string | null>(null);
 
     const openChat = useCallback((userId: string) => {
@@ -238,13 +238,13 @@ export default function useWebSocket({
     useEffect(() => {
         console.log("currentChatId", currentChatId)
 
-        socketRef.current?.on("chat_history", (data: { messages: Message[] }) => {
+        socketRef.current?.on("chat_history", (data: { messages: MessageType[] }) => {
             console.log("chat_history.data", data)
             setOpenedChatMessages(data.messages || []);
         });
 
         // دریافت پیام جدید realtime
-        socketRef.current?.on("new_message", (newMsg: Message) => {
+        socketRef.current?.on("new_message", (newMsg: MessageType) => {
             if (newMsg.to === currentChatId || newMsg.from === currentChatId) {
                 setOpenedChatMessages(prev => [...prev, newMsg]);
             }

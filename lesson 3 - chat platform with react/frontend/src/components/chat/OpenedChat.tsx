@@ -1,7 +1,7 @@
 import type {
   ClientToServerEvents,
   EventPayload,
-  Message
+  MessageType
 } from "../../hooks/useWebsocket";
 import {
   useCallback,
@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 import type { OpenChatState } from "../../pages/Application";
 import type { UserChat } from "./ChatsList";
-import DisplayUserAvatar from "./DisplayUserAvatar";
-import MessageList from "./MessageList";
+import DisplayUserAvatar from "../user/DisplayUserAvatar";
+import MessageList from "../message/MessageList";
 
 export default function OpenedChat(
   {
@@ -30,7 +30,7 @@ export default function OpenedChat(
     chat: OpenChatState;
     setChat: React.Dispatch<React.SetStateAction<OpenChatState>>;
     currentUserId: string;
-    messages: Message[];
+    messages: MessageType[];
     openChat: (userId: string) => void;
     emitEvent: <E extends keyof ClientToServerEvents>(
       event: E,
@@ -43,7 +43,7 @@ export default function OpenedChat(
 
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  const [localMessages, setLocalMessages] = useState<Message[]>(messages);
+  const [localMessages, setLocalMessages] = useState<MessageType[]>(messages);
 
   useEffect(() => {
     setLocalMessages(messages);
@@ -81,7 +81,7 @@ export default function OpenedChat(
     if (text.length === 0)
       return;
 
-    const newMessage: Message = {
+    const newMessage: MessageType = {
       id: Date.now().toString(),
       text,
       from: currentUserId,

@@ -1,6 +1,6 @@
 import type { OpenChatState } from "../../pages/Application";
 import type { MouseEvent } from "react";
-import DisplayUserAvatar from "./DisplayUserAvatar";
+import DisplayUserAvatar from "../user/DisplayUserAvatar";
 
 export interface UserChat {
     id: string;

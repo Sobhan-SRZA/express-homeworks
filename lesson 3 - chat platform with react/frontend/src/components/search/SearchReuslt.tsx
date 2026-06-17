@@ -1,5 +1,5 @@
 import type { OpenChatState } from "../../pages/Application";
-import type { UserChat } from "./ChatsList"
+import type { UserChat } from "../chat/ChatsList"
 
 export default function SearchReuslt({
     results,

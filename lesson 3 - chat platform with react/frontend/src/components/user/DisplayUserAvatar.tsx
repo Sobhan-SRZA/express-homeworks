@@ -1,4 +1,4 @@
-import type { UserChat } from "./ChatsList";
+import type { UserChat } from "../chat/ChatsList";
 
 export default function DisplayUserAvatar({ chat }: {
     chat: UserChat;
