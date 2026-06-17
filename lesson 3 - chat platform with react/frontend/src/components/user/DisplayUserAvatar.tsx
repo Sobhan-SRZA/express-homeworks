@@ -1,4 +1,4 @@
-import type { UserChat } from "../chat/ChatsList";
+import type { UserChat } from "../chat/types";
 
 export default function DisplayUserAvatar({ chat }: {
     chat: UserChat;
@@ -8,7 +8,7 @@ export default function DisplayUserAvatar({ chat }: {
     return (
         chat.avatar
         && <img src={chat.avatar} alt="" className="size-13 rounded-full" />
-        
+
         || <div className="size-13 rounded-full bg-(--primary) text-(--background) font-bold text-2xl content-center">
             <p>{userAvatarName}</p>
         </div>
