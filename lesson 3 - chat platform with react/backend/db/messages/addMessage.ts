@@ -17,7 +17,7 @@ export default function (from: string, to: string, text: string) {
             text,
             timestamp: currentTime,
             status: "sent",
-            sentAt: null,
+            sentAt: currentTime,
             deliveredAt: null,
             readAt: null
         };
