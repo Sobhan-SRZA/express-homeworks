@@ -13,14 +13,14 @@ export default (socket: CustomSocket, payload: any, senderId: string, currentUse
     if (updatedMessage) {
         const senderClient = onlineUsers.get(senderId);
         if (senderClient) {
-            senderClient.send(JSON.stringify({
-                type: `message_${statusType}_notification`,
+            senderClient.emit("event", {
+                type: "message_status_update",
                 payload: {
                     messageId: updatedMessage.id,
                     userId: senderId,
                     [statusType === 'delivered' ? 'deliveredAt' : 'readAt']: updatedMessage[statusType === 'delivered' ? 'deliveredAt' : 'readAt']
                 }
-            }));
+            });
         }
     }
 }
