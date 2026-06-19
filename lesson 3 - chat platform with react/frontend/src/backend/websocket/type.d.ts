@@ -14,6 +14,10 @@ export interface UseWebSocketOptions {
     onDisconnect?: (reason: string) => void;
 }
 
+export interface UseGetChatsOptions {
+    socket: AppSocket;
+}
+
 export type ServerToClientEvents = {
     connected: (user: CurrentUser) => void;
     user_status: (data: unknown) => void;
