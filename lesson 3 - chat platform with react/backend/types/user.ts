@@ -1,4 +1,4 @@
-import { Socket } from "socket.io";
+import { CustomSocket } from "./requests";
 
 export interface UserTokenVerify {
     username: string;
@@ -9,4 +9,4 @@ export interface UserTokenVerify {
 
 export type UserTokenPlayload = Omit<UserTokenVerify, "expire">;
 
-export type OnlineUsers = Map<string, Socket>;
+export type OnlineUsers = Map<string, CustomSocket>;
