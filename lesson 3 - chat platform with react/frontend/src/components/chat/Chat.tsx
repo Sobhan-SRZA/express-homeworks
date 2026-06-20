@@ -106,6 +106,7 @@ export default function Chat(
         setIsEmpty(ta.value.trim().length === 0);
     };
 
+    const{}=usech
 
     return (
         <div className="flex flex-col justify-between">

@@ -1,7 +1,7 @@
 import type { UseGetChatsOptions } from "./type";
 import { useCallback } from "react";
 
-export default function useWebSocket({
+export default function useGetChats({
     socket
 }: UseGetChatsOptions) {
     const updateOpenChatMessages = useCallback(() => {

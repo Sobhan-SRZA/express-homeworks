@@ -5,7 +5,7 @@ import {
 } from "react";
 import type { History } from "../../components/message/types";
 
-export default function useWebSocket({
+export default function useChatHistory({
     socket,
     emitEvent
 }: UseChatHistorysOptions) {
