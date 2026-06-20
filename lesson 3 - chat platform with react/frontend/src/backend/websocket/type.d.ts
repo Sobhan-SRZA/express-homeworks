@@ -1,5 +1,5 @@
-import type { Socket } from "socket.io-client";
 import type { History } from "../../components/message/types";
+import type { Socket } from "socket.io-client";
 
 export type ConnectionStatus = "idle" | "connecting" | "connected" | "disconnected" | "error";
 
@@ -63,4 +63,8 @@ export interface CurrentUser {
 
 export interface UseChatHistorysOptions {
     socket: AppSocket;
+    emitEvent: <E extends keyof ClientToServerEvents>(
+        event: E,
+        payload?: EventPayload<ClientToServerEvents[E]>
+    ) => boolean;
 }
