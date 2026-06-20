@@ -1,18 +1,30 @@
-import type { UseGetChatsOptions } from "./type";
-import { useCallback } from "react";
+import type { Chats, UseGetChatsOptions } from "./type";
+import { useCallback, useState } from "react";
 
 export default function useGetChats({
-    socket
+    socket,
+    
 }: UseGetChatsOptions) {
-    const updateOpenChatMessages = useCallback(() => {
-        socket.on("chat_history", (data) => {
-            console.log("chat_history.data", data)
+    const [chats, setChats] = useState<Chats | null>(null);
+
+    const getOpenChats = useCallback(() => {
+        socket.on("openned_chats", (data) => {
+            console.log("openned_chats.data", data)
+            setChats(data.chats);
+        });
+    }, []);
+
+    const updateOpenChats = useCallback(() => {
+        socket.on("openned_chats", (data) => {
+            console.log("openned_chats.data", data)
+            setChats(data.chats);
         });
     }, []);
 
 
-
     return {
-
+        getOpenChats,
+        updateOpenChats,
+        chats
     }
 }
