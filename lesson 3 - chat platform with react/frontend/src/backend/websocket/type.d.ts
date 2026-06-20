@@ -1,3 +1,6 @@
+import type { Socket } from "socket.io-client";
+import type { History } from "../../components/message/types";
+
 export type ConnectionStatus = "idle" | "connecting" | "connected" | "disconnected" | "error";
 
 export interface MessageError {
@@ -56,4 +59,8 @@ export interface CurrentUser {
     created_at: number;
     username: string;
     expire: number;
+}
+
+export interface UseChatHistorysOptions {
+    socket: AppSocket;
 }
