@@ -1,5 +1,6 @@
 import type {
     ClientToServerEvents,
+    EmitEvent,
     EventPayload
 } from "../../backend/websocket/type";
 import type { OpenChatState } from "../../pages/Application";
@@ -11,10 +12,7 @@ export interface OpenChatProbs {
     currentUserId: string;
     messages: MessageType[];
     openChat: (userId: string) => void;
-    emitEvent: <E extends keyof ClientToServerEvents>(
-        event: E,
-        payload?: EventPayload<ClientToServerEvents[E]>
-    ) => boolean;
+    emitEvent: EmitEvent;
 }
 
 export interface ChatMessageProbs {
@@ -47,5 +45,5 @@ export interface ChatProbs {
     messages: MessageType[];
     currentUserId: OpenChatProbs["currentUserId"];
     setMessages: React.Dispatch<React.SetStateAction<ChatProbs["messages"]>>;
-    emitEvent: OpenChatProbs["emitEvent"];
+    emitEvent: EmitEvent;
 }
