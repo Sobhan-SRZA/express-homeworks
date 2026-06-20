@@ -173,7 +173,7 @@ export default function useWebSocket({
     }, [emitEvent]);
 
     const updateOpenChatMessages = useCallback(() => {
-        socketRef.current?.on("chat_history", (data: { messages: MessageType[] }) => {
+        socketRef.current?.on("chat_history", (data) => {
             console.log("chat_history.data", data)
             setOpenedChatMessages(data.messages || []);
         });
