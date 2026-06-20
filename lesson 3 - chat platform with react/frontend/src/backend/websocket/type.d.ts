@@ -3,6 +3,11 @@ import type { Socket } from "socket.io-client";
 
 export type ConnectionStatus = "idle" | "connecting" | "connected" | "disconnected" | "error";
 
+export type EmitEvent = <E extends keyof ClientToServerEvents>(
+    event: E,
+    payload?: EventPayload<ClientToServerEvents[E]>
+) => boolean;
+
 export interface MessageError {
     message: string;
 }
@@ -63,8 +68,5 @@ export interface CurrentUser {
 
 export interface UseChatHistorysOptions {
     socket: AppSocket;
-    emitEvent: <E extends keyof ClientToServerEvents>(
-        event: E,
-        payload?: EventPayload<ClientToServerEvents[E]>
-    ) => boolean;
+    emitEvent: EmitEvent;
 }
