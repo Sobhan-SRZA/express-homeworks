@@ -29,11 +29,12 @@ export default (startId: string, nextId: string) => {
         };
 
         const chatIndex = chats?.value?.findIndex(chat => `${chat.userId}` === `${nextId}`);
-        if (chats && chatIndex && chatIndex !== -1) {
-            const chat = chats.value[chatIndex];
+        if (chats && !isNaN(chatIndex!) && chatIndex !== -1) {
+            const chat = chats.value[chatIndex!];
 
             chat.last_message = data.last_message;
             chat.unread_messages = data.unread_messages;
+            console.log("🚀 ~ chat:", chat)
 
             setData(
                 "chats",
