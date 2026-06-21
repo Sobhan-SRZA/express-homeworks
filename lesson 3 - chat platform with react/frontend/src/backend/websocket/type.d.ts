@@ -25,6 +25,8 @@ export interface UseWebSocketOptions {
 export interface UseGetChatsOptions {
     socket: AppSocket;
     emitEvent: EmitEvent;
+    url?: string;
+    token?: string;
 }
 
 export type ServerToClientEvents = {
