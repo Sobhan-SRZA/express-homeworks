@@ -163,10 +163,10 @@ export default function useWebSocket({
         setCurrentChatId(userId);
         console.log("openChat.useCallback.userId", userId)
 
-        // emitEvent("event", {
-        //     type: "get_chat_history",
-        //     payload: { with: userId }
-        // });
+        emitEvent("event", {
+            type: "get_chat_history",
+            payload: { with: userId }
+        });
     }, [emitEvent]);
 
 
