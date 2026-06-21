@@ -13,7 +13,6 @@ export interface OpenChatProbs {
     messages: MessageType[];
     openChat: (userId: string) => void;
     emitEvent: EmitEvent;
-    updateHistory: () => void;
 }
 
 export interface ChatMessageProbs {
@@ -25,7 +24,8 @@ export interface UserChat {
     id: string;
     last_seen: number;
     muted: boolean;
-    name: string;
+    name?: string;
+    username: string;
     last_message: {
         text: string;
         timestamp: number;
