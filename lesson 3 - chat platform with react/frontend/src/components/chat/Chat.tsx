@@ -2,10 +2,6 @@ import {
     MoveRight,
     SendHorizonal
 } from 'lucide-react'
-import type {
-    ChatProbs,
-    UserChat
-} from './types'
 import {
     useCallback,
     useEffect,
@@ -13,6 +9,7 @@ import {
     useState
 } from 'react';
 import type { MessageType } from '../message/types';
+import type { ChatProbs } from './types'
 import DisplayUserAvatar from '../user/DisplayUserAvatar'
 import MessageList from '../message/MessageList'
 
@@ -26,6 +23,7 @@ export default function Chat(
         emitEvent
     }: ChatProbs
 ) {
+        console.log("🚀 ~ Chat ~ chat:", chat)
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const [isEmpty, setIsEmpty] = useState<boolean>(true);
 
@@ -66,7 +64,7 @@ export default function Chat(
             id: Date.now().toString(),
             text,
             from: currentUserId,
-            to: chat!.id,
+            to: chat.id,
             timestamp: Date.now(),
             status: "sending",
             deliveredAt: null,
@@ -81,7 +79,7 @@ export default function Chat(
             payload: {
                 originalMessageId: newMessage.id,
                 text,
-                to: chat!.id
+                to: chat.id
             }
         })
 
@@ -112,11 +110,11 @@ export default function Chat(
 
             {/* Header */}
             <div className="absolute top-5 rounded-4xl flex gap-3 p-2 place-self-center justify-between w-[40%] flex-2 shadow-2xl backdrop-blur-lg border border-(--border)/40 bg-(--lgs-bg)/30 z-20">
-                <DisplayUserAvatar chat={chat as UserChat} />
+                <DisplayUserAvatar chat={chat} />
 
                 <div className="place-self-center justify-items-start flex-1">
-                    <p className="font-semibold">{chat!.name}</p>
-                    <p className={`text-sm ${chat!.status === "online" ? "text-green-500" : "text-gray-400"}`}>{chat!.status === "offline" ? timeAgo(chat!.last_seen) : chat!.status}</p>
+                    <p className="font-semibold">{chat.name || chat.username}</p>
+                    <p className={`text-sm ${chat.status === "online" ? "text-green-500" : "text-gray-400"}`}>{chat.status === "offline" ? timeAgo(chat.last_seen) : chat.status}</p>
                 </div>
 
                 <MoveRight
