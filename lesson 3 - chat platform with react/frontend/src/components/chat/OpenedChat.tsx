@@ -16,22 +16,22 @@ export default function OpenedChat(
     openChat
   }: OpenChatProbs
 ) {
-    console.log("🚀 ~ OpenedChat ~ chat:", chat)
   const [localMessages, setLocalMessages] = useState<MessageType[]>(messages);
 
-  console.log("🚀 ~ OpenedChat ~ messages:", messages)
   useEffect(() => {
     setLocalMessages(messages);
   }, [messages]);
 
 
   useEffect(() => {
-    openChat(chat!.id)
+    if (chat && chat.isOpen) {
+      openChat(chat.userId);
+    }
   }, [chat, openChat]);
 
   return (
     <Chat
-      chat={chat}
+      chat={chat!}
       setChat={setChat}
       messages={localMessages}
       currentUserId={currentUserId}
