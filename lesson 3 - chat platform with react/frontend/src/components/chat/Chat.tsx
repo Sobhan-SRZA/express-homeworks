@@ -23,7 +23,6 @@ export default function Chat(
         emitEvent
     }: ChatProbs
 ) {
-        console.log("🚀 ~ Chat ~ chat:", chat)
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const [isEmpty, setIsEmpty] = useState<boolean>(true);
 
