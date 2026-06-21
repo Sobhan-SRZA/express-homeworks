@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useMemo,
   useState
 } from "react";
@@ -17,13 +18,15 @@ import OpenedChat from "../components/chat/OpenedChat";
 import ClosedChat from "../components/chat/ClosedChat";
 import backend from "../backend/backend"
 import type { UserChat } from "../components/chat/types";
+import useChatHistory from "../backend/websocket/useChatHistory";
+import useGetChats from "../backend/websocket/useGetChats";
 
 export default function Application({ token }: ApplicationProbs) {
   const {
     emitEvent,
     currentUser,
-    openedChatMessages,
-    openChat
+    openChat,
+    socket
   } = useWebSocket({
     token,
     url: backend.websocket,
@@ -75,6 +78,42 @@ export default function Application({ token }: ApplicationProbs) {
 
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
 
+  const { history, getHistory, updateHistory } = useChatHistory({ socket: socket!, emitEvent })
+
+  useEffect(() => {
+    if (chat?.id) {
+      getHistory(chat.id)
+
+      console.log("🚀 ~ Application ~ history:", history)
+    }
+  }, [chat]);
+
+  const { chats: chats2, getOpenChats, updateOpenChats } = useGetChats({ socket: socket!, emitEvent,token,    url: backend.websocket,
+ })
+
+  useEffect(() => {
+    getOpenChats()
+
+    console.log("🚀 ~ Application ~ chats2:", chats2)
+  }, [socket]);
+
+  useEffect(() => {
+    if (socket) {      
+      updateOpenChats()
+      console.log("🚀 ~ Application ~ chats2:", chats2)
+    }
+
+  }, [socket, getOpenChats]);
+
+
+  useEffect(() => {
+    if (chat?.id) {
+      getHistory(chat.id)
+
+      console.log("🚀 ~ Application ~ history:", history)
+    }
+  }, [chat]);
+
   return (
     <>
       <main id="platform" className="flex justify-between items-center text-center min-h-full min-w-full p-0 inset-0 m-0 relative">
@@ -85,8 +124,9 @@ export default function Application({ token }: ApplicationProbs) {
               chat={chat}
               setChat={setChat}
               currentUserId={currentUser!.id!}
-              messages={openedChatMessages}
+              messages={history!}
               openChat={openChat}
+              updateHistory={updateHistory}
             />
 
             || <ClosedChat />}
