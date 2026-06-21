@@ -23,7 +23,7 @@ export interface UseWebSocketOptions {
 }
 
 export interface UseGetChatsOptions {
-    socket: AppSocket;
+    socket: AppSocket | null;
     emitEvent: EmitEvent;
     url?: string;
     token?: string;
@@ -70,6 +70,6 @@ export interface CurrentUser {
 }
 
 export interface UseChatHistorysOptions {
-    socket: AppSocket;
+    socket: AppSocket | null;
     emitEvent: EmitEvent;
 }
