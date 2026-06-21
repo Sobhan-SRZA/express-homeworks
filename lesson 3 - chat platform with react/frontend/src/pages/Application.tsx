@@ -22,6 +22,7 @@ import backend from "../backend/backend"
 
 export default function Application({ token }: ApplicationProbs) {
   const {
+    setCurrentChatId,
     emitEvent,
     currentUser,
     openChat,
@@ -74,7 +75,9 @@ export default function Application({ token }: ApplicationProbs) {
     <>
       <main id="platform" className="flex justify-between items-center text-center min-h-full min-w-full p-0 inset-0 m-0 relative">
         <section id="chat" className="flex flex-col w-full">
-          {(chat && chat.isOpen)
+          {
+            (chat && chat.isOpen)
+
             && <OpenedChat
               emitEvent={emitEvent}
               chat={chat}
@@ -84,13 +87,16 @@ export default function Application({ token }: ApplicationProbs) {
               openChat={openChat}
             />
 
-            || <ClosedChat />}
+            || <ClosedChat />
+          }
         </section>
 
         <section id="conversetion" className="flex flex-col max-w-full max-h-screen bg-(--card-bg) border-l-(--border) border-l-2">
 
           <div className="flex place-self-center items-center gap-2 py-2">
-            {searchOpen
+            {
+              searchOpen
+
               && <MoveLeft
                 className="size-10 bg-transparent text-(--text) cursor-pointer p-1 rounded-full hover:bg-(--border)/30 transition-colors duration-300"
                 onClick={() => {
@@ -112,7 +118,9 @@ export default function Application({ token }: ApplicationProbs) {
 
           <div className="w-full h-[0.1rem] bg-(--border)" />
 
-          {searchOpen
+          {
+            searchOpen
+
             && <SearchReuslt
               results={results}
               onSelect={setChat}
@@ -121,7 +129,8 @@ export default function Application({ token }: ApplicationProbs) {
             || <ChatsList
               chats={sortedChats}
               onSelect={setChat}
-            />}
+            />
+          }
         </section>
       </main>
     </>
