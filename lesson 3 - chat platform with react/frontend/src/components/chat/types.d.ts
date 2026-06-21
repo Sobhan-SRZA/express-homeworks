@@ -21,15 +21,12 @@ export interface ChatMessageProbs {
 }
 
 export interface UserChat {
-    id: string;
+    userId: string;
     last_seen: number;
     muted: boolean;
     name?: string;
     username: string;
-    last_message: {
-        text: string;
-        timestamp: number;
-    };
+    last_message?: MessageType;
     status: string;
     unread_message: number;
     avatar?: string;
