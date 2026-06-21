@@ -17,9 +17,11 @@ export default function useChatSearch(chats: UserChat[]) {
             return;
         }
 
-        const filtered = chats.filter(chat =>
-            chat.name.toLowerCase().includes(query.toLowerCase())
-        );
+        const filtered = chats.filter(chat => {
+            const name = chat.name || chat.username;
+            
+            return name.toLowerCase().includes(query.toLowerCase());
+        });
 
         setResults(filtered);
     }, [query]);
