@@ -16,6 +16,7 @@ export default function MessageList({
 
                 return (
                     <Message
+                        key={msg.id}
                         isOwnMessage={isOwn}
                         message={msg}
                     />
