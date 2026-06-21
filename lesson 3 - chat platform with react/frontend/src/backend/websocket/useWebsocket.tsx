@@ -12,7 +12,6 @@ import {
     useRef,
     useState
 } from "react";
-import type { MessageType } from "../../components/message/types";
 import { io } from "socket.io-client";
 
 export default function useWebSocket({
@@ -121,7 +120,7 @@ export default function useWebSocket({
             socket.disconnect();
             socketRef.current = null;
         };
-    }, [url, token]);
+    }, []);
 
     const emitEvent = useCallback(
         <E extends keyof ClientToServerEvents>(
@@ -158,46 +157,18 @@ export default function useWebSocket({
         socketRef.current?.connect();
     }, []);
 
-    const [openedChatMessages, setOpenedChatMessages] = useState<MessageType[]>([]); // ← اضافه کن
     const [currentChatId, setCurrentChatId] = useState<string | null>(null);
 
     const openChat = useCallback((userId: string) => {
         setCurrentChatId(userId);
         console.log("openChat.useCallback.userId", userId)
-        setOpenedChatMessages([]); // ریست قبل از لود
 
-        emitEvent("event", {
-            type: "get_chat_history",
-            payload: { with: userId }
-        });
+        // emitEvent("event", {
+        //     type: "get_chat_history",
+        //     payload: { with: userId }
+        // });
     }, [emitEvent]);
 
-    const updateOpenChatMessages = useCallback(() => {
-        socketRef.current?.on("chat_history", (data) => {
-            console.log("chat_history.data", data)
-            setOpenedChatMessages(data.messages || []);
-        });
-    }, [emitEvent]);
-
-
-    // دریافت تاریخچه از سرور
-    useEffect(() => {
-        console.log("currentChatId", currentChatId)
-
-        updateOpenChatMessages();
-
-        // دریافت پیام جدید realtime
-        socketRef.current?.on("new_message", (newMsg: MessageType) => {
-            if (newMsg.to === currentChatId || newMsg.from === currentChatId) {
-                setOpenedChatMessages(prev => [...prev, newMsg]);
-            }
-        });
-
-        return () => {
-            socketRef.current?.off("chat_history");
-            socketRef.current?.off("new_message");
-        };
-    }, [socketRef.current, currentChatId]);
 
     return {
         socket: socketRef.current,
@@ -206,8 +177,6 @@ export default function useWebSocket({
         socketId,
         currentUser,
         openChat,
-        openedChatMessages,
-        setOpenedChatMessages,
         currentChatId,
         emitEvent,
         disconnect,
