@@ -2,7 +2,7 @@ import Message from "./Message";
 import type { MessageListProbs } from "./types";
 
 export default function MessageList({
-    messages,
+    messages = [],
     from,
     ref
 }: MessageListProbs) {
