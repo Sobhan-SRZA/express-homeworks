@@ -3,7 +3,9 @@ import type { UserChat } from "../chat/types";
 export default function DisplayUserAvatar({ chat }: {
     chat: UserChat;
 }) {
-    const userAvatarName = `${chat.name.toUpperCase().split(" ")[0].toString()[0]}${chat.name.toUpperCase().split(" ")[1]?.toString()![0] || ""}`
+    const name = chat.name || chat.username;
+
+    const userAvatarName = `${name.toUpperCase().split(" ")[0].toString()[0]}${name.toUpperCase().split(" ")[1]?.toString()![0] || ""}`
 
     return (
         chat.avatar
