@@ -1,3 +1,4 @@
+import type { UserChat } from "../../components/chat/types";
 import type { History } from "../../components/message/types";
 import type { Socket } from "socket.io-client";
 
