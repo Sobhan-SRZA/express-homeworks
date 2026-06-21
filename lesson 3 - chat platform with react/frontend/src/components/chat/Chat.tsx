@@ -64,7 +64,7 @@ export default function Chat(
             id: Date.now().toString(),
             text,
             from: currentUserId,
-            to: chat.id,
+            to: chat.userId,
             timestamp: Date.now(),
             status: "sending",
             deliveredAt: null,
@@ -79,7 +79,7 @@ export default function Chat(
             payload: {
                 originalMessageId: newMessage.id,
                 text,
-                to: chat.id
+                to: chat.userId
             }
         })
 
