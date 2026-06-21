@@ -17,14 +17,14 @@ export default function ChatMessage({
 
     return (
         <li className="flex justify-between items-center cursor-pointer p-4 w-full min-w-xs hover:bg-(--hover)/20 transition-colors rounded-2xl"
-            key={chat.id}
-            accessKey={chat.id}
+            key={chat.userId}
+            accessKey={chat.userId}
             onClick={(e) => handleClickChat(e, chat)}
         >
 
             <div className="felx flex-col justify-center items-center text-left h-full w-max">
                 {/* last message time */}
-                <p className="text-left text-(--text)/60 text-[0.8rem] rtl">{showTime(chat.last_message.timestamp)}</p>
+                <p className="text-left text-(--text)/60 text-[0.8rem] rtl">{showTime(chat.last_message!.timestamp)}</p>
 
                 {chat.unread_message > 0 && <span className={`flex flex-col mt-2 w-fit px-2 rounded-full font-bold text-(--text)/80 text-[0.7rem] p-[0.2rem] ${!chat.muted ? "bg-green-600/70" : "bg-gray-400/70"}`}>{chat.unread_message}</span>}
             </div>
@@ -33,7 +33,7 @@ export default function ChatMessage({
                 {/* profile */}
                 <div className="flex flex-col text-right">
                     <h3 className="font-semibold text-[1.1rem] text-(--text)">{chat.name || chat.username}</h3>
-                    <p className="text-(--text)/60 text-[0.80rem]">{chat.last_message.text}</p>
+                    <p className="text-(--text)/60 text-[0.80rem]">{chat.last_message!.text}</p>
                 </div>
 
                 <div className="relative">
