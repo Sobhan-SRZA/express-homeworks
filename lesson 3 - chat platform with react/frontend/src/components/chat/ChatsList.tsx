@@ -11,7 +11,7 @@ export default function ChatsList({
                 .map((chat) => {
                     return (
                         <ChatMessage
-                            key={chat.id}
+                            key={chat.userId}
                             chat={chat}
                             onSelect={onSelect}
                         />
