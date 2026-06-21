@@ -32,7 +32,7 @@ export default function ChatMessage({
             <div className="flex gap-2">
                 {/* profile */}
                 <div className="flex flex-col text-right">
-                    <h3 className="font-semibold text-[1.1rem] text-(--text)">{chat.name}</h3>
+                    <h3 className="font-semibold text-[1.1rem] text-(--text)">{chat.name || chat.username}</h3>
                     <p className="text-(--text)/60 text-[0.80rem]">{chat.last_message.text}</p>
                 </div>
 
