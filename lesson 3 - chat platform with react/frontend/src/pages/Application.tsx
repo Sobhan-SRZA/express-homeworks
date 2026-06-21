@@ -22,7 +22,6 @@ import backend from "../backend/backend"
 
 export default function Application({ token }: ApplicationProbs) {
   const {
-    setCurrentChatId,
     emitEvent,
     currentUser,
     openChat,
@@ -40,7 +39,6 @@ export default function Application({ token }: ApplicationProbs) {
   });
 
   const [chat, setChat] = useState<OpenChatState>(null);
-  console.log("🚀 ~ Application ~ chat:", chat)
 
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
 
@@ -53,14 +51,14 @@ export default function Application({ token }: ApplicationProbs) {
   }, [socket?.connected, getOpenChats]);
 
   const { history, getHistory } = useChatHistory({ socket, emitEvent })
-  console.log("🚀 ~ Application ~ history:", history)
 
   useEffect(() => {
-    console.log("🚀 ~ Application ~ chat?.id:", chat?.id)
-    if (chat?.id) {
-      getHistory(chat.id);
+    if (socket?.connected) {
+      if (chat?.userId) {
+        getHistory(chat.userId);
+      }
     }
-  }, [chat, getHistory]);
+  }, [socket?.connected, getHistory]);
 
   const sortedChats = useMemo(() => {
     return [...chats].sort((a, b) =>
