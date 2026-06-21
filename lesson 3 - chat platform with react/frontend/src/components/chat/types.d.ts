@@ -13,6 +13,7 @@ export interface OpenChatProbs {
     messages: MessageType[];
     openChat: (userId: string) => void;
     emitEvent: EmitEvent;
+    updateHistory: () => void;
 }
 
 export interface ChatMessageProbs {
