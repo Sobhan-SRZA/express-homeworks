@@ -3,7 +3,7 @@ import type {
     EmitEvent,
     EventPayload
 } from "../../backend/websocket/type";
-import type { OpenChatState } from "../../pages/Application";
+import type { OpenChatState } from "../../pages/types";
 import type { MessageType } from "../message/types";
 
 export interface OpenChatProbs {
