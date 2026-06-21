@@ -23,7 +23,8 @@ export default function useChatHistory({
     }, [emitEvent, socket]);
 
     useEffect(() => {
-        if (!socket) return;
+        if (!socket)
+            return;
 
         const handleChatHistory = (data: any) => {
             console.log("✅ chat_history received:", data);
