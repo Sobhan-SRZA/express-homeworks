@@ -12,8 +12,8 @@ export default function Message({
         >
             <div
                 className={`max-w-[70%] px-4 py-2.5 rounded-2xl ${isOwnMessage
-                    ? "bg-(--primary)/30 text-(--text) rounded-tr-none"
-                    : "bg-(--lgs-bg) text-(--text) rounded-tl-none"
+                    ? "bg-(--primary)/30 text-(--text) rounded-br-none"
+                    : "bg-(--lgs-bg) text-(--text) rounded-bl-none"
                     }`}
             >
                 <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
