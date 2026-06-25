@@ -33,7 +33,7 @@ export default function ChatMessage({
                 {/* profile */}
                 <div className="flex flex-col text-right">
                     <h3 className="font-semibold text-[1.1rem] text-(--text)">{chat.name || chat.username}</h3>
-                    <p className="text-(--text)/60 text-[0.80rem]">{chat.last_message!.text}</p>
+                    <p className="text-(--text)/60 text-[0.80rem] rtl"> {chat.last_message?.from !== chat.userId && "شما: "}{chat.last_message!.text}</p>
                 </div>
 
                 <div className="relative">
