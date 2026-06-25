@@ -9,7 +9,7 @@ export default function MessageList({
     return (
         <div
             ref={ref}
-            className="flex-1 overscroll-y-contain overflow-y-scroll custom-scroll max-h-screen scroll-smooth p-4 py-20 space-y-3 w-3/4 justify-center items-center self-center"
+            className="flex-1 overscroll-y-contain overflow-y-scroll custom-scroll max-h-screen scroll-smooth p-4 py-20 space-y-3 w-[55%] justify-center items-center self-center"
         >
             {
                 (messages && messages.length > 0) &&
