@@ -12,6 +12,7 @@ import type { MessageType } from '../message/types';
 import type { ChatProbs } from './types'
 import DisplayUserAvatar from '../user/DisplayUserAvatar'
 import MessageList from '../message/MessageList'
+import { LiquidGlass } from '@persian-caesar/liquid-glass'
 
 export default function Chat(
     {
@@ -108,7 +109,10 @@ export default function Chat(
         <div className="flex flex-col justify-between">
 
             {/* Header */}
-            <div className="absolute top-5 rounded-4xl flex gap-3 p-2 place-self-center justify-between w-[40%] flex-2 shadow-2xl backdrop-blur-lg border border-(--border)/40 bg-(--lgs-bg)/30 z-20">
+            <LiquidGlass
+                as={"div"}
+                className="absolute top-5 rounded-4xl flex gap-3 p-2 place-self-center justify-between w-[40%] flex-2 shadow-2xl backdrop-blur-lg border border-(--border)/40 bg-(--lgs-bg)/30 z-20"
+            >
                 <DisplayUserAvatar chat={chat} />
 
                 <div className="place-self-center justify-items-start flex-1">
@@ -122,7 +126,7 @@ export default function Chat(
                         setChat(null)
                     }}
                 />
-            </div>
+            </LiquidGlass>
 
             {/* Messages List */}
             <MessageList
@@ -131,9 +135,10 @@ export default function Chat(
                 messages={messages}
             />
 
-
             {/* Input Area */}
-            <div className="absolute bottom-5 border border-(--border)/40 bg-(--lgs-bg)/30 rounded-4xl flex gap-3 p-2 place-self-center items-center w-[40%] flex-2 shadow-2xl backdrop-blur-lg z-20">
+            <LiquidGlass
+                className="absolute bottom-5 border border-(--border)/40 bg-(--lgs-bg)/30 rounded-4xl flex gap-3 p-2 place-self-center items-center w-[40%] flex-2 shadow-2xl backdrop-blur-lg z-20"
+            >
                 <textarea
                     ref={textareaRef}
                     dir="auto"
@@ -153,7 +158,7 @@ export default function Chat(
                         className="size-[70%] place-self-center"
                     />
                 </button>
-            </div>
+            </LiquidGlass>
         </div >
     )
 }
