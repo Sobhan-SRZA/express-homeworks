@@ -12,7 +12,7 @@
   "dependencies": {
     "@headlessui/react": "^2.2.7",
     "@heroicons/react": "^2.2.0",
-    "@persian-caesar/liquid-glass": "^1.0.0",
+    "@persian-caesar/liquid-glass": "^1.0.1",
     "@tailwindcss/vite": "^4.1.12",
     "i18next": "^25.4.2",
     "lucide-react": "^0.541.0",
