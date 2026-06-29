@@ -110,8 +110,9 @@ export default function Chat(
 
             {/* Header */}
             <LiquidGlass
+                borderRadius={32}
                 as={"div"}
-                className="absolute top-5 rounded-4xl flex gap-3 p-2 place-self-center justify-between w-[40%] flex-2 shadow-2xl backdrop-blur-lg border border-(--border)/40 bg-(--lgs-bg)/30 z-20"
+                className="absolute top-5 flex gap-3 p-2 place-self-center justify-between w-[40%] flex-2 shadow-2xl backdrop-blur-lg border border-(--border)/40 bg-(--lgs-bg)/30 z-20"
             >
                 <DisplayUserAvatar chat={chat} />
 
@@ -137,7 +138,9 @@ export default function Chat(
 
             {/* Input Area */}
             <LiquidGlass
-                className="absolute bottom-5 border border-(--border)/40 bg-(--lgs-bg)/30 rounded-4xl flex gap-3 p-2 place-self-center items-center w-[40%] flex-2 shadow-2xl backdrop-blur-lg z-20"
+                as={"div"}
+                borderRadius={32}
+                className="absolute bottom-5 border border-(--border)/40 bg-(--lgs-bg)/30 flex gap-3 p-2 place-self-center items-center w-[40%] flex-2 shadow-2xl backdrop-blur-lg z-20"
             >
                 <textarea
                     ref={textareaRef}
