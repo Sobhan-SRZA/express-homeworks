@@ -140,7 +140,9 @@ export default function Chat(
             <LiquidGlass
                 as={"div"}
                 borderRadius={32}
-                className="absolute bottom-5 border border-(--border)/40 bg-(--lgs-bg)/30 flex gap-3 p-2 place-self-center items-center w-[40%] flex-2 shadow-2xl backdrop-blur-lg z-20"
+                blur={0.8}
+                shadowIntensity={2}
+                className="absolute bottom-5 border border-(--border)/40 bg-(--lgs-bg)/80 flex gap-3 p-2 place-self-center items-center w-[40%] flex-2 shadow-2xl z-20"
             >
                 <textarea
                     ref={textareaRef}
